@@ -50,7 +50,7 @@ git pull origin main
 Wenn ihr alle Konflikte beseitigt habt und sicher seid, dass ihr mit dem master/main branch up to date seid dürft ihr
 mit dem folgenden Befehl eure branch zum Github Repo bringen.
 ```bash
-git push -u tix-[TICKET-NUMMER]
+git push -u origin tix-[TICKET-NUMMER]
 ```
 
 Nun ist es möglich über die github ui einen pull request zum mergen mit dem master/main branch zu machen.
