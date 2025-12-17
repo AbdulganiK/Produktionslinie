@@ -4,7 +4,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
-public class storage {
+public class Storage {
     private final int storage_kapazitaet = 10000; //in weight and size units
 
     private int storage_plastic;
@@ -43,16 +43,16 @@ public class storage {
     private int storage_packing_material;
     private Semaphore storage_packing_material_semaphore = new Semaphore(1);
 
-    private Queue<storage_request> requests = new PriorityQueue<>((request1, request2) -> Integer.compare(request2.priority(), request1.priority()));
+    private Queue<Storage_request> requests = new PriorityQueue<>((request1, request2) -> Integer.compare(request2.priority(), request1.priority()));
 
-    public storage_request get_warehouse_operator_task() {
+    public Storage_request get_warehouse_operator_task() {
         if (requests.isEmpty()) {
             return null;
         }
         return requests.poll();
     }
 
-    public int refill_strage(MaterialType material, int amount) {
+    public int refill_storage(MaterialType material, int amount) {
         switch (material) {
             case PLASTIC:
                 if (storage_plastic + amount <= storage_kapazitaet) {
@@ -279,11 +279,11 @@ public class storage {
         return amount;
     }
 
-    public void add_request(storage_request request) {
+    public void add_request(Storage_request request) {
         requests.add(request);
     }
 
-    private boolean check_storage_available(MaterialType type) {
+    public boolean check_storage_available(MaterialType type) {
         switch (type) {
             case PLASTIC:
                 if (storage_plastic_semaphore.tryAcquire()) {
