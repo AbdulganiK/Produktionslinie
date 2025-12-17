@@ -1,4 +1,4 @@
-package model;
+package org.betriebssysteme.model;
 
 import java.util.PriorityQueue;
 import java.util.Queue;

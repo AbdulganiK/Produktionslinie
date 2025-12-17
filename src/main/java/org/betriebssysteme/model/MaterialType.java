@@ -1,4 +1,4 @@
-package model;
+package org.betriebssysteme.model;
 
 public enum MaterialType {
     PLASTIC(1),
