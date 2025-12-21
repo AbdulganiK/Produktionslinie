@@ -10,26 +10,14 @@ public class Storage {
     private int storage_plastic;
     private Semaphore storage_plastic_semaphore = new Semaphore(1);
 
-    private int storage_rubber;
-    private Semaphore storage_rubber_semaphore = new Semaphore(1);
-
-    private int storage_smd; //smd components likes resistors, capacitors, transistors, chips
-    private Semaphore storage_smd_semaphore = new Semaphore(1);
+    private int storage_circuit_board_components; //smd components likes resistors, capacitors, transistors, chips
+    private Semaphore storage_circuit_board_components_semaphore = new Semaphore(1);
 
     private int storage_displays;
     private Semaphore storage_displays_semaphore = new Semaphore(1);
 
     private int storage_motors;
     private Semaphore storage_motors_semaphore = new Semaphore(1);
-
-    private int storage_pcbs;
-    private Semaphore storage_pcbs_semaphore = new Semaphore(1);
-
-    private int storage_sensors;
-    private Semaphore storage_sensors_semaphore = new Semaphore(1);
-
-    private int storage_lithium_batteries;
-    private Semaphore storage_lithium_batteries_semaphore = new Semaphore(1);
 
     private int storage_packets;
     private Semaphore storage_packets_semaphore = new Semaphore(1);
@@ -64,24 +52,14 @@ public class Storage {
                     storage_plastic += new_amount;
                     return amount - new_amount;
                 }
-            case RUBBER:
-                if (storage_rubber + amount <= storage_kapazitaet) {
-                    storage_rubber += amount;
+            case CIRCUIT_BOARD_COMPONETS:
+                if (storage_circuit_board_components + amount <= storage_kapazitaet) {
+                    storage_circuit_board_components += amount;
                     return 0;
                 }
                 else {
-                    int new_amount = storage_kapazitaet - storage_rubber;
-                    storage_rubber += new_amount;
-                    return amount - new_amount;
-                }
-            case SMD_COMPONENTS:
-                if (storage_smd + amount <= storage_kapazitaet) {
-                    storage_smd += amount;
-                    return 0;
-                }
-                else {
-                    int new_amount = storage_kapazitaet - storage_smd;
-                    storage_smd += new_amount;
+                    int new_amount = storage_kapazitaet - storage_circuit_board_components;
+                    storage_circuit_board_components += new_amount;
                     return amount - new_amount;
                 }
             case DISPLAYS:
@@ -102,36 +80,6 @@ public class Storage {
                 else {
                     int new_amount = storage_kapazitaet - storage_motors;
                     storage_motors += new_amount;
-                    return amount - new_amount;
-                }
-            case PCBS:
-                if (storage_pcbs + amount <= storage_kapazitaet) {
-                    storage_pcbs += amount;
-                    return 0;
-                }
-                else {
-                    int new_amount = storage_kapazitaet - storage_pcbs;
-                    storage_pcbs += new_amount;
-                    return amount - new_amount;
-                }
-            case SENSORS:
-                if (storage_sensors + amount <= storage_kapazitaet) {
-                    storage_sensors += amount;
-                    return 0;
-                }
-                else {
-                    int new_amount = storage_kapazitaet - storage_sensors;
-                    storage_sensors += new_amount;
-                    return amount - new_amount;
-                }
-            case LITHIUM_BATTERIES:
-                if (storage_lithium_batteries + amount <= storage_kapazitaet) {
-                    storage_lithium_batteries += amount;
-                    return 0;
-                }
-                else {
-                    int new_amount = storage_kapazitaet - storage_lithium_batteries;
-                    storage_lithium_batteries += new_amount;
                     return amount - new_amount;
                 }
             case GLUE:
@@ -191,19 +139,11 @@ public class Storage {
         return amount;
     }
 
-    public int get_storage_rubber(int amount) {
-        if (storage_rubber < amount) {
-            amount = storage_rubber;
+    public int get_storage_circuit_board_components(int amount) {
+        if (storage_circuit_board_components < amount) {
+            amount = storage_circuit_board_components;
         }
-        storage_rubber -= amount;
-        return amount;
-    }
-
-    public int get_storage_smd(int amount) {
-        if (storage_smd < amount) {
-            amount = storage_smd;
-        }
-        storage_smd -= amount;
+        storage_circuit_board_components -= amount;
         return amount;
     }
 
@@ -220,30 +160,6 @@ public class Storage {
             amount = storage_motors;
         }
         storage_motors -= amount;
-        return amount;
-    }
-
-    public int get_storage_pcbs(int amount) {
-        if (storage_pcbs < amount) {
-            amount = storage_pcbs;
-        }
-        storage_pcbs -= amount;
-        return amount;
-    }
-
-    public int get_storage_sensors(int amount) {
-        if (storage_sensors < amount) {
-            amount = storage_sensors;
-        }
-        storage_sensors -= amount;
-        return amount;
-    }
-
-    public int get_storage_lithium_batteries(int amount) {
-        if (storage_lithium_batteries < amount) {
-            amount = storage_lithium_batteries;
-        }
-        storage_lithium_batteries -= amount;
         return amount;
     }
 
@@ -291,14 +207,8 @@ public class Storage {
                 }
                 else
                     return false;
-            case RUBBER:
-                if (storage_rubber_semaphore.tryAcquire()) {
-                    return true;
-                }
-                else
-                    return false;
-            case SMD_COMPONENTS:
-                if (storage_smd_semaphore.tryAcquire()) {
+            case CIRCUIT_BOARD_COMPONETS:
+                if (storage_circuit_board_components_semaphore.tryAcquire()) {
                     return true;
                 }
                 else
@@ -311,24 +221,6 @@ public class Storage {
                     return false;
             case MOTORS:
                 if (storage_motors_semaphore.tryAcquire()) {
-                    return true;
-                }
-                else
-                    return false;
-            case PCBS:
-                if (storage_pcbs_semaphore.tryAcquire()) {
-                    return true;
-                }
-                else
-                    return false;
-            case SENSORS:
-                if (storage_sensors_semaphore.tryAcquire()) {
-                    return true;
-                }
-                else
-                    return false;
-            case LITHIUM_BATTERIES:
-                if (storage_lithium_batteries_semaphore.tryAcquire()) {
                     return true;
                 }
                 else
@@ -367,26 +259,14 @@ public class Storage {
             case PLASTIC:
                 storage_plastic_semaphore.release();
                 break;
-            case RUBBER:
-                storage_rubber_semaphore.release();
-                break;
-            case SMD_COMPONENTS:
-                storage_smd_semaphore.release();
+            case CIRCUIT_BOARD_COMPONETS:
+                storage_circuit_board_components_semaphore.release();
                 break;
             case DISPLAYS:
                 storage_displays_semaphore.release();
                 break;
             case MOTORS:
                 storage_motors_semaphore.release();
-                break;
-            case PCBS:
-                storage_pcbs_semaphore.release();
-                break;
-            case SENSORS:
-                storage_sensors_semaphore.release();
-                break;
-            case LITHIUM_BATTERIES:
-                storage_lithium_batteries_semaphore.release();
                 break;
             case PACKETS:
                 storage_packets_semaphore.release();

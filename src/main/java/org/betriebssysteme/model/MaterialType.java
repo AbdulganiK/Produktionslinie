@@ -2,13 +2,9 @@ package org.betriebssysteme.model;
 
 public enum MaterialType {
     PLASTIC(1),
-    RUBBER(1),
-    SMD_COMPONENTS(1),
+    CIRCUIT_BOARD_COMPONETS(1),
     DISPLAYS(5),
     MOTORS(5),
-    PCBS(10),
-    SENSORS(2),
-    LITHIUM_BATTERIES(8),
     PACKETS(15),
     SCRAP(5),
     GLUE(1),
