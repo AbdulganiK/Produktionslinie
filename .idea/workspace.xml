@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5f908cda-bee0-4a7c-a2b0-26bdb666aab4" name="Changes" comment="refactor workspace configuration to clean up unused entries and update account ID">
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/threads/Produktionmachine_board_drive_unit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/MaterialType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/MaterialType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/ProductionGood.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/ProductionGood.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/Storage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/Storage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/Storage_request.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/Storage_request.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/threads/Machine.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/threads/Machine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/threads/Supplier.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/betriebssysteme/model/threads/Supplier.java" afterDir="false" />
-    </list>
+    <list default="true" id="5f908cda-bee0-4a7c-a2b0-26bdb666aab4" name="Changes" comment="refactor machine and storage classes to enhance material handling and production processes" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,12 +26,12 @@
     &quot;assignee&quot;: &quot;AbdulganiK&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/AbdulganiK/Produktionslinie.git",
-    "accountId": "58166b28-5cdb-465d-82c7-6b987280a9e0"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AbdulganiK/Produktionslinie.git&quot;,
+    &quot;accountId&quot;: &quot;58166b28-5cdb-465d-82c7-6b987280a9e0&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -54,22 +44,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "tix-15",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;tix-15&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -87,6 +77,7 @@
       <updated>1766229341588</updated>
       <workItem from="1766229663402" duration="563000" />
       <workItem from="1766406951340" duration="6291000" />
+      <workItem from="1766414919353" duration="1498000" />
     </task>
     <task id="LOCAL-00001" summary="refactor workspace configuration to clean up unused entries and update account ID">
       <option name="closed" value="true" />
@@ -96,7 +87,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766407056283</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="refactor machine and storage classes to enhance material handling and production processes">
+      <option name="closed" value="true" />
+      <created>1766416420472</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1766416420472</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -104,6 +103,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="refactor workspace configuration to clean up unused entries and update account ID" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor workspace configuration to clean up unused entries and update account ID" />
+    <MESSAGE value="refactor machine and storage classes to enhance material handling and production processes" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor machine and storage classes to enhance material handling and production processes" />
   </component>
 </project>
