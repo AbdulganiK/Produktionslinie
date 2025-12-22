@@ -7,5 +7,6 @@ public enum ProductionGood {
     CONTROL_PCB,
     DRIVE_UNIT,
     CONTROL_UNIT,
-    SHIPPING_PACKAGE
+    SHIPPING_PACKAGE,
+    SCRAP
 }

@@ -1,6 +1,7 @@
 package org.betriebssysteme.model.threads;
 
 import org.betriebssysteme.model.MaterialType;
+import org.betriebssysteme.model.ProductionGood;
 import org.betriebssysteme.model.Storage;
 
 public class Supplier extends Thread {
@@ -19,7 +20,7 @@ public class Supplier extends Thread {
         try {
             while (true) {
                 int amountSupplied = supplyMaterials();
-                take_srcap_packets(amountSupplied);
+                take_srcap_or_packets(amountSupplied);
                 Thread.sleep(supplyIntervalMillis);
             }
         } catch (InterruptedException e) {
@@ -31,9 +32,9 @@ public class Supplier extends Thread {
         MaterialType materialType = MaterialType.values()[(int) (Math.random() * MaterialType.values().length)];
         int suppliedAmount = 0;
         if (storage.check_storage_available(materialType)){
-            suppliedAmount = storage.refill_storage(materialType, kapacity);
+            suppliedAmount = storage.refill_material_storage(materialType, kapacity);
             System.out.println("Supplier supplied " + suppliedAmount + " units of " + materialType);
-            storage.release_storage(materialType);
+            storage.release_material_storage(materialType);
         }
         else {
             System.out.println("Supplier found no available storage for " + materialType);
@@ -44,23 +45,23 @@ public class Supplier extends Thread {
         return suppliedAmount;
     }
 
-    private void take_srcap_packets(int suppliedAmount) {
+    private void take_srcap_or_packets(int suppliedAmount) {
         int kapacity_for_scrap_packets = kapacity - suppliedAmount;
         int amount_of_packets = 0;
         if (kapacity_for_scrap_packets > 0) {
-            if (storage.check_storage_available(MaterialType.PACKETS)) {
+            if (storage.check_packet_storage_available()) {
                 amount_of_packets = storage.get_packets(kapacity_for_scrap_packets);
                 System.out.println("Supplier checking for packets to utilize remaining capacity of " + amount_of_packets);
-                storage.release_storage(MaterialType.PACKETS);
+                storage.release_packet_storage();
             } else {
                 System.out.println("Supplier found no available storage for PACKETS");
             }
             int kapacity_left = kapacity_for_scrap_packets - amount_of_packets;
             if (kapacity_left > 0) {
-                if (storage.check_storage_available(MaterialType.SCRAP)) {
+                if (storage.check_scrap_storage_available()) {
                     int amount_of_scrap = storage.get_scrap(kapacity_left);
                     System.out.println("Supplier checking for scrap to utilize remaining capacity of " + amount_of_scrap);
-                    storage.release_storage(MaterialType.SCRAP);
+                    storage.release_scrap_storage();
                 } else {
                     System.out.println("Supplier found no available storage for SCRAP");
                 }

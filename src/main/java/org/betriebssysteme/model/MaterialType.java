@@ -5,10 +5,9 @@ public enum MaterialType {
     CIRCUIT_BOARD_COMPONETS(1),
     DISPLAYS(5),
     MOTORS(5),
-    PACKETS(15),
-    SCRAP(5),
     GLUE(1),
-    PACKING_MATERIAL(5);
+    PACKING_MATERIAL(5),
+    REQUETED_EMPTYING(0);
 
     private int weight_and_size_heuristic;
 
