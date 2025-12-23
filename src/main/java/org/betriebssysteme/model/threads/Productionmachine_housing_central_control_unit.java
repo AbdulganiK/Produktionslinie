@@ -32,6 +32,9 @@ public class Productionmachine_housing_central_control_unit extends Machine {
 
     @Override
     ProductionGood produce_good() {
-        return null;
+        for (MaterialType materialType : material_storage.keySet()) {
+            material_storage.get(materialType).poll();
+        }
+        return ProductionGood.CONTROL_HOUSING;
     }
 }
