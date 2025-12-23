@@ -4,15 +4,14 @@ import org.betriebssysteme.model.MaterialType;
 import org.betriebssysteme.model.ProductionGood;
 import org.betriebssysteme.model.Storage;
 
-public class Produktionmachine_board_drive_unit extends Machine {
+public class Produktionmachine_board_central_control_unit extends Machine {
+    public Produktionmachine_board_central_control_unit(Storage storage,
+                                                        int production_time_in_ms,
+                                                        int material_storage_capacity,
+                                                        int waiting_time_run_ms,
+                                                        int material_priority_level) {
 
-    public Produktionmachine_board_drive_unit(Storage storage,
-                                              int production_time_in_ms,
-                                              int material_storage_capacity,
-                                              int waiting_time_run_ms,
-                                              int material_priority_level) {
-
-        MaterialType[] materialTypes = {MaterialType.CIRCUIT_BOARD_COMPONETS, MaterialType.MOTORS};
+        MaterialType[] materialTypes = {MaterialType.CIRCUIT_BOARD_COMPONETS, MaterialType.DISPLAYS};
         int productionGoodStorageCapacity = 0; //Not needed for this machine
         int holding_area_capacity = 0; //Not needed for this machine
 
@@ -36,6 +35,6 @@ public class Produktionmachine_board_drive_unit extends Machine {
         for (MaterialType materialType : material_storage.keySet()) {
             material_storage.get(materialType).poll();
         }
-        return ProductionGood.DRIVE_PCB;
+        return ProductionGood.CONTROL_PCB;
     }
 }
