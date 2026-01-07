@@ -5,6 +5,9 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.physics.BoundingShape;
+import com.almasb.fxgl.physics.HitBox;
+import com.almasb.fxgl.physics.PhysicsComponent;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import org.betriebssysteme.model.threads.Machine;
@@ -17,8 +20,13 @@ public class EntityProductionLineFactory implements EntityFactory {
     public Entity newMachine(SpawnData data) {
         return FXGL.entityBuilder(data)
                 .type(EntityType.MACHINE)
-                .viewWithBBox(new Rectangle(40, 40,  Color.BLUE))
+                .with(new PhysicsComponent())
+                .bbox(new HitBox(BoundingShape.box(64, 64)))
+                .at(200, 200)
+                .with(new MachineComponent())
                 .build();
     }
+
+
 
 }
