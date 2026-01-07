@@ -14,7 +14,13 @@ public class ProductionLineApp extends GameApplication {
     @Override
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setTitle("Produktionslinie");
+        gameSettings.setDeveloperMenuEnabled(true);
 
+    }
+
+    @Override
+    protected void initPhysics() {
+        FXGL.getPhysicsWorld().setGravity(0, 0);
     }
 
     @Override
@@ -24,7 +30,7 @@ public class ProductionLineApp extends GameApplication {
 
         // Spawnen einer Maschine
         Entity machine = FXGL.spawn(EntityNames.MACHINE);
-        machine.setPosition(new Point2D(100, 10));
+
     }
 
     public static void main(String[] args) {
