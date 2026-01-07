@@ -1,4 +1,7 @@
-package org.betriebssysteme.model;
+package org.betriebssysteme.model.stations;
+
+import org.betriebssysteme.model.Status;
+import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.Map;
 
@@ -7,5 +10,5 @@ public interface Station {
     int collectCargo(Cargo cargo, int quantity);
     Status getStatus();
     Map getInformationMap();
-    int getId();
+    int getIdentificationNumber();
 }
