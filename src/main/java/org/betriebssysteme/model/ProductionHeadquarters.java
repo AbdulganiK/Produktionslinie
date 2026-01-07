@@ -1,5 +1,8 @@
 package org.betriebssysteme.model;
 
+import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.stations.Station;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +26,10 @@ public class ProductionHeadquarters{
         stations = new HashMap();
         personnel = new HashMap();
         for (Station station : stationsList) {
-            stations.put(station.getId(), station);
+            stations.put(station.getIdentificationNumber(), station);
         }
         for (Personnel person : personnelList) {
-            personnel.put(person.getId(), person);
+            personnel.put(person.getIdentificationNumber(), person);
         }
     }
 
@@ -57,11 +60,11 @@ public class ProductionHeadquarters{
     }
 
     void addStation(Station station) {
-        stations.put(station.getId(), station);
+        stations.put(station.getIdentificationNumber(), station);
     }
 
     void addPersonnel(Personnel person) {
-        personnel.put(person.getId(), person);
+        personnel.put(person.getIdentificationNumber(), person);
     }
 
 }
