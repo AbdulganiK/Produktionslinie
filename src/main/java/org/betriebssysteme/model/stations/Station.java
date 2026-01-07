@@ -7,7 +7,7 @@ import java.util.Map;
 
 public interface Station {
     int resiveCargo(Cargo cargo, int quantity);
-    int collectCargo(Cargo cargo, int quantity);
+    int handOverCargo(Cargo cargo, int quantity);
     Status getStatus();
     Map getInformationMap();
     int getIdentificationNumber();

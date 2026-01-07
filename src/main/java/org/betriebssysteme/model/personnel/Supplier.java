@@ -3,20 +3,22 @@ package org.betriebssysteme.model.personnel;
 import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
+import org.betriebssysteme.model.cargo.Material;
+import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.stations.MainDepot;
 
 import java.util.Map;
 
 public class Supplier extends Thread implements Personnel {
-    int identificationNumber;
-    Status status;
-    Task task;
-    MainDepot mainDepot;
-    int originStationId;
-    int destinationStationId;
-    int supplyInterval;
-    int supplyTimer;
-    int travelTimer;
+    private int identificationNumber;
+    private Status status;
+    private Task task;
+    private MainDepot mainDepot;
+    private int originStationId;
+    private int destinationStationId;
+    private int supplyInterval;
+    private int supplyTimer;
+    private int travelTimer;
 
     public Supplier(int identificationNumber, MainDepot mainDepot, int supplyInterval, int supplyTimer, int travelTimer) {
         this.identificationNumber = identificationNumber;
@@ -59,20 +61,20 @@ public class Supplier extends Thread implements Personnel {
         // TODO Implement the depot refilling logic
     }
 
-
-
-
     // ============================================================================
     //Personnel methods
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
-        // TODO Implement the cargo refilling logic
+        for (Material material : Material.values()) {
+            mainDepot.resiveCargo(material, mainDepot.getMaxStorageCapacity());
+        }
         return 0;
     }
 
     @Override
     public int collectCargo(Cargo cargo, int quantity) {
-        // TODO Implement the cargo collecting logic
+        mainDepot.handOverCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
+        mainDepot.handOverCargo(Product.SHIPPING_PACKAGE, mainDepot.getMaxStorageCapacity());
         return 0;
     }
 
