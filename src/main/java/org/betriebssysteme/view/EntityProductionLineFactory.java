@@ -10,7 +10,6 @@ import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
-import org.betriebssysteme.model.threads.Machine;
 
 import java.awt.*;
 
@@ -21,9 +20,11 @@ public class EntityProductionLineFactory implements EntityFactory {
         return FXGL.entityBuilder(data)
                 .type(EntityType.MACHINE)
                 .with(new PhysicsComponent())
-                .bbox(new HitBox(BoundingShape.box(64, 64)))
-                .at(200, 200)
                 .with(new MachineComponent())
+                .with(new StatusComponent())
+                .bbox(new HitBox(BoundingShape.box(64, 64)))
+                .scale(2, 2)
+                .at(200, 200)
                 .build();
     }
 
