@@ -15,6 +15,8 @@ public class ProductionLineApp extends GameApplication {
     protected void initSettings(GameSettings gameSettings) {
         gameSettings.setTitle("Produktionslinie");
         gameSettings.setDeveloperMenuEnabled(true);
+        gameSettings.setWidth(1600);
+        gameSettings.setHeight(900);
 
     }
 
