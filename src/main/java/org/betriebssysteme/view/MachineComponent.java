@@ -17,15 +17,19 @@ public class MachineComponent extends Component {
         this.turningOffAnim = new AnimationChannel(FXGL.image("Turning_Off_Animation.png"), 7, 64, 64, Duration.seconds(2), 0, 6);
         this.turningOnAnim = new AnimationChannel(FXGL.image("Turning_On_Animation.png"), 7, 64, 64, Duration.seconds(2), 0, 6);
         this.productionWhileTakingItemAnim = new AnimationChannel(FXGL.image("Production_While_Taking_Items_Animation.png"), 7, 64, 64, Duration.seconds(2), 0, 6);
-        this.productionWithoutTakingItemAnim = new AnimationChannel(FXGL.image("Production_While_Without_Items_Animation.png"), 7, 64, 64, Duration.seconds(2), 0, 6);
-
+        this.productionWithoutTakingItemAnim = new AnimationChannel(FXGL.image("Production_Without_Taking_Items_Animation.png"), 7, 64, 64, Duration.seconds(2), 0, 6);
         this.texture = new AnimatedTexture(offAnim);
     }
 
     @Override
     public void onAdded() {
         entity.getViewComponent().addChild(this.texture);
-        texture.loopAnimationChannel(this.productionWhileTakingItemAnim);
+        this.texture.setOnMouseClicked(e -> {
+            MenuComponent menu = entity.getComponent(MenuComponent.class);
+            menu.setVisibility(!menu.getVisibility());
+            entity.setZIndex(100);
+        });
+        texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
     }
 
 }

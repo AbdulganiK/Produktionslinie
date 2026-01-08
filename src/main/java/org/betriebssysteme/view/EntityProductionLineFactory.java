@@ -18,13 +18,12 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.MACHINE)
     public Entity newMachine(SpawnData data) {
         return FXGL.entityBuilder(data)
+                .with(new MenuComponent())
                 .type(EntityType.MACHINE)
-                .with(new PhysicsComponent())
                 .with(new MachineComponent())
                 .with(new StatusComponent())
                 .bbox(new HitBox(BoundingShape.box(64, 64)))
                 .scale(2, 2)
-                .at(200, 200)
                 .build();
     }
 
