@@ -1,12 +1,10 @@
 package org.betriebssysteme.model;
 
 import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.stations.Station;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class ProductionHeadquarters{
@@ -16,7 +14,7 @@ public class ProductionHeadquarters{
     private Map personnel;
 
     public ProductionHeadquarters (){
-        requestQueue = new PriorityQueue<>();
+        requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
         stations = new HashMap();
         personnel = new HashMap();
     }
@@ -30,6 +28,21 @@ public class ProductionHeadquarters{
         }
         for (Personnel person : personnelList) {
             personnel.put(person.getIdentificationNumber(), person);
+        }
+    }
+
+    public void startAllPersonnel(){
+        for (Object personObj : personnel.values()) {
+            Personnel person = (Personnel) personObj;
+            person.start();
+        }
+    }
+
+    public void startAllStations(){
+        for (Object stationObj : stations.values()) {
+            Station station = (Station) stationObj;
+            station.start();
+            System.out.println("Started station with ID: " + station.getIdentificationNumber());
         }
     }
 

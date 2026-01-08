@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
-public class MainDepot implements Station{
+public class MainDepot implements Station {
     private Map <Cargo, Integer> cargoStorage;
     private Semaphore cargoStorageSemaphore;
     private int identificationNumber;
     private int maxStorageCapacity;
     private Status status;
 
-    MainDepot (int maxStorageCapacity) {
+    public MainDepot (int maxStorageCapacity) {
         this.cargoStorage = new HashMap<Cargo, Integer>();
         this.identificationNumber = 1;
         this.maxStorageCapacity = maxStorageCapacity;
@@ -49,11 +49,6 @@ public class MainDepot implements Station{
         return maxStorageCapacity;
     }
 
-
-    // ============================================================================
-    //Station methods
-
-    @Override
     public int resiveCargo(Cargo cargo, int quantity) {
         try {
             cargoStorageSemaphore.acquire();
@@ -76,7 +71,6 @@ public class MainDepot implements Station{
         }
     }
 
-    @Override
     public int handOverCargo(Cargo cargo, int quantity) {
         try {
             cargoStorageSemaphore.acquire();
@@ -98,18 +92,24 @@ public class MainDepot implements Station{
         }
     }
 
-    @Override
+
     public Status getStatus() {
         return status;
     }
 
-    @Override
+
     public Map getInformationMap() {
         return cargoStorage;
     }
 
-    @Override
+
     public int getIdentificationNumber() {
         return identificationNumber;
+    }
+
+    @Override
+    public void start() {
+        //MainDepot does not need to run as a separate thread
+        return;
     }
 }

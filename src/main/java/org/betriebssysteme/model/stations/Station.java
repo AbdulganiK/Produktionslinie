@@ -5,7 +5,7 @@ import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.Map;
 
-public interface Station {
+public interface Station{
     /**
      * Receive cargo into the station's storage.
      * @param cargo The cargo to be received.
@@ -39,4 +39,6 @@ public interface Station {
      * @return The identification number.
      */
     int getIdentificationNumber();
+
+    void start();
 }

@@ -109,6 +109,11 @@ public class Supplier extends Thread implements Personnel {
         return identificationNumber;
     }
 
+    @Override
+    public void start() {
+        super.start();
+    }
+
     // ============================================================================
     //Thread methods
     @Override

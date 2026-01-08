@@ -6,24 +6,32 @@ import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
 
 public abstract class Maschine extends Thread implements Station{
-    private int identificationNumber;
-    private Maschine nextMaschine;
-    private int timeToProcess;
-    private int timeToSleep;
-    private boolean running;
-    private ProductionHeadquarters productionHeadquarters;
-    private Status status;
-    private int maxStorageCapacity;
-    private Semaphore storageSemaphore;
-    private Map<Cargo, Integer> storage;
-    private Map<CargoTyp, Boolean> requestedCargoTypes;
-    private Cargo productCargo;
+    protected int identificationNumber;
+    protected Maschine nextMaschine;
+    protected int timeToProcess;
+    protected int timeToSleep;
+    protected boolean running;
+    protected ProductionHeadquarters productionHeadquarters;
+    protected Status status;
+    protected int maxStorageCapacity;
+    protected Semaphore storageSemaphore;
+    protected Map<Cargo, Integer> storage;
+    protected Map<Cargo, Boolean> requestedCargoTypes;
+    protected Cargo productCargo;
 
-    public Maschine(int identificationNumber, int timeToProcess, int timeToSleep, int maxStorageCapacity, ProductionHeadquarters productionHeadquarters, Maschine nextMaschine, Map<Cargo, Integer> initialStorage) {
+    public Maschine(int identificationNumber,
+                    int timeToProcess,
+                    int timeToSleep,
+                    int maxStorageCapacity,
+                    ProductionHeadquarters productionHeadquarters,
+                    Maschine nextMaschine,
+                    Map<Cargo, Integer> initialStorage,
+                    Cargo productCargo) {
         this.identificationNumber = identificationNumber;
         this.timeToProcess = timeToProcess;
         this.timeToSleep = timeToSleep;
@@ -33,43 +41,45 @@ public abstract class Maschine extends Thread implements Station{
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
         this.status = Status.OPERATING;
-        this.running = false;
+        this.running = true;
+        this.productCargo = productCargo;
+        this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
     }
 
-
-
-
-
-
-
-
     private void runProductionCycle() {
+        System.out.println("Machine " + identificationNumber + " starting production cycle.");
         try {
             Thread.sleep(timeToProcess);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        Cargo producedCargo = produceProduct();
-        storeProduct(producedCargo);
-        deliverToNextMachine();
+        checkStorageStatus();
+        checkIfCargoPrductionIsPossible();
+        if (running){
+            Cargo producedCargo = produceProduct();
+            storePrductOrDeliverToNextMachine(producedCargo);
+        }
     }
 
     protected abstract void checkStorageStatus();
 
-    private void sendCargoRequest(Cargo cargo, int currentQuantity) {
-        if (cargo.getCargoTyp() == CargoTyp.MATERIAL && !requestedCargoTypes.getOrDefault(cargo, true)) {
-            Request request = new Request(maxStorageCapacity - currentQuantity, 1, cargo, this.identificationNumber);
-            productionHeadquarters.addRequest(request);
-        } else if (cargo.getCargoTyp()== CargoTyp.PRODUCT && !requestedCargoTypes.getOrDefault(cargo, true)) {
-            Request request = new Request(currentQuantity, 1, cargo, this.identificationNumber);
-            productionHeadquarters.addRequest(request);
-        }
-        // TODO: Implement priority handling
-    }
+    protected abstract void checkIfCargoPrductionIsPossible();
 
     protected abstract Cargo produceProduct();
 
-    private void deliverToNextMachine() {
+    protected abstract void storePrductOrDeliverToNextMachine(Cargo cargo);
+
+    protected void sendCargoRequest(Cargo cargo, int quantity) {
+        if (!requestedCargoTypes.get(cargo)){
+            Request request = new Request(quantity,1, cargo, this.identificationNumber);
+            if (productionHeadquarters == null){
+                System.out.println("Production headquarters is null in machine " + identificationNumber);
+            }
+            productionHeadquarters.addRequest(request);
+        }
+    }
+
+    protected void deliverToNextMachine() {
         if (nextMaschine != null) {
             try {
                 storageSemaphore.acquire();
@@ -85,7 +95,7 @@ public abstract class Maschine extends Thread implements Station{
         }
     }
 
-    private void storeProduct(Cargo cargo) {
+    protected void storeProduct(Cargo cargo) {
         try {
             storageSemaphore.acquire();
             if (storage.containsKey(cargo)) {
@@ -102,6 +112,7 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     public void stopMachine() {
+        System.out.println("Machine " + identificationNumber + " stopping.");
         running = false;
     }
 
@@ -117,6 +128,7 @@ public abstract class Maschine extends Thread implements Station{
     //Thread methods
     @Override
     public void run() {
+        System.out.println("Machine " + identificationNumber + " starting.");
         while (running) {
             runProductionCycle();
             try {
