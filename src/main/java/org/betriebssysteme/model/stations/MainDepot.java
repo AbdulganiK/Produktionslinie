@@ -12,7 +12,7 @@ import java.util.concurrent.Semaphore;
 
 public class MainDepot implements Station{
     private Map <Cargo, Integer> cargoStorage;
-    public Semaphore cargoStorageSemaphore;
+    private Semaphore cargoStorageSemaphore;
     private int identificationNumber;
     private int maxStorageCapacity;
     private Status status;
@@ -58,18 +58,18 @@ public class MainDepot implements Station{
         try {
             cargoStorageSemaphore.acquire();
             int currentQuantity = cargoStorage.getOrDefault(cargo, 0);
-            int totalQuantity = currentQuantity + quantity;
-            if (totalQuantity <= maxStorageCapacity) {
-                cargoStorage.put(cargo, totalQuantity);
+            if (currentQuantity + quantity <= maxStorageCapacity) {
+                cargoStorage.put(cargo, currentQuantity + quantity);
                 checkAndUpdateStatus();
-                return 0;
+                return quantity;
             } else {
+                int acceptedQuantity = maxStorageCapacity - currentQuantity;
                 cargoStorage.put(cargo, maxStorageCapacity);
                 checkAndUpdateStatus();
-                return totalQuantity - maxStorageCapacity;
+                return acceptedQuantity;
             }
         } catch (Exception e) {
-            return quantity;
+            return 0;
         }
         finally {
             cargoStorageSemaphore.release();
@@ -91,7 +91,7 @@ public class MainDepot implements Station{
                 return currentQuantity;
             }
         } catch (Exception e) {
-            return quantity;
+            return 0;
         }
         finally {
             cargoStorageSemaphore.release();

@@ -7,7 +7,6 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
-import org.betriebssysteme.model.threads.Machine;
 
 import java.awt.*;
 

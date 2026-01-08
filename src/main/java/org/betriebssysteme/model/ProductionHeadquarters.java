@@ -10,18 +10,18 @@ import java.util.PriorityQueue;
 import java.util.concurrent.Semaphore;
 
 public class ProductionHeadquarters{
-    PriorityQueue<Request> requestQueue;
-    Semaphore requestQueueSemaphore = new Semaphore(1);
-    Map stations;
-    Map personnel;
+    private PriorityQueue<Request> requestQueue;
+    private Semaphore requestQueueSemaphore = new Semaphore(1);
+    private Map stations;
+    private Map personnel;
 
-    ProductionHeadquarters (){
+    public ProductionHeadquarters (){
         requestQueue = new PriorityQueue<>();
         stations = new HashMap();
         personnel = new HashMap();
     }
 
-    ProductionHeadquarters(List<Station> stationsList, List<Personnel> personnelList){
+    public ProductionHeadquarters(List<Station> stationsList, List<Personnel> personnelList){
         requestQueue = new PriorityQueue<>();
         stations = new HashMap();
         personnel = new HashMap();
@@ -33,13 +33,13 @@ public class ProductionHeadquarters{
         }
     }
 
-    void addRequest(Request request){
+    public void addRequest(Request request){
         requestQueueSemaphore.acquireUninterruptibly();
         requestQueue.add(request);
         requestQueueSemaphore.release();
     }
 
-    Request pollRequest(){
+    public Request pollRequest(){
         Request request;
         requestQueueSemaphore.acquireUninterruptibly();
         request = requestQueue.poll();
@@ -47,23 +47,23 @@ public class ProductionHeadquarters{
         return request;
     }
 
-    Map getStations(){
+    public Map getStations(){
         return stations;
     }
 
-    Map getPersonnel(){
+    public Map getPersonnel(){
         return personnel;
     }
 
-    PriorityQueue<Request> getRequestQueue(){
+    public PriorityQueue<Request> getRequestQueue(){
         return requestQueue;
     }
 
-    void addStation(Station station) {
+    public void addStation(Station station) {
         stations.put(station.getIdentificationNumber(), station);
     }
 
-    void addPersonnel(Personnel person) {
+    public void addPersonnel(Personnel person) {
         personnel.put(person.getIdentificationNumber(), person);
     }
 
