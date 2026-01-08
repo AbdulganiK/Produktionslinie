@@ -56,7 +56,7 @@ public class StatusComponent extends Component {
         panel.setTranslateX((machineWidth - panelWidth) / 2.0);
         panel.setTranslateY(-18);   // etwas über der Maschine
 
-        this.warning();
+        this.running();
         entity.getViewComponent().addChild(panel);
     }
 

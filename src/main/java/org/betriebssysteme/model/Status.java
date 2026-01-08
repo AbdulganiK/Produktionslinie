@@ -10,3 +10,4 @@ public enum Status {
     LOW_CAPACITY,
     WORKING
 }
+
