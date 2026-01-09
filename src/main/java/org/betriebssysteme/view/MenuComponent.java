@@ -19,14 +19,17 @@ public class MenuComponent extends Component {
     private Text[] nameLabels  = new Text[ROWS];
     private Text[] valueLabels = new Text[ROWS];
 
+    // Y-Offets bleiben unverändert
     private double[] rowYFactors = new double[] {
-            0.25, // Zeile 0
-            0.36, // Zeile 1
-            0.47, // Zeile 2
-            0.58, // Zeile 3
-            0.69, // Zeile 4
-            0.8  // Zeile 5
+            0.33, // Zeile 0
+            0.4, // Zeile 1
+            0.477, // Zeile 2
+            0.55, // Zeile 3
+            0.63, // Zeile 4
+            0.8   // Zeile 5
     };
+
+    private double baseValueX;
 
     public MenuComponent() {
         this.background = FXGL.getAssetLoader().loadTexture("Info_Menu_Machine_Asset.png");
@@ -35,49 +38,49 @@ public class MenuComponent extends Component {
     @Override
     public void onAdded() {
 
-        // Root für alles im Menü (Background + Text)
         menuRoot = new Group();
 
-        // Background kommt bei (0,0) in diese Gruppe
         background.setTranslateX(0);
         background.setTranslateY(0);
+
+
         menuRoot.getChildren().add(background);
 
-        menuRoot.setTranslateX(-400);
-        menuRoot.setTranslateY(-500);
-        menuRoot.setScaleX(0.1);
-        menuRoot.setScaleY(0.1);
+        menuRoot.setTranslateX(-350);   // +20 px Abstand rechts
+        menuRoot.setTranslateY(-350);  // leicht nach oben verschoben
+        menuRoot.setScaleX(0.25);
+        menuRoot.setScaleY(0.4);
 
         double w = background.getWidth();
-        double h = background.getHeight();
+        double h = 200;
 
-        double startXNames  = w * 0.14;  // linke Spalte
-        double startXValues = w * 0.7;  // rechte Spalte
+        double startXNames  = w * 0.2;  // linke Spalte
+        double startXValues = w * 0.55;   // rechte Spalte
 
+        // Basis-X für Werte-Spalte merken
+        baseValueX = startXValues;
 
-
-        Font font = Font.font("Consolas", 80);
+        Font font = Font.font("Consolas", 40);
 
         for (int i = 0; i < ROWS; i++) {
 
             // individuelle Y-Position pro Zeile
-            double rowY = h * rowYFactors[i];
+            h = h + 30;
 
             Text nameText = new Text("Eigenschaft " + (i + 1));
             nameText.setFill(Color.LIGHTGRAY);
-            nameText.setStroke(Color.BLACK);
             nameText.setStrokeWidth(2);
             nameText.setFont(font);
             nameText.setTranslateX(startXNames);
-            nameText.setTranslateY(rowY);
+            nameText.setTranslateY(h);
 
             Text valueText = new Text("15");
             valueText.setFill(Color.LIMEGREEN);
-            valueText.setStroke(Color.BLACK);
             valueText.setStrokeWidth(2);
             valueText.setFont(font);
-            valueText.setTranslateX(startXValues);
-            valueText.setTranslateY(rowY);
+            // HIER: nicht mehr 500, sondern Basis-X benutzen
+            valueText.setTranslateX(baseValueX);
+            valueText.setTranslateY(h);
 
             nameLabels[i] = nameText;
             valueLabels[i] = valueText;
@@ -86,7 +89,12 @@ public class MenuComponent extends Component {
         }
 
         setVisibility(false);
-
+        setID("10");
+        setGeschwindigkeit("100");
+        setProduct("Gehäuse");
+        setStatus("Laufend");
+        setLagerBestand("100 Produkte");
+        setKapazitaet("100");
         entity.getViewComponent().addChild(menuRoot);
     }
 
@@ -120,10 +128,21 @@ public class MenuComponent extends Component {
     }
 
     // optional: ein paar bequeme Helper, falls du feste Reihen hast
-    public void setID(String value)          { setProperty(0, "ID", value); }
-    public void setProduct(String value)      { setProperty(1, "Produkt", value); }
-    public void setStatus(String value)     { setProperty(2, "Status", value); }
-    public void setLagerBestand(String value)     { setProperty(3, "Lagerbestand", value); }
-    public void setGeschwindigkeit(String value)  { setProperty(4, "Geschwindigkeit", value); }
-    public void setKapazitaet(String value)    { setProperty(5, "Kapazität", value); }
+    public void setID(String value)                { setProperty(0, "ID", value); }
+    public void setProduct(String value)           { setProperty(1, "Produkt", value); }
+    public void setStatus(String value)            { setProperty(2, "Status", value); }
+    public void setLagerBestand(String value)      { setProperty(3, "Bestand", value); }
+    public void setGeschwindigkeit(String value)   { setProperty(4, "Speed", value); }
+    public void setKapazitaet(String value)        { setProperty(5, "Kapazität", value); }
+
+    // NEU: Nur die Werte-Spalte horizontal verschieben, Y bleibt unberührt
+    public void setValueColumnOffset(double offset) {
+        double x = baseValueX + offset;
+
+        for (int i = 0; i < ROWS; i++) {
+            if (valueLabels[i] != null) {
+                valueLabels[i].setTranslateX(x);
+            }
+        }
+    }
 }

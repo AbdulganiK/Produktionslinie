@@ -30,14 +30,15 @@ public class MachineComponent extends Component {
         List<Entity> entities= entity.getWorld().getEntitiesByType(EntityType.MACHINE);
         MenuComponent menu;
         MenuComponent clickedMenu = entity.getComponent(MenuComponent.class);
+        entity.getViewComponent().setZIndex(100);
         for (Entity entity : entities) {
             menu = entity.getComponent(MenuComponent.class);
             if (menu != clickedMenu) {
+                entity.getViewComponent().setZIndex(-1);
                 menu.setVisibility(false);
             }
         }
         clickedMenu.setVisibility(!clickedMenu.getVisibility());
-        entity.setZIndex(100);
     }
 
     @Override

@@ -9,9 +9,9 @@ import javafx.scene.shape.Rectangle;
 public class StatusComponent extends Component {
 
     private Rectangle rectangle;
-    private Circle redLight;
-    private Circle orangeLight;
-    private Circle greenLight;
+    private Circle firstLight;
+    private Circle secondLight;
+    private Circle thirdLight;
 
     @Override
     public void onAdded() {
@@ -34,22 +34,22 @@ public class StatusComponent extends Component {
         double r = 3;    // Radius der LEDs
         double centerY = panelHeight / 2.0;
 
-        redLight = new Circle(r, Color.BLACK);
-        orangeLight = new Circle(r, Color.BLACK);
-        greenLight = new Circle(r, Color.BLACK);
+        firstLight = new Circle(r, Color.BLACK);
+        secondLight = new Circle(r, Color.BLACK);
+        thirdLight = new Circle(r, Color.BLACK);
 
         // Positionen innerhalb des Panels
-        redLight.setTranslateX(8);
-        redLight.setTranslateY(centerY);
+        firstLight.setTranslateX(8);
+        firstLight.setTranslateY(centerY);
 
-        orangeLight.setTranslateX(panelWidth / 2.0);
-        orangeLight.setTranslateY(centerY);
+        secondLight.setTranslateX(panelWidth / 2.0);
+        secondLight.setTranslateY(centerY);
 
-        greenLight.setTranslateX(panelWidth - 8);
-        greenLight.setTranslateY(centerY);
+        thirdLight.setTranslateX(panelWidth - 8);
+        thirdLight.setTranslateY(centerY);
 
         // Alles in eine Gruppe packen, damit wir das Panel als Ganzes verschieben können
-        Group panel = new Group(rectangle, redLight, orangeLight, greenLight);
+        Group panel = new Group(rectangle, firstLight, secondLight, thirdLight);
 
 
         double machineWidth = entity.getBoundingBoxComponent().getWidth();
@@ -62,27 +62,33 @@ public class StatusComponent extends Component {
 
 
     private void allOff() {
-        redLight.setFill(Color.BLACK);
-        orangeLight.setFill(Color.BLACK);
-        greenLight.setFill(Color.BLACK);
+        firstLight.setFill(Color.BLACK);
+        secondLight.setFill(Color.BLACK);
+        thirdLight.setFill(Color.BLACK);
     }
 
     // ERROR: nur Rot leuchtet
     public void error() {
         allOff();
-        redLight.setFill(Color.RED);
+        firstLight.setFill(Color.RED);
+        secondLight.setFill(Color.RED);
+        thirdLight.setFill(Color.RED);
     }
 
     // RUNNING: nur Grün leuchtet
     public void running() {
         allOff();
-        greenLight.setFill(Color.GREEN);
+        thirdLight.setFill(Color.GREEN);
+        firstLight.setFill(Color.GREEN);
+        secondLight.setFill(Color.GREEN);
     }
 
     // WARNING: nur Orange leuchtet
     public void warning() {
         allOff();
-        orangeLight.setFill(Color.ORANGE);
+        firstLight.setFill(Color.ORANGE);
+        secondLight.setFill(Color.ORANGE);
+        thirdLight.setFill(Color.ORANGE);
     }
 
     public void turnAllOff() {
