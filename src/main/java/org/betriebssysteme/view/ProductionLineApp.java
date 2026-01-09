@@ -6,19 +6,23 @@ import com.almasb.fxgl.app.scene.Viewport;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
+import com.almasb.fxgl.entity.level.tiled.TiledMap;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 
+import javafx.scene.input.ScrollEvent;
+import com.almasb.fxgl.entity.level.tiled.TiledMap;
+
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getAssetLoader;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
+import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class ProductionLineApp extends GameApplication {
 
     Zoom zoom = new Zoom();
     private Point2D lastDragPos;
-
 
 
     @Override
@@ -27,7 +31,6 @@ public class ProductionLineApp extends GameApplication {
         this.zoom.initZoomToMouse();
         this.initCameraDrag();
     }
-
 
 
     @Override
@@ -47,6 +50,9 @@ public class ProductionLineApp extends GameApplication {
 
     @Override
     protected void initGame() {
+
+
+        setLevelFromMap("map.tmx");
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(new EntityProductionLineFactory());
 
@@ -94,8 +100,6 @@ public class ProductionLineApp extends GameApplication {
             }
         });
     }
-
-
 
 
     public static void main(String[] args) {
