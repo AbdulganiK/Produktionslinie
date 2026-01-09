@@ -1,12 +1,16 @@
 package org.betriebssysteme.view;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Rectangle2D;
 import javafx.util.Duration;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MachineComponent extends Component {
     private AnimatedTexture texture;
@@ -25,8 +29,16 @@ public class MachineComponent extends Component {
     public void onAdded() {
         entity.getViewComponent().addChild(this.texture);
         this.texture.setOnMouseClicked(e -> {
-            MenuComponent menu = entity.getComponent(MenuComponent.class);
-            menu.setVisibility(!menu.getVisibility());
+            List<Entity> entities= entity.getWorld().getEntitiesByType(EntityType.MACHINE);
+            MenuComponent menu;
+            MenuComponent clickedMenu = entity.getComponent(MenuComponent.class);
+            for (Entity entity : entities) {
+                menu = entity.getComponent(MenuComponent.class);
+                if (menu != clickedMenu) {
+                    menu.setVisibility(false);
+                }
+            }
+            clickedMenu.setVisibility(!clickedMenu.getVisibility());
             entity.setZIndex(100);
         });
         texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
