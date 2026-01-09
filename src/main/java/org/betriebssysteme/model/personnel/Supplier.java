@@ -6,6 +6,7 @@ import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.stations.MainDepot;
+import org.slf4j.Logger;
 
 import java.util.Map;
 
@@ -16,27 +17,31 @@ public class Supplier extends Thread implements Personnel {
     private MainDepot mainDepot;
     private int originStationId;
     private int destinationStationId;
-    private int supplyInterval;
-    private int supplyTimer;
-    private int travelTimer;
+    private int supplyInterval_ms;
+    private int supplyTimer_ms;
+    private int travelTimer_ms;
+    private Logger logger;
 
-    public Supplier(int identificationNumber, MainDepot mainDepot, int supplyInterval, int supplyTimer, int travelTimer) {
+    public Supplier(int identificationNumber, MainDepot mainDepot, int supplyInterval_ms, int supplyTimer_ms, int travelTimer_ms) {
         this.identificationNumber = identificationNumber;
         this.mainDepot = mainDepot;
-        this.supplyInterval = supplyInterval;
-        this.supplyTimer = supplyTimer;
-        this.travelTimer = travelTimer;
+        this.supplyInterval_ms = supplyInterval_ms;
+        this.supplyTimer_ms = supplyTimer_ms;
+        this.travelTimer_ms = travelTimer_ms;
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.status = Status.STOPPED;
         this.task = Task.JOBLESS;
+        this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
+        logger.info("Supplier " + identificationNumber + " created");
     }
 
     private void supplyRoutine() {
         task = Task.DELIVERING;
         destinationStationId = mainDepot.getIdentificationNumber();
+        logger.info("Supplier starting supply routine to Main Depot");
         try {
-            Thread.sleep(travelTimer);
+            Thread.sleep(travelTimer_ms);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -45,20 +50,22 @@ public class Supplier extends Thread implements Personnel {
         originStationId = mainDepot.getIdentificationNumber();
         destinationStationId = -1;
         try {
-            Thread.sleep(travelTimer);
+            Thread.sleep(travelTimer_ms);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         originStationId = -1;
+        logger.info("Supplier finishing supply routine to Main Depot");
     }
 
     private void refillDepotAndCollectCargo() {
         try {
-            Thread.sleep(supplyTimer);
+            Thread.sleep(supplyTimer_ms);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         // TODO Implement the depot refilling logic
+        logger.info("Supplier refilled depot and collected cargo");
     }
 
     // ============================================================================
@@ -68,6 +75,7 @@ public class Supplier extends Thread implements Personnel {
         for (Material material : Material.values()) {
             mainDepot.resiveCargo(material, mainDepot.getMaxStorageCapacity());
         }
+        logger.info("Depot refilled with materials");
         return 0;
     }
 
@@ -75,6 +83,7 @@ public class Supplier extends Thread implements Personnel {
     public int collectCargo(Cargo cargo, int quantity) {
         mainDepot.handOverCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
         mainDepot.handOverCargo(Product.SHIPPING_PACKAGE, mainDepot.getMaxStorageCapacity());
+        logger.info("Collected cargo from depot");
         return 0;
     }
 
@@ -122,7 +131,7 @@ public class Supplier extends Thread implements Personnel {
         while (true) {
             supplyRoutine();
             try {
-                Thread.sleep(supplyInterval);
+                Thread.sleep(supplyInterval_ms);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

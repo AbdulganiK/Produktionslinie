@@ -9,6 +9,8 @@ import org.betriebssysteme.model.cargo.CargoTyp;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class Maschine extends Thread implements Station{
     protected int identificationNumber;
@@ -23,6 +25,7 @@ public abstract class Maschine extends Thread implements Station{
     protected Map<Cargo, Integer> storage;
     protected Map<Cargo, Boolean> requestedCargoTypes;
     protected Cargo productCargo;
+    protected Logger logger;
 
     public Maschine(int identificationNumber,
                     int timeToProcess,
@@ -44,10 +47,12 @@ public abstract class Maschine extends Thread implements Station{
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
+        this.logger = LoggerFactory.getLogger("Maschine-" + identificationNumber);
+        logger.info("Maschine " + identificationNumber + " initialized for product: " + productCargo);
     }
 
     private void runProductionCycle() {
-        System.out.println("Machine " + identificationNumber + " starting production cycle.");
+        logger.info("Starting production cycle");
         try {
             Thread.sleep(timeToProcess);
         } catch (InterruptedException e) {
@@ -73,9 +78,10 @@ public abstract class Maschine extends Thread implements Station{
         if (!requestedCargoTypes.get(cargo)){
             Request request = new Request(quantity,1, cargo, this.identificationNumber);
             if (productionHeadquarters == null){
-                System.out.println("Production headquarters is null in machine " + identificationNumber);
+                logger.error("No production headquarters available");
             }
             productionHeadquarters.addRequest(request);
+            logger.info("Added request to headquarters for cargo: " + cargo + " quantity: " + quantity);
         }
     }
 
@@ -90,6 +96,7 @@ public abstract class Maschine extends Thread implements Station{
                 throw new RuntimeException(e);
             }
             finally {
+                logger.info("Delivered product to next machine: " + nextMaschine.getIdentificationNumber());
                 storageSemaphore.release();
             }
         }
@@ -107,17 +114,19 @@ public abstract class Maschine extends Thread implements Station{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            logger.info("Stored product in machine storage: " + cargo);
             storageSemaphore.release();
         }
     }
 
     public void stopMachine() {
-        System.out.println("Machine " + identificationNumber + " stopping.");
         running = false;
+        logger.debug("Stopping machine");
     }
 
     public void startMachine() {
         running = true;
+        logger.debug("Starting machine");
     }
 
     public boolean isRunning() {
@@ -128,7 +137,7 @@ public abstract class Maschine extends Thread implements Station{
     //Thread methods
     @Override
     public void run() {
-        System.out.println("Machine " + identificationNumber + " starting.");
+        logger.info("Starting thread");
         while (running) {
             runProductionCycle();
             try {
@@ -162,6 +171,7 @@ public abstract class Maschine extends Thread implements Station{
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            logger.info("Stored product in machine storage: " + cargo);
             storageSemaphore.release();
         }
     }
@@ -181,11 +191,13 @@ public abstract class Maschine extends Thread implements Station{
                 }
             }
             else {
+                logger.debug("Requested cargo not available in storage: " + cargo);
                 return 0;
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
+            logger.info("Handed over product from machine storage: " + cargo + " quantity: " + quantity);
             storageSemaphore.release();
         }
     }

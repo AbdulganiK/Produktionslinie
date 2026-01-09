@@ -9,6 +9,7 @@ import org.betriebssysteme.model.cargo.Product;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+import org.slf4j.Logger;
 
 public class MainDepot implements Station {
     private Map <Cargo, Integer> cargoStorage;
@@ -16,6 +17,7 @@ public class MainDepot implements Station {
     private int identificationNumber;
     private int maxStorageCapacity;
     private Status status;
+    private Logger logger;
 
     public MainDepot (int maxStorageCapacity) {
         this.cargoStorage = new HashMap<Cargo, Integer>();
@@ -23,6 +25,8 @@ public class MainDepot implements Station {
         this.maxStorageCapacity = maxStorageCapacity;
         this.cargoStorageSemaphore = new Semaphore(1);
         this.status = Status.OPERATING;
+        this.logger = org.slf4j.LoggerFactory.getLogger("MainDepot-" + identificationNumber);
+        logger.info("Main Depot " + identificationNumber + " created with max storage capacity of " + maxStorageCapacity);
     }
 
     private void checkAndUpdateStatus() {
@@ -32,14 +36,18 @@ public class MainDepot implements Station {
             if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
                 if (quantity == 0) {
                     status = Status.EMPTY;
+                    logger.info("Status set to EMPTY due to " + cargo);
                 } else if (quantity < maxStorageCapacity * 0.25) {
                     status = Status.LOW_CAPACITY;
+                    logger.info("Status set to LOW_CAPACITY due to " + cargo);
                 }
             } else if (cargo.getCargoTyp() == CargoTyp.PRODUCT) {
                 if (quantity >= maxStorageCapacity) {
                     status = Status.FULL;
+                    logger.info("Status set to FULL due to " + cargo);
                 } else if (quantity > maxStorageCapacity * 0.75) {
                     status = Status.LOW_CAPACITY;
+                    logger.info("Status set to LOW_CAPACITY due to " + cargo);
                 }
             }
         }
@@ -67,6 +75,7 @@ public class MainDepot implements Station {
             return 0;
         }
         finally {
+            logger.info("Received " + quantity + " of " + cargo);
             cargoStorageSemaphore.release();
         }
     }
@@ -88,6 +97,7 @@ public class MainDepot implements Station {
             return 0;
         }
         finally {
+            logger.info("Handed over " + quantity + " of " + cargo);
             cargoStorageSemaphore.release();
         }
     }

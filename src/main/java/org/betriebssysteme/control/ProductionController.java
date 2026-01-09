@@ -10,13 +10,20 @@ import org.betriebssysteme.model.stations.MainDepot;
 import org.betriebssysteme.model.stations.ProductionMaschine;
 
 import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProductionController {
     private MainDepot mainDepot;
     private Supplier supplier;
     private ProductionHeadquarters productionHeadquarters;
     private ProductionMaschine productionMaschine;
+    private static Logger logger;
+
+    public ProductionController() {
+        this.logger = LoggerFactory.getLogger("ProductionController");
+        logger.info("ProductionController initialized");
+    }
 
     public void createAllStations() {
         productionHeadquarters = new ProductionHeadquarters();
@@ -24,7 +31,7 @@ public class ProductionController {
         initialStorage.put(Material.GLUE, 1);
         initialStorage.put(Material.PLASTIC, 2);
         if (initialStorage == null){
-            System.out.println("No initial storage found");
+            logger.error("initialStorage is null");
         }
         mainDepot = new MainDepot(10);
         Recipe recipe = new Recipe(
@@ -33,7 +40,6 @@ public class ProductionController {
                 initialStorage
         );
         if (productionHeadquarters == null){
-            System.out.println("No production headquarters found");
         }
         productionMaschine = new ProductionMaschine(
                 2,
@@ -47,7 +53,11 @@ public class ProductionController {
     }
 
     public void createAllPersonnel() {
-        supplier = new Supplier(11, mainDepot, 100, 100, 100);
+        supplier = new Supplier(11,
+                mainDepot,
+                10000,
+                1000,
+                1000);
     }
 
     public void addAllToProductionHeadquarters() {

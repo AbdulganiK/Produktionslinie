@@ -28,10 +28,10 @@ public class ProductionMaschine extends Maschine {
     @Override
     protected void checkStorageStatus() {
         try {
-            System.out.println("Checking storage status of ProductionMaschine " + identificationNumber);
+            logger.info("Checking storage status of ProductionMaschine " + identificationNumber);
             storageSemaphore.acquire();
             for (Cargo cargo : storage.keySet()) {
-                System.out.println("Checking cargo: " + cargo);
+                logger.info("Checking cargo: " + cargo);
                 int storedQuantity = storage.get(cargo);
                 if (recipe.ingredients().containsKey(cargo)) {
                     int ingredientQuantity = recipe.ingredients().get(cargo);
@@ -73,7 +73,7 @@ public class ProductionMaschine extends Maschine {
     protected void checkIfCargoPrductionIsPossible() {
         try {
             storageSemaphore.acquire();
-            System.out.println("Checking if cargo prduction is possible");
+            logger.info("Checking if cargo prduction is possible");
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
@@ -92,7 +92,7 @@ public class ProductionMaschine extends Maschine {
     @Override
     protected Cargo produceProduct() {
         try {
-            System.out.println("Produce product of " + identificationNumber);
+            logger.info("Produce product of " + identificationNumber);
             storageSemaphore.acquire();
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
@@ -116,6 +116,6 @@ public class ProductionMaschine extends Maschine {
 
     @Override
     protected void storePrductOrDeliverToNextMachine(Cargo cargo) {
-        System.out.println("Storing prduct or deliver to next machine");
+        logger.info("Storing prduct or deliver to next machine");
     }
 }
