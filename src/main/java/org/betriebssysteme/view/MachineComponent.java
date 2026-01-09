@@ -34,7 +34,7 @@ public class MachineComponent extends Component {
         for (Entity entity : entities) {
             menu = entity.getComponent(MenuComponent.class);
             if (menu != clickedMenu) {
-                entity.getViewComponent().setZIndex(-1);
+                entity.getViewComponent().setZIndex(50);
                 menu.setVisibility(false);
             }
         }
