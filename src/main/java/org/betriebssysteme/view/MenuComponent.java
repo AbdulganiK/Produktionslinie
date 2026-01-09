@@ -97,19 +97,16 @@ public class MenuComponent extends Component {
         return this.visibility;
     }
 
-    /** Setzt den Namen (linke Spalte) für eine Zeile 0..5 */
     public void setPropertyName(int row, String name) {
         if (row < 0 || row >= ROWS) return;
         nameLabels[row].setText(name);
     }
 
-    /** Setzt den Wert (rechte Spalte) für eine Zeile 0..5 */
     public void setPropertyValue(int row, String value) {
         if (row < 0 || row >= ROWS) return;
         valueLabels[row].setText(value);
     }
 
-    /** Setzt Name und Wert in einer Zeile */
     public void setProperty(int row, String name, String value) {
         setPropertyName(row, name);
         setPropertyValue(row, value);
