@@ -9,6 +9,7 @@ import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Rectangle2D;
 import javafx.util.Duration;
 
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,23 +26,27 @@ public class MachineComponent extends Component {
         this.texture = new AnimatedTexture(offAnim);
     }
 
+    public void handleMachineClick(javafx.scene.input.MouseEvent e) {
+        List<Entity> entities= entity.getWorld().getEntitiesByType(EntityType.MACHINE);
+        MenuComponent menu;
+        MenuComponent clickedMenu = entity.getComponent(MenuComponent.class);
+        for (Entity entity : entities) {
+            menu = entity.getComponent(MenuComponent.class);
+            if (menu != clickedMenu) {
+                menu.setVisibility(false);
+            }
+        }
+        clickedMenu.setVisibility(!clickedMenu.getVisibility());
+        entity.setZIndex(100);
+    }
+
     @Override
     public void onAdded() {
         entity.getViewComponent().addChild(this.texture);
-        this.texture.setOnMouseClicked(e -> {
-            List<Entity> entities= entity.getWorld().getEntitiesByType(EntityType.MACHINE);
-            MenuComponent menu;
-            MenuComponent clickedMenu = entity.getComponent(MenuComponent.class);
-            for (Entity entity : entities) {
-                menu = entity.getComponent(MenuComponent.class);
-                if (menu != clickedMenu) {
-                    menu.setVisibility(false);
-                }
-            }
-            clickedMenu.setVisibility(!clickedMenu.getVisibility());
-            entity.setZIndex(100);
-        });
+        this.texture.setOnMouseClicked(this::handleMachineClick);
         texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
     }
+
+
 
 }
