@@ -18,17 +18,6 @@ public class MenuComponent extends Component {
     private Group menuRoot;
     private Text[] nameLabels  = new Text[ROWS];
     private Text[] valueLabels = new Text[ROWS];
-
-    // Y-Offets bleiben unverändert
-    private double[] rowYFactors = new double[] {
-            0.33, // Zeile 0
-            0.4, // Zeile 1
-            0.477, // Zeile 2
-            0.55, // Zeile 3
-            0.63, // Zeile 4
-            0.8   // Zeile 5
-    };
-
     private double baseValueX;
 
     public MenuComponent() {
@@ -57,7 +46,6 @@ public class MenuComponent extends Component {
         double startXNames  = w * 0.2;  // linke Spalte
         double startXValues = w * 0.55;   // rechte Spalte
 
-        // Basis-X für Werte-Spalte merken
         baseValueX = startXValues;
 
         Font font = Font.font("Consolas", 40);
@@ -109,25 +97,21 @@ public class MenuComponent extends Component {
         return this.visibility;
     }
 
-    /** Setzt den Namen (linke Spalte) für eine Zeile 0..5 */
     public void setPropertyName(int row, String name) {
         if (row < 0 || row >= ROWS) return;
         nameLabels[row].setText(name);
     }
 
-    /** Setzt den Wert (rechte Spalte) für eine Zeile 0..5 */
     public void setPropertyValue(int row, String value) {
         if (row < 0 || row >= ROWS) return;
         valueLabels[row].setText(value);
     }
 
-    /** Setzt Name und Wert in einer Zeile */
     public void setProperty(int row, String name, String value) {
         setPropertyName(row, name);
         setPropertyValue(row, value);
     }
 
-    // optional: ein paar bequeme Helper, falls du feste Reihen hast
     public void setID(String value)                { setProperty(0, "ID", value); }
     public void setProduct(String value)           { setProperty(1, "Produkt", value); }
     public void setStatus(String value)            { setProperty(2, "Status", value); }
@@ -135,14 +119,5 @@ public class MenuComponent extends Component {
     public void setGeschwindigkeit(String value)   { setProperty(4, "Speed", value); }
     public void setKapazitaet(String value)        { setProperty(5, "Kapazität", value); }
 
-    // NEU: Nur die Werte-Spalte horizontal verschieben, Y bleibt unberührt
-    public void setValueColumnOffset(double offset) {
-        double x = baseValueX + offset;
 
-        for (int i = 0; i < ROWS; i++) {
-            if (valueLabels[i] != null) {
-                valueLabels[i].setTranslateX(x);
-            }
-        }
-    }
 }
