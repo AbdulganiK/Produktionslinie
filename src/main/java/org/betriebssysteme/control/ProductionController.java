@@ -1,10 +1,7 @@
 package org.betriebssysteme.control;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
-import org.betriebssysteme.model.Recipe;
-import org.betriebssysteme.model.cargo.Cargo;
-import org.betriebssysteme.model.cargo.Material;
-import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.cargo.ProductRecipes;
 import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.stations.MainDepot;
 import org.betriebssysteme.model.stations.ProductionMaschine;
@@ -17,8 +14,16 @@ public class ProductionController {
     private MainDepot mainDepot;
     private Supplier supplier;
     private ProductionHeadquarters productionHeadquarters;
-    private ProductionMaschine productionMaschine;
     private static Logger logger;
+    private ProductRecipes productRecipes = new ProductRecipes();
+
+    // Production Maschinen
+    private ProductionMaschine driveUnitHouseProductionMaschine;
+    private ProductionMaschine driveUnitCircuitBoardProductionMaschine;
+    private ProductionMaschine driveUnitProductionMaschine;
+    private ProductionMaschine controlUnitHouseProductionMaschine;
+    private ProductionMaschine controlUnitCircuitBoardProductionMaschine;
+    private ProductionMaschine controlUnitProductionMaschine;
 
     public ProductionController() {
         this.logger = LoggerFactory.getLogger("ProductionController");
@@ -27,29 +32,63 @@ public class ProductionController {
 
     public void createAllStations() {
         productionHeadquarters = new ProductionHeadquarters();
-        HashMap<Cargo , Integer> initialStorage = new HashMap<>();
-        initialStorage.put(Material.GLUE, 1);
-        initialStorage.put(Material.PLASTIC, 2);
-        if (initialStorage == null){
-            logger.error("initialStorage is null");
-        }
         mainDepot = new MainDepot(10);
-        Recipe recipe = new Recipe(
-                5000,
-                Product.SCRAP,
-                initialStorage
-        );
-        if (productionHeadquarters == null){
-        }
-        productionMaschine = new ProductionMaschine(
-                2,
+        driveUnitHouseProductionMaschine = new ProductionMaschine(
+                21,
+                500,
+                10,
+                 productionHeadquarters,
+                null,
+                productRecipes.getDriveHousingRecipe()
+                );
+        driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
+                22,
+                700,
+                10,
+                 productionHeadquarters,
+                null,
+                productRecipes.getDrivePcbRecipe()
+                );
+        driveUnitProductionMaschine = new ProductionMaschine(
+                23,
                 1000,
                 10,
-                productionHeadquarters,
+                 productionHeadquarters,
                 null,
-                recipe
-        );
-        //
+                productRecipes.getDriveUnitRecipe()
+                );
+        controlUnitHouseProductionMaschine = new ProductionMaschine(
+                24,
+                500,
+                10,
+                 productionHeadquarters,
+                null,
+                productRecipes.getControlHousingRecipe()
+                );
+        controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
+                25,
+                700,
+                10,
+                 productionHeadquarters,
+                null,
+                productRecipes.getControlPcbRecipe()
+                );
+        controlUnitProductionMaschine = new ProductionMaschine(
+                26,
+                1000,
+                10,
+                 productionHeadquarters,
+                null,
+                productRecipes.getControlUnitRecipe()
+                );
+        setNextMachines();
+    }
+
+    public void setNextMachines() {
+        driveUnitHouseProductionMaschine.setNextMaschine(driveUnitProductionMaschine);
+        driveUnitCircuitBoardProductionMaschine.setNextMaschine(driveUnitProductionMaschine);
+        controlUnitHouseProductionMaschine.setNextMaschine(controlUnitProductionMaschine);
+        controlUnitCircuitBoardProductionMaschine.setNextMaschine(controlUnitProductionMaschine);
     }
 
     public void createAllPersonnel() {
@@ -63,7 +102,12 @@ public class ProductionController {
     public void addAllToProductionHeadquarters() {
         productionHeadquarters = new ProductionHeadquarters();
         productionHeadquarters.addStation(mainDepot);
-        productionHeadquarters.addStation(productionMaschine);
+        productionHeadquarters.addStation(driveUnitHouseProductionMaschine);
+        productionHeadquarters.addStation(driveUnitCircuitBoardProductionMaschine);
+        productionHeadquarters.addStation(driveUnitProductionMaschine);
+        productionHeadquarters.addStation(controlUnitHouseProductionMaschine);
+        productionHeadquarters.addStation(controlUnitCircuitBoardProductionMaschine);
+        productionHeadquarters.addStation(controlUnitProductionMaschine);
         productionHeadquarters.addPersonnel(supplier);
     }
 

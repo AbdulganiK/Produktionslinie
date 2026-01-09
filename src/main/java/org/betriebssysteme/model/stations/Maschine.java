@@ -121,16 +121,21 @@ public abstract class Maschine extends Thread implements Station{
 
     public void stopMachine() {
         running = false;
-        logger.debug("Stopping machine");
+        logger.debug("Stopping machine" + identificationNumber);
+        System.out.println("Machine " + identificationNumber + " stopped.");
     }
 
     public void startMachine() {
         running = true;
-        logger.debug("Starting machine");
+        logger.debug("Starting machine" + identificationNumber);
     }
 
     public boolean isRunning() {
         return running;
+    }
+
+    public void setNextMaschine(Maschine nextMaschine) {
+        this.nextMaschine = nextMaschine;
     }
 
     // ============================================================================
