@@ -5,6 +5,7 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
+import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
@@ -55,7 +56,20 @@ public class EntityProductionLineFactory implements EntityFactory {
         return FXGL.entityBuilder(data)
                 .type(EntityType.BELT)
                 .with(new BeltComponent())
+                .with(new CollidableComponent(true))
                 .bbox(beltHitBox).build();
+    }
+
+    @Spawns(EntityNames.ITEM)
+    public Entity newItem(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(EntityType.ITEM)
+                .view("item.png")
+                .bbox(new HitBox(BoundingShape.box(16, 16)))
+                .with(new CollidableComponent(true))
+                .with(new ItemMoveComponent())
+                .zIndex(2000)            // damit über dem Belt gerendert
+                .build();
     }
 
 

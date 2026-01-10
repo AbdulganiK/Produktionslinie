@@ -4,11 +4,18 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
+import javafx.geometry.Point2D;
 import javafx.util.Duration;
 
 public class BeltComponent extends Component {
     AnimatedTexture texture;
     AnimationChannel startBeltAnim, midBeltAnim, endBeltAnim;
+
+    private static final Point2D DIR = new Point2D(27, -13).normalize();
+
+    public Point2D getDirection() {
+        return DIR;
+    }
 
     public BeltComponent() {
         this.startBeltAnim = new AnimationChannel(FXGL.image("belt-start.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
