@@ -22,14 +22,15 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 public class ProductionLineApp extends GameApplication {
 
     Zoom zoom = new Zoom();
-    private Point2D lastDragPos;
+    Camera camera = new Camera();
+
 
 
     @Override
     protected void initInput() {
         this.zoom.initResetZoom();
         this.zoom.initZoomToMouse();
-        this.initCameraDrag();
+        camera.initCameraDrag();
     }
 
 
@@ -56,49 +57,12 @@ public class ProductionLineApp extends GameApplication {
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(new EntityProductionLineFactory());
 
-        Entity machine = FXGL.spawn(EntityNames.MACHINE, 100, 300);
+        Entity machine = FXGL.spawn(EntityNames.MACHINE, 1000, 1000);
 
-        Entity machine2 = FXGL.spawn(EntityNames.MACHINE, 400, 300);
+        Entity machine2 = FXGL.spawn(EntityNames.MACHINE, 1200, 1000);
 
-    }
+        Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
 
-    private void initCameraDrag() {
-        var scene = FXGL.getPrimaryStage().getScene();
-        Viewport vp = FXGL.getGameScene().getViewport();
-
-        // Maus runter -> Startpunkt merken
-        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
-            if (e.getButton() == MouseButton.MIDDLE) {   // oder PRIMARY / SECONDARY, wie du willst
-                lastDragPos = new Point2D(e.getSceneX(), e.getSceneY());
-            }
-        });
-
-        // Maus ziehen -> Kamera bewegen
-        scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
-            if (e.isMiddleButtonDown() && lastDragPos != null) {
-
-                double dxScreen = e.getSceneX() - lastDragPos.getX();
-                double dyScreen = e.getSceneY() - lastDragPos.getY();
-
-                double zoom = vp.getZoom();
-
-                // Screen-Pixel in Weltverschiebung umrechnen
-                double dxWorld = -dxScreen / zoom;
-                double dyWorld = -dyScreen / zoom;
-
-                vp.setX(vp.getX() + dxWorld);
-                vp.setY(vp.getY() + dyWorld);
-
-                lastDragPos = new Point2D(e.getSceneX(), e.getSceneY());
-            }
-        });
-
-        // Maus loslassen -> Drag beenden
-        scene.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
-            if (e.getButton() == MouseButton.MIDDLE) {
-                lastDragPos = null;
-            }
-        });
     }
 
 

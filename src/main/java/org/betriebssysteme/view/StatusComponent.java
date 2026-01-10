@@ -8,6 +8,9 @@ import javafx.scene.shape.Rectangle;
 
 public class StatusComponent extends Component {
 
+
+
+
     private Rectangle rectangle;
     private Circle firstLight;
     private Circle secondLight;
@@ -16,22 +19,19 @@ public class StatusComponent extends Component {
     @Override
     public void onAdded() {
 
-        // Größe des Panels (breiter, aber flach)
-        double panelWidth = 46;
-        double panelHeight = 14;
+        double panelWidth = 68;
+        double panelHeight = 30;
 
 
         rectangle = new Rectangle(panelWidth, panelHeight);
-        // Runde Ecken
         rectangle.setArcWidth(4);
         rectangle.setArcHeight(4);
-        // Füllfarbe und Rand
         rectangle.setFill(Color.rgb(25, 25, 30, 0.95));
         rectangle.setStroke(Color.rgb(50, 50, 60));
         rectangle.setStrokeWidth(1.5);
 
         // Kleine LED-Lichter innerhalb des Panels
-        double r = 3;    // Radius der LEDs
+        double r = 4;    // Radius der LEDs
         double centerY = panelHeight / 2.0;
 
         firstLight = new Circle(r, Color.BLACK);
@@ -48,12 +48,10 @@ public class StatusComponent extends Component {
         thirdLight.setTranslateX(panelWidth - 8);
         thirdLight.setTranslateY(centerY);
 
-        // Alles in eine Gruppe packen, damit wir das Panel als Ganzes verschieben können
         Group panel = new Group(rectangle, firstLight, secondLight, thirdLight);
 
-
         double machineWidth = entity.getBoundingBoxComponent().getWidth();
-        panel.setTranslateX((machineWidth - panelWidth) / 2.0);
+        panel.setTranslateX((machineWidth - panelWidth));
         panel.setTranslateY(-18);   // etwas über der Maschine
 
         this.running();

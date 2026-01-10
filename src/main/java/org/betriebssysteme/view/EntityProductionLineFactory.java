@@ -8,10 +8,13 @@ import com.almasb.fxgl.entity.Spawns;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
+import com.almasb.fxgl.texture.Texture;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
 import java.awt.*;
+
+import static com.almasb.fxgl.dsl.FXGLForKtKt.texture;
 
 public class EntityProductionLineFactory implements EntityFactory {
 
@@ -23,7 +26,16 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .with(new MachineComponent())
                 .with(new StatusComponent())
                 .bbox(new HitBox(BoundingShape.box(64, 64)))
-                .scale(2, 2)
+                .build();
+    }
+
+    @Spawns(EntityNames.STORAGE)
+    public Entity newStorage(SpawnData data) {
+
+        return FXGL.entityBuilder(data)
+                .type(EntityType.STORAGE)
+                .with(new StatusComponent())
+                .with(new StorageComponent() )
                 .build();
     }
 
