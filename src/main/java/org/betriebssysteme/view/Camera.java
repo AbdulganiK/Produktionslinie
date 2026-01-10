@@ -13,14 +13,12 @@ public class Camera {
         var scene = FXGL.getPrimaryStage().getScene();
         Viewport vp = FXGL.getGameScene().getViewport();
 
-        // Maus runter -> Startpunkt merken
         scene.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
             if (e.getButton() == MouseButton.MIDDLE) {   // oder PRIMARY / SECONDARY, wie du willst
                 lastDragPos = new Point2D(e.getSceneX(), e.getSceneY());
             }
         });
 
-        // Maus ziehen -> Kamera bewegen
         scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
             if (e.isMiddleButtonDown() && lastDragPos != null) {
 
@@ -40,7 +38,6 @@ public class Camera {
             }
         });
 
-        // Maus loslassen -> Drag beenden
         scene.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> {
             if (e.getButton() == MouseButton.MIDDLE) {
                 lastDragPos = null;

@@ -43,10 +43,9 @@ public class MachineComponent extends Component {
             case ON:
                 texture.setOnCycleFinished(() -> {
 
-                    // Callback entfernen, damit er nicht mehrmals aufgerufen wird
                     texture.setOnCycleFinished(() -> {});
 
-                    // 2. Nun in die Loop-Animation wechseln
+
                     texture.loopAnimationChannel(productionWhileTakingItemAnim);
                 });
                 texture.playAnimationChannel(turningOnAnim);

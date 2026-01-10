@@ -11,30 +11,28 @@ public class EventHandler {
 
         MenuComponent clickedMenu = clickedEntity.getComponent(MenuComponent.class);
 
-        // Zustand NACH dem Klick bestimmen (toggle)
         boolean willOpen = !clickedMenu.getVisibility();
 
         for (Entity entity : entities) {
 
             MenuComponent menu = entity.getComponent(MenuComponent.class);
 
-            // ursprünglichen zIndex einmal merken
             int currentZ = entity.getViewComponent().getZIndex();
             menu.ensureBaseZIndex(currentZ);
 
             if (entity == clickedEntity) {
 
                 if (willOpen) {
-                    // Menü wird geöffnet → Entity nach ganz vorne
+                    // Menü wird geöffnet
                     menu.setVisibility(true);
                 } else {
-                    // Menü wird geschlossen → ursprünglichen zIndex wiederherstellen
+                    // Menü wird geschlossen
                     entity.getViewComponent().setZIndex(menu.getBaseZIndex());
                     menu.setVisibility(false);
                 }
 
             } else {
-                // andere Entities: Menü schließen und zIndex zurücksetzen
+                // andere Entities
                 if (menu.getVisibility()) {
                     menu.setVisibility(false);
                 }

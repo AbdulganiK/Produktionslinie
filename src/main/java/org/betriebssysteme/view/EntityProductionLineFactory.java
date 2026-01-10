@@ -47,10 +47,12 @@ public class EntityProductionLineFactory implements EntityFactory {
                 "BELT",
                 new Point2D(0, 0),
                 BoundingShape.polygon(
-                        new Point2D(4, 44),   // unten links
-                        new Point2D(60, 24),  // unten rechts
-                        new Point2D(60, 16),  // oben rechts
-                        new Point2D(4, 36)    // oben links
+                        new Point2D(27, 38),   // unten links
+                        new Point2D(60, 24),   // unten rechts
+                        new Point2D(60, 16),   // oben rechts
+                        new Point2D(12, 26)    // oben links
+
+
                 )
         );
         return FXGL.entityBuilder(data)
@@ -68,7 +70,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .bbox(new HitBox(BoundingShape.box(16, 16)))
                 .with(new CollidableComponent(true))
                 .with(new ItemMoveComponent())
-                .zIndex(2000)            // damit über dem Belt gerendert
+                .zIndex(2000)
                 .build();
     }
 

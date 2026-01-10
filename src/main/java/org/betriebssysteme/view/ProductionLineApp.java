@@ -7,6 +7,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.level.tiled.TiledMap;
+import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseButton;
@@ -48,26 +49,29 @@ public class ProductionLineApp extends GameApplication {
     @Override
     protected void initPhysics() {
 
-        FXGL.getPhysicsWorld().setGravity(0, 0);
+        getPhysicsWorld().setGravity(0, 0);
 
-        onCollisionBegin(EntityType.BELT, EntityType.ITEM, (belt, item) -> {
-            BeltComponent beltComp = belt.getComponent(BeltComponent.class);
-            ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.BELT, EntityType.ITEM) {
+            @Override
+            protected void onCollisionBegin(Entity belt, Entity item) {
+                BeltComponent beltComp = belt.getComponent(BeltComponent.class);
+                ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+                move.addBeltContact(beltComp.getDirection());
+            }
 
-            move.setDirection(beltComp.getDirection());
-        });
-
-        onCollisionEnd(EntityType.BELT, EntityType.ITEM, (belt, item) -> {
-            ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
-            move.clearDirection();
+            @Override
+            protected void onCollisionEnd(Entity belt, Entity item) {
+                System.out.println(">>> END BELT-ITEM (CollisionHandler)");
+                ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+                move.removeBeltContact();
+            }
         });
     }
 
+
     public static Entity spawnItemOnBelt(Entity belt) {
-        // Mittelpunkt des Belts
         Point2D center = belt.getCenter();
 
-        // Wenn dein Item z.B. 32x32px groß ist:
         double itemHalfW = 16;
         double itemHalfH = 16;
 
