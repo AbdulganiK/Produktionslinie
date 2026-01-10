@@ -22,7 +22,21 @@ public class MenuComponent extends Component {
     private double additionalTranslateX;
     private double additionalTranslateY;
 
+    private boolean visible;
+    private int baseZIndex;
+    private boolean baseZInitialized = false;
 
+
+    public void ensureBaseZIndex(int currentZ) {
+        if (!baseZInitialized) {
+            baseZIndex = currentZ;
+            baseZInitialized = true;
+        }
+    }
+
+    public int getBaseZIndex() {
+        return baseZIndex;
+    }
     public MenuComponent() {
         this.additionalTranslateX = 0;
         this.additionalTranslateY = 0;

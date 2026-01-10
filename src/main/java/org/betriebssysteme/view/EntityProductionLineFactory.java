@@ -9,6 +9,7 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import com.almasb.fxgl.physics.PhysicsComponent;
 import com.almasb.fxgl.texture.Texture;
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 
@@ -31,7 +32,6 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.STORAGE)
     public Entity newStorage(SpawnData data) {
-
         return FXGL.entityBuilder(data)
                 .type(EntityType.STORAGE)
                 .with(new MenuComponent(350, 0))
@@ -39,6 +39,26 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .with(new StorageComponent())
                 .build();
     }
+
+    @Spawns(EntityNames.BELT)
+    public Entity newBelt(SpawnData data) {
+        HitBox beltHitBox = new HitBox(
+                "BELT",
+                new Point2D(0, 0),
+                BoundingShape.polygon(
+                        new Point2D(4, 44),   // unten links
+                        new Point2D(60, 24),  // unten rechts
+                        new Point2D(60, 16),  // oben rechts
+                        new Point2D(4, 36)    // oben links
+                )
+        );
+        return FXGL.entityBuilder(data)
+                .type(EntityType.BELT)
+                .with(new BeltComponent())
+                .bbox(beltHitBox).build();
+    }
+
+
 
 
 

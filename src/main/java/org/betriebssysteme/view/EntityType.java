@@ -4,5 +4,6 @@ public enum EntityType {
     MACHINE,
     STORAGE,
     SUPPLIER,
-    HEADQUARTER
+    HEADQUARTER,
+    BELT
 }

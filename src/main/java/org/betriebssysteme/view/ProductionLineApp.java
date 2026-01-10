@@ -52,14 +52,17 @@ public class ProductionLineApp extends GameApplication {
     @Override
     protected void initGame() {
 
-
         setLevelFromMap("map.tmx");
+
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(new EntityProductionLineFactory());
 
         Entity machine = FXGL.spawn(EntityNames.MACHINE, 1000, 1000);
+        machine.setZIndex(100);
+        machine.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
+        BeltFactory.spawnBeltsBeforeMachine(machine, 10);
+        BeltFactory.spawnBeltsAfterMachine(machine, 10);
 
-        Entity machine2 = FXGL.spawn(EntityNames.MACHINE, 1200, 1000);
 
         Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
 
