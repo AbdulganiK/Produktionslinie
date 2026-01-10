@@ -15,6 +15,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import com.almasb.fxgl.entity.level.tiled.TiledMap;
 
+import java.util.ArrayList;
+
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAssetLoader;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -45,7 +47,35 @@ public class ProductionLineApp extends GameApplication {
 
     @Override
     protected void initPhysics() {
+
         FXGL.getPhysicsWorld().setGravity(0, 0);
+
+        onCollisionBegin(EntityType.BELT, EntityType.ITEM, (belt, item) -> {
+            BeltComponent beltComp = belt.getComponent(BeltComponent.class);
+            ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+
+            move.setDirection(beltComp.getDirection());
+        });
+
+        onCollisionEnd(EntityType.BELT, EntityType.ITEM, (belt, item) -> {
+            ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+            move.clearDirection();
+        });
+    }
+
+    public static Entity spawnItemOnBelt(Entity belt) {
+        // Mittelpunkt des Belts
+        Point2D center = belt.getCenter();
+
+        // Wenn dein Item z.B. 32x32px groß ist:
+        double itemHalfW = 16;
+        double itemHalfH = 16;
+
+        return FXGL.spawn(
+                EntityNames.ITEM,
+                center.getX() - itemHalfW,
+                center.getY() - itemHalfH
+        );
     }
 
 
@@ -60,9 +90,10 @@ public class ProductionLineApp extends GameApplication {
         Entity machine = FXGL.spawn(EntityNames.MACHINE, 1000, 1000);
         machine.setZIndex(100);
         machine.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
-        BeltFactory.spawnBeltsBeforeMachine(machine, 10);
+        ArrayList<Entity> belts = BeltFactory.spawnBeltsBeforeMachine(machine, 10);
         BeltFactory.spawnBeltsAfterMachine(machine, 10);
 
+        spawnItemOnBelt(belts.getFirst());
 
         Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
 
