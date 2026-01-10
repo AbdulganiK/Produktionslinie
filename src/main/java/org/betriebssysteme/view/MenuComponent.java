@@ -19,8 +19,19 @@ public class MenuComponent extends Component {
     private Text[] nameLabels  = new Text[ROWS];
     private Text[] valueLabels = new Text[ROWS];
     private double baseValueX;
+    private double additionalTranslateX;
+    private double additionalTranslateY;
+
 
     public MenuComponent() {
+        this.additionalTranslateX = 0;
+        this.additionalTranslateY = 0;
+        this.background = FXGL.getAssetLoader().loadTexture("Info_Menu_Machine_Asset.png");
+    }
+
+    public MenuComponent(double additionalTranslateX, double additionalTranslateY) {
+        this.additionalTranslateX = additionalTranslateX;
+        this.additionalTranslateY = additionalTranslateY;
         this.background = FXGL.getAssetLoader().loadTexture("Info_Menu_Machine_Asset.png");
     }
 
@@ -35,13 +46,15 @@ public class MenuComponent extends Component {
 
         menuRoot.getChildren().add(background);
 
-        menuRoot.setTranslateX(-350);   // +20 px Abstand rechts
-        menuRoot.setTranslateY(-350);  // leicht nach oben verschoben
+        double w = background.getWidth();
+        double h = 200;
+
+        menuRoot.setTranslateX(-350 + this.additionalTranslateX);
+        menuRoot.setTranslateY(-350 + this.additionalTranslateY);
         menuRoot.setScaleX(0.25);
         menuRoot.setScaleY(0.4);
 
-        double w = background.getWidth();
-        double h = 200;
+
 
         double startXNames  = w * 0.2;  // linke Spalte
         double startXValues = w * 0.55;   // rechte Spalte

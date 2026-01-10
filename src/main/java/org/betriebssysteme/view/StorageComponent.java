@@ -6,6 +6,7 @@ import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
@@ -206,5 +207,11 @@ public class StorageComponent extends Component {
                         new Point2D(0, 0),
                         com.almasb.fxgl.physics.BoundingShape.box(PAD_WIDTH, PAD_HEIGHT + 40))
         );
+
+        root.setOnMouseClicked(this::handleStorageClick);
+    }
+
+    public void handleStorageClick(MouseEvent e) {
+       EventHandler.handleMenuCLick(e, entity);
     }
 }

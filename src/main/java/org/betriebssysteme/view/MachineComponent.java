@@ -27,18 +27,7 @@ public class MachineComponent extends Component {
     }
 
     public void handleMachineClick(javafx.scene.input.MouseEvent e) {
-        List<Entity> entities= entity.getWorld().getEntitiesByType(EntityType.MACHINE);
-        MenuComponent menu;
-        MenuComponent clickedMenu = entity.getComponent(MenuComponent.class);
-        entity.getViewComponent().setZIndex(100);
-        for (Entity entity : entities) {
-            menu = entity.getComponent(MenuComponent.class);
-            if (menu != clickedMenu) {
-                entity.getViewComponent().setZIndex(50);
-                menu.setVisibility(false);
-            }
-        }
-        clickedMenu.setVisibility(!clickedMenu.getVisibility());
+        EventHandler.handleMenuCLick(e, entity);
     }
 
     @Override
