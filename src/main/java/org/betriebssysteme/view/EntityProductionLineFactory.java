@@ -34,8 +34,9 @@ public class EntityProductionLineFactory implements EntityFactory {
 
         return FXGL.entityBuilder(data)
                 .type(EntityType.STORAGE)
+                .with(new MenuComponent(350, 0))
                 .with(new StatusComponent())
-                .with(new StorageComponent() )
+                .with(new StorageComponent())
                 .build();
     }
 
