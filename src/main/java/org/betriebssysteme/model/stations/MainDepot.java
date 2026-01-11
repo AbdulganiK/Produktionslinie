@@ -19,8 +19,9 @@ public class MainDepot implements Station {
     private int maxStorageCapacity;
     private Status status;
     private Logger logger;
+    private int initialStorageCapacity;
 
-    public MainDepot (int maxStorageCapacity) {
+    public MainDepot (int maxStorageCapacity, int initialStorageCapacity) {
         this.cargoStorage = new HashMap<Cargo, Integer>();
         this.identificationNumber = 1;
         this.maxStorageCapacity = maxStorageCapacity;
@@ -28,6 +29,14 @@ public class MainDepot implements Station {
         this.status = Status.OPERATING;
         this.logger = org.slf4j.LoggerFactory.getLogger("MainDepot-" + identificationNumber);
         logger.info("Main Depot " + identificationNumber + " created with max storage capacity of " + maxStorageCapacity);
+        this.initialStorageCapacity = initialStorageCapacity;
+        createInitialStorage();
+    }
+
+    private void createInitialStorage() {
+        for (Material material : Material.values()) {
+            cargoStorage.put(material, initialStorageCapacity);
+        }
     }
 
     private void checkAndUpdateStatus() {
@@ -65,11 +74,13 @@ public class MainDepot implements Station {
             if (currentQuantity + quantity <= maxStorageCapacity) {
                 cargoStorage.put(cargo, currentQuantity + quantity);
                 checkAndUpdateStatus();
+                System.out.println("MainDepot " + identificationNumber + " accepted " + quantity + " of " + cargo);
                 return quantity;
             } else {
                 int acceptedQuantity = maxStorageCapacity - currentQuantity;
                 cargoStorage.put(cargo, maxStorageCapacity);
                 checkAndUpdateStatus();
+                System.out.println("MainDepot " + identificationNumber + " accepted only " + acceptedQuantity + " of " + cargo + " requested: " + quantity);
                 return acceptedQuantity;
             }
         } catch (Exception e) {
@@ -88,10 +99,12 @@ public class MainDepot implements Station {
             if (currentQuantity >= quantity) {
                 cargoStorage.put(cargo, currentQuantity - quantity);
                 checkAndUpdateStatus();
+                System.out.println("MainDepot " + identificationNumber + " handed over " + quantity + " of " + cargo);
                 return quantity;
             } else {
                 cargoStorage.put(cargo, 0);
                 checkAndUpdateStatus();
+                System.out.println("MainDepot " + identificationNumber + " handed over only " + currentQuantity + " of " + cargo + " requested: " + quantity);
                 return currentQuantity;
             }
         } catch (Exception e) {

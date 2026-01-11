@@ -72,9 +72,10 @@ public class PackagingMaschine extends Maschine {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 if (storedQuantity < ingredientQuantity) {
-                    System.out.println("Packaging Machine " + identificationNumber + " does not have enough " + cargo + " to produce product.");
-                    logger.info("Packaging Machine " + identificationNumber + " does not have enough " + cargo + " to produce product.");
                     cargoPrductionIsPossible = false;
+                    if (running) {
+                        System.out.println("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
+                    }
                 }
             }
             int currentProductQuantity = storage.getOrDefault(productCargo, 0);

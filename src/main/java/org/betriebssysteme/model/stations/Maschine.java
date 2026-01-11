@@ -77,19 +77,20 @@ public abstract class Maschine extends Thread implements Station{
     protected abstract void storePrductOrDeliverToNextMachine(Cargo cargo);
 
     protected void sendCargoRequest(Cargo cargo, int quantity) {
-        System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
         boolean requestedBefore = requestedCargoTypes.getOrDefault(cargo, false);
         if (requestedBefore == false){
             Request request = new Request(quantity,1, cargo, this.identificationNumber);
             if (productionHeadquarters == null){
                 logger.error("No production headquarters available");
             }
+            System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
             productionHeadquarters.addRequest(request);
             logger.info("Added request to headquarters for cargo: " + cargo + " quantity: " + quantity);
         }
     }
 
     public void markRequestAsCompleted(Cargo cargo){
+        System.out.println("Machine " + identificationNumber + " marked request as completed for cargo: " + cargo);
         requestedCargoTypes.put(cargo, false);
     }
 
@@ -168,7 +169,7 @@ public abstract class Maschine extends Thread implements Station{
     @Override
     public void run() {
         logger.info("Starting thread");
-        while (running) {
+        while (true) {
             runProductionCycle();
             try {
                 Thread.sleep(timeToSleep);

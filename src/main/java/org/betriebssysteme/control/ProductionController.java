@@ -36,11 +36,12 @@ public class ProductionController {
     public ProductionController() {
         this.logger = LoggerFactory.getLogger("ProductionController");
         logger.info("ProductionController initialized");
+        this.productionHeadquarters = new ProductionHeadquarters();
     }
 
     public void createAllStations() {
         productionHeadquarters = new ProductionHeadquarters();
-        mainDepot = new MainDepot(10);
+        mainDepot = new MainDepot(100, 50);
         driveUnitHouseProductionMaschine = new ProductionMaschine(
                 21,
                 500,
@@ -155,7 +156,6 @@ public class ProductionController {
     }
 
     public void addAllToProductionHeadquarters() {
-        productionHeadquarters = new ProductionHeadquarters();
         productionHeadquarters.addStation(mainDepot);
         productionHeadquarters.addStation(driveUnitHouseProductionMaschine);
         productionHeadquarters.addStation(driveUnitCircuitBoardProductionMaschine);
