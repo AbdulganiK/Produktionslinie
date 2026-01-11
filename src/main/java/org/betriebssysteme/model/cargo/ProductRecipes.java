@@ -59,6 +59,16 @@ public class ProductRecipes {
             }}
     );
 
+    private Recipe shippingPackageRecipe = new Recipe(
+            2000,
+            Product.SHIPPING_PACKAGE,
+            new HashMap<Cargo, Integer>() {{
+                put(Material.PACKING_MATERIAL, 3);
+                put(Product.DRIVE_UNIT, 1);
+                put(Product.CONTROL_UNIT, 1);
+            }}
+    );
+
     public Recipe getDriveHousingRecipe() {
         return driveHousingRecipe;
     }

@@ -4,7 +4,6 @@ import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Request;
 import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
-import org.betriebssysteme.model.cargo.CargoTyp;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +59,7 @@ public abstract class Maschine extends Thread implements Station{
         }
         checkStorageStatus();
         checkIfCargoPrductionIsPossible();
-        if (running){
+        if (running == true){
             Cargo producedCargo = produceProduct();
             storePrductOrDeliverToNextMachine(producedCargo);
         }
@@ -75,6 +74,7 @@ public abstract class Maschine extends Thread implements Station{
     protected abstract void storePrductOrDeliverToNextMachine(Cargo cargo);
 
     protected void sendCargoRequest(Cargo cargo, int quantity) {
+        System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
         if (!requestedCargoTypes.get(cargo)){
             Request request = new Request(quantity,1, cargo, this.identificationNumber);
             if (productionHeadquarters == null){
@@ -85,20 +85,35 @@ public abstract class Maschine extends Thread implements Station{
         }
     }
 
-    protected void deliverToNextMachine() {
+    protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
-            try {
-                storageSemaphore.acquire();
-                int availableQuantity = storage.getOrDefault(productCargo, 0);
-                int handedOverQuantity = nextMaschine.resiveCargo(productCargo, availableQuantity);
-                storage.put(productCargo, availableQuantity - handedOverQuantity);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            boolean cargoDelivered = false;
+            while (!cargoDelivered) {
+                try {
+                    logger.info("Trying to deliver product to next machine: " + nextMaschine.getIdentificationNumber());
+                    int deliveredQuantity = nextMaschine.resiveCargo(cargo, 1);
+                    if (deliveredQuantity == 0) {
+                        if (running){
+                            stopMachine();
+                        }
+                        logger.info("Next machine storage full, retrying in 500ms");
+                        Thread.sleep(500);
+                    }
+                    else {
+                        if (!running){
+                            startMachine();
+                        }
+                        cargoDelivered = true;
+                        logger.info("Product delivered to next machine: " + nextMaschine.getIdentificationNumber());
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
+                }
             }
-            finally {
-                logger.info("Delivered product to next machine: " + nextMaschine.getIdentificationNumber());
-                storageSemaphore.release();
-            }
+            logger.info("Delivering product to next machine: " + nextMaschine.getIdentificationNumber());
+            nextMaschine.resiveCargo(cargo, 1);
+        } else {
+            logger.warn("Next machine is null, cannot deliver product");
         }
     }
 
@@ -128,6 +143,7 @@ public abstract class Maschine extends Thread implements Station{
     public void startMachine() {
         running = true;
         logger.debug("Starting machine" + identificationNumber);
+        System.out.println("------------------- Machine " + identificationNumber + " started.");
     }
 
     public boolean isRunning() {
@@ -174,7 +190,7 @@ public abstract class Maschine extends Thread implements Station{
                 return 0;
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Machine "+ identificationNumber + " interrupted while receiving cargo", e);
         } finally {
             logger.info("Stored product in machine storage: " + cargo);
             storageSemaphore.release();

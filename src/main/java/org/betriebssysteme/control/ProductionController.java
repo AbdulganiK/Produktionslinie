@@ -1,8 +1,10 @@
 package org.betriebssysteme.control;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.cargo.ProductRecipes;
 import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.model.stations.ControlMachine;
 import org.betriebssysteme.model.stations.MainDepot;
 import org.betriebssysteme.model.stations.ProductionMaschine;
 
@@ -24,6 +26,8 @@ public class ProductionController {
     private ProductionMaschine controlUnitHouseProductionMaschine;
     private ProductionMaschine controlUnitCircuitBoardProductionMaschine;
     private ProductionMaschine controlUnitProductionMaschine;
+    private ControlMachine controlUnitQualityControlMachine;
+    private ControlMachine driveUnitQualityControlMachine;
 
     public ProductionController() {
         this.logger = LoggerFactory.getLogger("ProductionController");
@@ -39,7 +43,8 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getDriveHousingRecipe()
+                productRecipes.getDriveHousingRecipe(),
+                10
                 );
         driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 22,
@@ -47,7 +52,8 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getDrivePcbRecipe()
+                productRecipes.getDrivePcbRecipe(),
+                10
                 );
         driveUnitProductionMaschine = new ProductionMaschine(
                 23,
@@ -55,7 +61,8 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getDriveUnitRecipe()
+                productRecipes.getDriveUnitRecipe(),
+                5
                 );
         controlUnitHouseProductionMaschine = new ProductionMaschine(
                 24,
@@ -63,7 +70,8 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getControlHousingRecipe()
+                productRecipes.getControlHousingRecipe(),
+                10
                 );
         controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 25,
@@ -71,7 +79,8 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getControlPcbRecipe()
+                productRecipes.getControlPcbRecipe(),
+                10
                 );
         controlUnitProductionMaschine = new ProductionMaschine(
                 26,
@@ -79,8 +88,31 @@ public class ProductionController {
                 10,
                  productionHeadquarters,
                 null,
-                productRecipes.getControlUnitRecipe()
+                productRecipes.getControlUnitRecipe(),
+                5
                 );
+        controlUnitQualityControlMachine = new ControlMachine(
+                31,
+                500,
+                10,
+                5,
+                Product.CONTROL_UNIT,
+                null,
+                800,
+                 productionHeadquarters,
+                30
+                );
+        driveUnitQualityControlMachine = new ControlMachine(
+                32,
+                500,
+                10,
+                5,
+                Product.DRIVE_UNIT,
+                null,
+                800,
+                 productionHeadquarters,
+                25
+        );
         setNextMachines();
     }
 
@@ -89,6 +121,8 @@ public class ProductionController {
         driveUnitCircuitBoardProductionMaschine.setNextMaschine(driveUnitProductionMaschine);
         controlUnitHouseProductionMaschine.setNextMaschine(controlUnitProductionMaschine);
         controlUnitCircuitBoardProductionMaschine.setNextMaschine(controlUnitProductionMaschine);
+        controlUnitProductionMaschine.setNextMaschine(controlUnitQualityControlMachine);
+        driveUnitProductionMaschine.setNextMaschine(driveUnitQualityControlMachine);
     }
 
     public void createAllPersonnel() {
@@ -108,6 +142,8 @@ public class ProductionController {
         productionHeadquarters.addStation(controlUnitHouseProductionMaschine);
         productionHeadquarters.addStation(controlUnitCircuitBoardProductionMaschine);
         productionHeadquarters.addStation(controlUnitProductionMaschine);
+        productionHeadquarters.addStation(controlUnitQualityControlMachine);
+        productionHeadquarters.addStation(driveUnitQualityControlMachine);
         productionHeadquarters.addPersonnel(supplier);
     }
 
