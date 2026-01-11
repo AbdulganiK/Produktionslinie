@@ -101,6 +101,11 @@ public class ControlMachine extends Maschine{
             return Product.SCRAP;
         }
         logger.info("ControlMachine " + identificationNumber + " produced a GOOD product.");
+        try {
+            Thread.sleep(timeToProcess);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return productCargo;
     }
 

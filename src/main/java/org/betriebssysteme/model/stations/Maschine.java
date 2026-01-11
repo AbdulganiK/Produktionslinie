@@ -52,16 +52,19 @@ public abstract class Maschine extends Thread implements Station{
 
     private void runProductionCycle() {
         logger.info("Starting production cycle");
-        try {
-            Thread.sleep(timeToProcess);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         checkStorageStatus();
         checkIfCargoPrductionIsPossible();
         if (running == true){
             Cargo producedCargo = produceProduct();
             storePrductOrDeliverToNextMachine(producedCargo);
+        }
+        else{
+            try {
+                Thread.sleep(timeToSleep);
+                // Release CPU for a while when not running for better performance when stopped
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -75,7 +78,8 @@ public abstract class Maschine extends Thread implements Station{
 
     protected void sendCargoRequest(Cargo cargo, int quantity) {
         System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
-        if (!requestedCargoTypes.get(cargo)){
+        boolean requestedBefore = requestedCargoTypes.getOrDefault(cargo, false);
+        if (requestedBefore == false){
             Request request = new Request(quantity,1, cargo, this.identificationNumber);
             if (productionHeadquarters == null){
                 logger.error("No production headquarters available");
@@ -83,6 +87,10 @@ public abstract class Maschine extends Thread implements Station{
             productionHeadquarters.addRequest(request);
             logger.info("Added request to headquarters for cargo: " + cargo + " quantity: " + quantity);
         }
+    }
+
+    public void resetCargoRequestStatus(Cargo cargo){
+        requestedCargoTypes.put(cargo, false);
     }
 
     protected void deliverToNextMachine(Cargo cargo) {
@@ -94,6 +102,7 @@ public abstract class Maschine extends Thread implements Station{
                     int deliveredQuantity = nextMaschine.resiveCargo(cargo, 1);
                     if (deliveredQuantity == 0) {
                         if (running){
+                            System.out.println("Machine " + identificationNumber + " stopping due to next machine " + nextMaschine.getIdentificationNumber() + " storage full.");
                             stopMachine();
                         }
                         logger.info("Next machine storage full, retrying in 500ms");

@@ -6,6 +6,7 @@ import org.betriebssysteme.model.cargo.ProductRecipes;
 import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.stations.ControlMachine;
 import org.betriebssysteme.model.stations.MainDepot;
+import org.betriebssysteme.model.stations.PackagingMaschine;
 import org.betriebssysteme.model.stations.ProductionMaschine;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class ProductionController {
     private ProductionMaschine controlUnitProductionMaschine;
     private ControlMachine controlUnitQualityControlMachine;
     private ControlMachine driveUnitQualityControlMachine;
+    private PackagingMaschine packagingMaschine;
 
     public ProductionController() {
         this.logger = LoggerFactory.getLogger("ProductionController");
@@ -40,56 +42,56 @@ public class ProductionController {
         driveUnitHouseProductionMaschine = new ProductionMaschine(
                 21,
                 500,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getDriveHousingRecipe(),
-                10
+                25
                 );
         driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 22,
                 700,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getDrivePcbRecipe(),
-                10
+                25
                 );
         driveUnitProductionMaschine = new ProductionMaschine(
                 23,
                 1000,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getDriveUnitRecipe(),
-                5
+                15
                 );
         controlUnitHouseProductionMaschine = new ProductionMaschine(
                 24,
                 500,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getControlHousingRecipe(),
-                10
+                25
                 );
         controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 25,
                 700,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getControlPcbRecipe(),
-                10
+                25
                 );
         controlUnitProductionMaschine = new ProductionMaschine(
                 26,
                 1000,
-                10,
+                25,
                  productionHeadquarters,
                 null,
                 productRecipes.getControlUnitRecipe(),
-                5
+                15
                 );
         controlUnitQualityControlMachine = new ControlMachine(
                 31,
@@ -113,6 +115,16 @@ public class ProductionController {
                  productionHeadquarters,
                 25
         );
+        packagingMaschine = new PackagingMaschine(
+                40,
+                1500,
+                15,
+                 productionHeadquarters,
+                null,
+                10,
+                1200,
+                productRecipes.getShippingPackageRecipe()
+        );
         setNextMachines();
     }
 
@@ -123,6 +135,8 @@ public class ProductionController {
         controlUnitCircuitBoardProductionMaschine.setNextMaschine(controlUnitProductionMaschine);
         controlUnitProductionMaschine.setNextMaschine(controlUnitQualityControlMachine);
         driveUnitProductionMaschine.setNextMaschine(driveUnitQualityControlMachine);
+        controlUnitQualityControlMachine.setNextMaschine(packagingMaschine);
+        driveUnitQualityControlMachine.setNextMaschine(packagingMaschine);
     }
 
     public void createAllPersonnel() {
@@ -144,6 +158,7 @@ public class ProductionController {
         productionHeadquarters.addStation(controlUnitProductionMaschine);
         productionHeadquarters.addStation(controlUnitQualityControlMachine);
         productionHeadquarters.addStation(driveUnitQualityControlMachine);
+        productionHeadquarters.addStation(packagingMaschine);
         productionHeadquarters.addPersonnel(supplier);
     }
 

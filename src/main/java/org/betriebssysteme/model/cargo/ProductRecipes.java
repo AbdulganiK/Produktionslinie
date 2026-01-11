@@ -92,4 +92,8 @@ public class ProductRecipes {
     public Recipe getControlUnitRecipe() {
         return controlUnitRecipe;
     }
+
+    public Recipe getShippingPackageRecipe() {
+        return shippingPackageRecipe;
+    }
 }

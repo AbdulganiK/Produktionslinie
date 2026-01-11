@@ -18,4 +18,13 @@ public record Recipe(
         }
         return initialStorage;
     }
+
+    public Map<Cargo, Integer> getInitalStorageWithProduct(int initialQuantityPerIngredient) {
+        Map<Cargo, Integer> initialStorage = new HashMap<>();
+        for (Cargo ingredient : ingredients.keySet()) {
+            initialStorage.put(ingredient, initialQuantityPerIngredient);
+        }
+        initialStorage.put(productCargo, 0);
+        return initialStorage;
+    }
 }
