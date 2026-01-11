@@ -82,12 +82,12 @@ public class WarehouseClerk extends Thread implements Personnel {
             cargo = currentRequest.cargo();
             if (requestedCargoTyp == CargoTyp.MATERIAL) {
                 task = Task.DELIVERING;
-                originStationId = -1;
+                originStationId = 1;
                 destinationStationId = currentRequest.stationId();
             } else if (requestedCargoTyp == CargoTyp.PRODUCT) {
                 task = Task.EMPTYING;
                 originStationId = currentRequest.stationId();
-                destinationStationId = -1;
+                destinationStationId = 1;
             }
             return true;
         }

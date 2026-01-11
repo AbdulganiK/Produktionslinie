@@ -35,8 +35,12 @@ public class ProductionHeadquarters{
     public void startAllStations(){
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
-            if(station instanceof Maschine)
+            stations.put(station.getIdentificationNumber(), station);
+            if (station instanceof Maschine)
                 ((Maschine) station).setProductionHeadquarters(this);
+        }
+        for (Object stationObj : stations.values()) {
+            Station station = (Station) stationObj;
             station.start();
             logger.info("Started station with ID: " + station.getIdentificationNumber());
         }
