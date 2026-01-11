@@ -8,10 +8,8 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.GameWorld;
 import com.almasb.fxgl.entity.level.tiled.TiledMap;
 import com.almasb.fxgl.physics.CollisionHandler;
-import com.almasb.fxgl.physics.PhysicsComponent;
 import javafx.geometry.Point2D;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+
 
 import javafx.scene.input.ScrollEvent;
 import com.almasb.fxgl.entity.level.tiled.TiledMap;
@@ -51,6 +49,55 @@ public class ProductionLineApp extends GameApplication {
 
         getPhysicsWorld().setGravity(0, 0);
 
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.MACHINE, EntityType.ITEM) {
+            @Override
+            protected void onCollision(Entity machine, Entity item) {
+                ItemMoveComponent moveComponent = item.getComponent(ItemMoveComponent.class);
+                moveComponent.setDirection(Point2D.ZERO);
+                if (machine.getComponent(MachineComponent.class).isDoorOpen()) {
+                    item.removeFromWorld();
+                }
+            }
+        });
+
+        getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.ITEM, EntityType.ITEM) {
+            @Override
+            protected void onCollisionBegin(Entity a, Entity b) {
+
+                ItemMoveComponent moveA = a.getComponent(ItemMoveComponent.class);
+                ItemMoveComponent moveB = b.getComponent(ItemMoveComponent.class);
+
+                Point2D dir = moveA.getDirection();
+                if (dir.equals(Point2D.ZERO)) {
+                    return;
+                }
+
+                dir = dir.normalize();
+
+                // Projektion der Positionen auf die Bewegungsrichtung
+                double projA = a.getCenter().getX() * dir.getX() + a.getCenter().getY() * dir.getY();
+                double projB = b.getCenter().getX() * dir.getX() + b.getCenter().getY() * dir.getY();
+                // Block Logik
+                if (projA < projB) {
+                    // a blocken
+                    moveA.setBlocked(true);
+                } else {
+                    // b blocken
+                    moveB.setBlocked(true);
+                }
+            }
+
+            @Override
+            protected void onCollisionEnd(Entity a, Entity b) {
+                // keine Berührung mehr
+                a.getComponentOptional(ItemMoveComponent.class)
+                        .ifPresent(m -> m.setBlocked(false));
+
+                b.getComponentOptional(ItemMoveComponent.class)
+                        .ifPresent(m -> m.setBlocked(false));
+            }
+        });
+
         getPhysicsWorld().addCollisionHandler(new CollisionHandler(EntityType.BELT, EntityType.ITEM) {
             @Override
             protected void onCollisionBegin(Entity belt, Entity item) {
@@ -61,13 +108,16 @@ public class ProductionLineApp extends GameApplication {
 
             @Override
             protected void onCollisionEnd(Entity belt, Entity item) {
-                System.out.println(">>> END BELT-ITEM (CollisionHandler)");
-                ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
-                move.removeBeltContact();
+                if (item.hasComponent(ItemMoveComponent.class)) {
+                    ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
+                    move.removeBeltContact();
+                }
             }
-        });
-    }
 
+        });
+
+
+    }
 
     public static Entity spawnItemOnBelt(Entity belt) {
         Point2D center = belt.getCenter();
@@ -98,6 +148,10 @@ public class ProductionLineApp extends GameApplication {
         BeltFactory.spawnBeltsAfterMachine(machine, 10);
 
         spawnItemOnBelt(belts.getFirst());
+        spawnItemOnBelt(belts.get(1));
+        spawnItemOnBelt(belts.get(2));
+        spawnItemOnBelt(belts.get(3));
+        spawnItemOnBelt(belts.get(4));
 
         Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
 

@@ -27,6 +27,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .type(EntityType.MACHINE)
                 .with(new MachineComponent())
                 .with(new StatusComponent())
+                .with(new CollidableComponent(true))
                 .bbox(new HitBox(BoundingShape.box(64, 64)))
                 .build();
     }
