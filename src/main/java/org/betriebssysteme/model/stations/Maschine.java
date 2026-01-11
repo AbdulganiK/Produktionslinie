@@ -246,4 +246,13 @@ public abstract class Maschine extends Thread implements Station{
     public int getIdentificationNumber() {
         return identificationNumber;
     }
+
+    @Override
+    public void start() {
+        super.start();
+    }
+
+    public void setProductionHeadquarters(ProductionHeadquarters productionHeadquarters){
+        this.productionHeadquarters = productionHeadquarters;
+    }
 }

@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.stations;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 

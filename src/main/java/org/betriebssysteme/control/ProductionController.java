@@ -172,6 +172,7 @@ public class ProductionController {
 
     public void startProductionHeadquarters() {
         productionHeadquarters.startAllStations();
+        warehouseClerk1.setProductionHeadquarters(productionHeadquarters);
         productionHeadquarters.startAllPersonnel();
     }
 }

@@ -2,6 +2,7 @@ package org.betriebssysteme.model;
 
 import org.betriebssysteme.model.personnel.Personnel;
 import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.model.stations.Maschine;
 import org.betriebssysteme.model.stations.Station;
 import org.slf4j.Logger;
 
@@ -23,27 +24,19 @@ public class ProductionHeadquarters{
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
     }
 
-    public ProductionHeadquarters(List<Station> stationsList, List<Personnel> personnelList){
-        requestQueue = new PriorityQueue<>();
-        for (Station station : stationsList) {
-            stations.put(station.getIdentificationNumber(), station);
-        }
-        for (Personnel person : personnelList) {
-            personnel.put(person.getIdentificationNumber(), person);
-        }
-    }
-
     public void startAllPersonnel(){
         for (Object personObj : personnel.values()) {
             Personnel person = (Personnel) personObj;
             person.start();
-            System.out.println("Started personnel with ID: " + person.getIdentificationNumber());
+            logger.info("Started personnel with ID: " + person.getIdentificationNumber());
         }
     }
 
     public void startAllStations(){
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
+            if(station instanceof Maschine)
+                ((Maschine) station).setProductionHeadquarters(this);
             station.start();
             logger.info("Started station with ID: " + station.getIdentificationNumber());
         }
@@ -64,13 +57,13 @@ public class ProductionHeadquarters{
     }
 
     public Map getStations(){
-        System.out.println("Listing all stations in ProductionHeadquarters:");
-        System.out.println("Total stations: " + stations.size());
+        Map<Integer, Station> stationsMap = new HashMap<>();
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
-            System.out.println("Station ID: " + station.getIdentificationNumber());
+            stationsMap.put(station.getIdentificationNumber(), station);
         }
-        return stations;
+        System.out.println("Stations map retrieved with " + stationsMap.size() + " stations.");
+        return stationsMap;
     }
 
     public Map getPersonnel(){

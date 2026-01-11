@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.stations;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
@@ -119,7 +120,6 @@ public class MainDepot implements Station {
 
     @Override
     public void start() {
-        //MainDepot does not need to run as a separate thread
-        return;
+        // MainDepot does not have a separate thread of execution
     }
 }

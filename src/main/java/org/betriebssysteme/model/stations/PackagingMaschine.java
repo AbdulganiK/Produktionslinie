@@ -71,14 +71,14 @@ public class PackagingMaschine extends Maschine {
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
-                if (storedQuantity < ingredientQuantity && running) {
+                if (storedQuantity < ingredientQuantity) {
                     System.out.println("Packaging Machine " + identificationNumber + " does not have enough " + cargo + " to produce product.");
                     logger.info("Packaging Machine " + identificationNumber + " does not have enough " + cargo + " to produce product.");
                     cargoPrductionIsPossible = false;
                 }
             }
             int currentProductQuantity = storage.getOrDefault(productCargo, 0);
-            if (currentProductQuantity >= maxStorageCapacity && running) {
+            if (currentProductQuantity >= maxStorageCapacity) {
                 logger.info("Storage full, cannot produce more product of " + identificationNumber);
                 cargoPrductionIsPossible = false;
                 if (running) {

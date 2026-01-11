@@ -77,6 +77,7 @@ public class WarehouseClerk extends Thread implements Personnel {
     private boolean getRequested() {
         currentRequest = productionHeadquarters.pollRequest();
         if (currentRequest != null) {
+            System.out.println("WarehouseClerk " + identificationNumber + " received request for " + currentRequest.cargo() + " at Station " + currentRequest.stationId());
             CargoTyp requestedCargoTyp = currentRequest.cargo().getCargoTyp();
             cargo = currentRequest.cargo();
             if (requestedCargoTyp == CargoTyp.MATERIAL) {
@@ -91,6 +92,10 @@ public class WarehouseClerk extends Thread implements Personnel {
             return true;
         }
         return false;
+    }
+
+    public void setProductionHeadquarters(ProductionHeadquarters productionHeadquarters) {
+        this.productionHeadquarters = productionHeadquarters;
     }
 
 
