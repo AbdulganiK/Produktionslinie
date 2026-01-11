@@ -4,6 +4,7 @@ import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.cargo.ProductRecipes;
 import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.ControlMachine;
 import org.betriebssysteme.model.stations.MainDepot;
 import org.betriebssysteme.model.stations.PackagingMaschine;
@@ -30,6 +31,7 @@ public class ProductionController {
     private ControlMachine controlUnitQualityControlMachine;
     private ControlMachine driveUnitQualityControlMachine;
     private PackagingMaschine packagingMaschine;
+    private WarehouseClerk warehouseClerk1;
 
     public ProductionController() {
         this.logger = LoggerFactory.getLogger("ProductionController");
@@ -145,6 +147,11 @@ public class ProductionController {
                 10000,
                 1000,
                 1000);
+        warehouseClerk1 = new WarehouseClerk(12,
+                1000,
+                2000,
+                1000,
+                productionHeadquarters);
     }
 
     public void addAllToProductionHeadquarters() {
@@ -160,6 +167,7 @@ public class ProductionController {
         productionHeadquarters.addStation(driveUnitQualityControlMachine);
         productionHeadquarters.addStation(packagingMaschine);
         productionHeadquarters.addPersonnel(supplier);
+        productionHeadquarters.addPersonnel(warehouseClerk1);
     }
 
     public void startProductionHeadquarters() {

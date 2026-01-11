@@ -18,15 +18,13 @@ public class ProductionHeadquarters{
 
     public ProductionHeadquarters (){
         requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
-        stations = new HashMap();
-        personnel = new HashMap();
+        this.stations = new HashMap();
+        this.personnel = new HashMap();
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
     }
 
     public ProductionHeadquarters(List<Station> stationsList, List<Personnel> personnelList){
         requestQueue = new PriorityQueue<>();
-        stations = new HashMap();
-        personnel = new HashMap();
         for (Station station : stationsList) {
             stations.put(station.getIdentificationNumber(), station);
         }
@@ -39,6 +37,7 @@ public class ProductionHeadquarters{
         for (Object personObj : personnel.values()) {
             Personnel person = (Personnel) personObj;
             person.start();
+            System.out.println("Started personnel with ID: " + person.getIdentificationNumber());
         }
     }
 
@@ -65,6 +64,12 @@ public class ProductionHeadquarters{
     }
 
     public Map getStations(){
+        System.out.println("Listing all stations in ProductionHeadquarters:");
+        System.out.println("Total stations: " + stations.size());
+        for (Object stationObj : stations.values()) {
+            Station station = (Station) stationObj;
+            System.out.println("Station ID: " + station.getIdentificationNumber());
+        }
         return stations;
     }
 

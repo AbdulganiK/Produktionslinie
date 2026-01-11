@@ -89,7 +89,7 @@ public abstract class Maschine extends Thread implements Station{
         }
     }
 
-    public void resetCargoRequestStatus(Cargo cargo){
+    public void markRequestAsCompleted(Cargo cargo){
         requestedCargoTypes.put(cargo, false);
     }
 
