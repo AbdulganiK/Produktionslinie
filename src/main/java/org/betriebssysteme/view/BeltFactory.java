@@ -21,7 +21,7 @@ public class BeltFactory {
     private static final double OUTPUT_START_OFFSET_X = 27;   // musst du ggf. feinjustieren
     private static final double OUTPUT_START_OFFSET_Y = -5;
 
-    private static ArrayList<Entity> spawnBeltLine(int length, double startX, double startY, int startZ) {
+    public static ArrayList<Entity> spawnBeltLine(int length, double startX, double startY, int startZ, BeltDirection beltDirection) {
         ArrayList<Entity> entities = new ArrayList<>();
         double x = startX;
         double y = startY;
@@ -30,37 +30,60 @@ public class BeltFactory {
         // START
         Entity start = FXGL.spawn(EntityNames.BELT, x, y);
         start.setZIndex(z--);
-        start.getComponent(BeltComponent.class).setAnimation(BeltAnimationType.START);
+
+        BeltComponent startComp = start.getComponent(BeltComponent.class);
+        startComp.setBeltDirection(beltDirection);
+        startComp.setAnimation(BeltAnimationType.START);
+
         entities.add(start);
 
         // MIDDLE
         for (int i = 0; i < length; i++) {
-            x += STEP_X;
-            y += STEP_Y;
+            if (beltDirection == BeltDirection.VERTICAL) {
+                x += STEP_X;
+                y += STEP_Y;
+            } else {
+                x += STEP_X * -1;
+                y += STEP_Y;
+            }
 
             Entity middle = FXGL.spawn(EntityNames.BELT, x, y);
             middle.setZIndex(z--);
-            middle.getComponent(BeltComponent.class).setAnimation(BeltAnimationType.MID);
+
+            BeltComponent midComp = middle.getComponent(BeltComponent.class);
+            midComp.setBeltDirection(beltDirection);
+            midComp.setAnimation(BeltAnimationType.MID);
+
             entities.add(middle);
         }
 
-        // END
-        x += STEP_X;
-        y += STEP_Y;
+        if (beltDirection == BeltDirection.VERTICAL) {
+            x += STEP_X;
+            y += STEP_Y;
+        } else {
+            x += STEP_X * -1;
+            y += STEP_Y;
+        }
 
         Entity end = FXGL.spawn(EntityNames.BELT, x, y);
         end.setZIndex(z);
-        end.getComponent(BeltComponent.class).setAnimation(BeltAnimationType.END);
+
+        BeltComponent endComp = end.getComponent(BeltComponent.class);
+        endComp.setBeltDirection(beltDirection);
+        endComp.setAnimation(BeltAnimationType.END);
+
         entities.add(end);
+
         return entities;
     }
+
 
     public static ArrayList<Entity> spawnBeltsAfterMachine(Entity machine, int length) {
 
         double startX = machine.getX() + OUTPUT_START_OFFSET_X;
         double startY = machine.getY() + OUTPUT_START_OFFSET_Y;
 
-        return spawnBeltLine(length, startX, startY, machine.getZIndex() - length - 1);
+        return spawnBeltLine(length, startX, startY, machine.getZIndex() - length - 1, BeltDirection.VERTICAL);
     }
 
     public static ArrayList<Entity> spawnBeltsBeforeMachine(Entity machine, int length) {
@@ -71,7 +94,19 @@ public class BeltFactory {
         double startX = machineX - INPUT_END_OFFSET_X - (length + 1) * STEP_X;
         double startY = machineY - INPUT_END_OFFSET_Y - (length + 1) * STEP_Y;
 
-        return spawnBeltLine(length, startX, startY, machine.getZIndex() + length + 1);
+        return spawnBeltLine(length, startX, startY, machine.getZIndex() + length + 1, BeltDirection.VERTICAL);
+    }
+
+    public static ArrayList<Entity> spawnBeltOnBelt(Entity belt, int length, BeltDirection direction) {
+        ArrayList<Entity> belts;
+        if (direction == BeltDirection.VERTICAL) {
+            belts = spawnBeltLine(length, belt.getX() + STEP_X, belt.getY() + STEP_Y, 100, direction);
+
+        } else {
+            belts = spawnBeltLine(length, belt.getX() + STEP_X * -1, belt.getY() + STEP_Y, belt.getZIndex()-1, direction);
+
+        }
+        return belts;
     }
 
 
