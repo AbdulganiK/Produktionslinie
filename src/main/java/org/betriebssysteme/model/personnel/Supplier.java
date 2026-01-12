@@ -127,7 +127,7 @@ public class Supplier extends Thread implements Personnel {
 
     @Override
     public String[][] getInfoArray() {
-        String[][] infoArray = new String[7][2];
+        String[][] infoArray = new String[8][2];
 
         infoArray[0][0] = "Supplier ID";
         infoArray[0][1] = String.valueOf(identificationNumber);
