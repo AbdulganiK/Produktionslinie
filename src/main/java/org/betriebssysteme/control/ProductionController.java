@@ -49,7 +49,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getDriveHousingRecipe(),
-                25
+                5
                 );
         driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 22,
@@ -58,7 +58,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getDrivePcbRecipe(),
-                25
+                5
                 );
         driveUnitProductionMaschine = new ProductionMaschine(
                 23,
@@ -67,7 +67,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getDriveUnitRecipe(),
-                15
+                5
                 );
         controlUnitHouseProductionMaschine = new ProductionMaschine(
                 24,
@@ -76,7 +76,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getControlHousingRecipe(),
-                25
+                5
                 );
         controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
                 25,
@@ -85,7 +85,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getControlPcbRecipe(),
-                25
+                5
                 );
         controlUnitProductionMaschine = new ProductionMaschine(
                 26,
@@ -94,7 +94,7 @@ public class ProductionController {
                  productionHeadquarters,
                 null,
                 productRecipes.getControlUnitRecipe(),
-                15
+                5
                 );
         controlUnitQualityControlMachine = new ControlMachine(
                 31,
