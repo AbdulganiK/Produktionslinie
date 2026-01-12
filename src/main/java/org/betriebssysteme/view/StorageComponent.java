@@ -14,7 +14,7 @@ import com.almasb.fxgl.physics.*;
 
 public class StorageComponent extends Component {
 
-    // Basisgrößen – kannst du nach Geschmack anpassen
+    // Basisgrößen
     private static final double PAD_WIDTH   = 420;
     private static final double PAD_HEIGHT  = 140;
 
