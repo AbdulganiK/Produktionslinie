@@ -5,6 +5,7 @@ import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import javafx.util.Duration;
+import org.betriebssysteme.utility.EventHandler;
 
 public class MachineComponent extends Component {
 

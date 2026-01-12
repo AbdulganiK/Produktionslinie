@@ -1,16 +1,13 @@
 package org.betriebssysteme.view;
 
 import com.almasb.fxgl.entity.component.Component;
-import com.almasb.fxgl.core.math.Vec2;
-import com.almasb.fxgl.physics.BoundingShape;
-import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
-import com.almasb.fxgl.physics.*;
+import org.betriebssysteme.utility.EventHandler;
 
 public class StorageComponent extends Component {
 

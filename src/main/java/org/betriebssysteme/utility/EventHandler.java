@@ -1,6 +1,8 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.utility;
 
 import com.almasb.fxgl.entity.Entity;
+import org.betriebssysteme.view.MenuComponent;
+import org.betriebssysteme.view.StatusComponent;
 
 import java.util.List;
 

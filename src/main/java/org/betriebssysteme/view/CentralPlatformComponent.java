@@ -1,17 +1,14 @@
 package org.betriebssysteme.view;
 
 import com.almasb.fxgl.entity.component.Component;
-import com.almasb.fxgl.physics.HitBox;
-import com.almasb.fxgl.physics.BoundingShape;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import org.betriebssysteme.utility.EventHandler;
 
 public class CentralPlatformComponent extends Component {
 
