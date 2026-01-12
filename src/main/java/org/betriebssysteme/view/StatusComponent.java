@@ -10,11 +10,23 @@ public class StatusComponent extends Component {
 
 
 
+    private double offSetX = 0;
+    private double offSetY = 0;
 
     private Rectangle rectangle;
     private Circle firstLight;
     private Circle secondLight;
     private Circle thirdLight;
+
+    public StatusComponent(double offSetX, double offSetY) {
+        this.offSetX = offSetX;
+        this.offSetY = offSetY;
+    }
+
+    public StatusComponent() {
+        this.offSetX = 0;
+        this.offSetY = 0;
+    }
 
     @Override
     public void onAdded() {
@@ -30,7 +42,7 @@ public class StatusComponent extends Component {
         rectangle.setStroke(Color.rgb(50, 50, 60));
         rectangle.setStrokeWidth(1.5);
 
-        // Kleine LED-Lichter innerhalb des Panels
+
         double r = 4;    // Radius der LEDs
         double centerY = panelHeight / 2.0;
 
@@ -51,8 +63,8 @@ public class StatusComponent extends Component {
         Group panel = new Group(rectangle, firstLight, secondLight, thirdLight);
 
         double machineWidth = entity.getBoundingBoxComponent().getWidth();
-        panel.setTranslateX((machineWidth - panelWidth));
-        panel.setTranslateY(-18);   // etwas über der Maschine
+        panel.setTranslateX((machineWidth - panelWidth) + offSetX);
+        panel.setTranslateY(-18 + offSetY);   // etwas über der Maschine
 
         this.running();
         entity.getViewComponent().addChild(panel);

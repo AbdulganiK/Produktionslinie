@@ -75,6 +75,17 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .build();
     }
 
+    @Spawns(EntityNames.CENTRAL)
+    public Entity newCentral(SpawnData data) {
+        return FXGL.entityBuilder(data)
+                .type(EntityType.CENTRAL)
+                .with(new CentralPlatformComponent())
+                .with(new StatusComponent(50, -90))
+                .with(new MenuComponent(300, -100))
+                .build();
+
+    }
+
 
 
 

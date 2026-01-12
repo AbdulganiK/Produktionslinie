@@ -154,6 +154,7 @@ public class ProductionLineApp extends GameApplication {
         spawnItemOnBelt(belts.get(4));
 
         Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
+        Entity central = FXGL.spawn(EntityNames.CENTRAL, 1800, 1200);
 
     }
 

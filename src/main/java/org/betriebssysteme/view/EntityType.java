@@ -6,5 +6,6 @@ public enum EntityType {
     SUPPLIER,
     HEADQUARTER,
     BELT,
-    ITEM
+    ITEM,
+    CENTRAL
 }

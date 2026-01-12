@@ -5,5 +5,5 @@ public interface EntityNames {
     public static final String STORAGE = "storage";
     public static final String BELT = "belt";
     public static final String ITEM = "item";
-
+    public static final String CENTRAL = "central";
 }
