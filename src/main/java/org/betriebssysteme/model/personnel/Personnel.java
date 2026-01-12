@@ -16,4 +16,5 @@ public interface Personnel extends Runnable {
     Task getCurrentTask();
     int getIdentificationNumber();
     void start();
+    String[][] getInfoArray();
 }

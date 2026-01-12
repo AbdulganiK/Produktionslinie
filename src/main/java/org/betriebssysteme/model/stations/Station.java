@@ -42,4 +42,6 @@ public interface Station{
     int getIdentificationNumber();
 
     void start();
+
+    String [][] getInfoArray();
 }

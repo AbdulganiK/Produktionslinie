@@ -135,4 +135,29 @@ public class MainDepot implements Station {
     public void start() {
         // MainDepot does not have a separate thread of execution
     }
+
+    @Override
+    public String [][] getInfoArray(){
+        String [][] infoArray = new String[cargoStorage.size()+4][2];
+
+        infoArray[0][0] = "Main Depot ID";
+        infoArray[0][1] = Integer.toString(identificationNumber);
+
+        infoArray[1][0] = "Max Storage Capacity";
+        infoArray[1][1] = Integer.toString(maxStorageCapacity);
+
+        infoArray[2][0] = "Current Status";
+        infoArray[2][1] = status.toString();
+
+        infoArray[3][0] = "Cargo";
+        infoArray[3][1] = "Quantity";
+
+        int index = 4;
+        for (Cargo cargo : cargoStorage.keySet()){
+            infoArray[index][0] = cargo.toString();
+            infoArray[index][1] = Integer.toString(cargoStorage.get(cargo));
+            index++;
+        }
+        return infoArray;
+    }
 }

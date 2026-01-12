@@ -123,6 +123,43 @@ public class Supplier extends Thread implements Personnel {
         super.start();
     }
 
+    @Override
+    public String[][] getInfoArray() {
+        String[][] infoArray = new String[7][2];
+
+        infoArray[0][0] = "Supplier ID";
+        infoArray[0][1] = String.valueOf(identificationNumber);
+
+        infoArray[1][0] = "Status";
+        infoArray[1][1] = status.toString();
+
+        infoArray[2][0] = "Current Task";
+        infoArray[2][1] = task.toString();
+
+        infoArray[3][0] = "Origin Station ID";
+        if (originStationId == -1) {
+            infoArray[3][1] = "N/A";
+        } else {
+            infoArray[3][1] = String.valueOf(originStationId);
+        }
+        infoArray[4][0] = "Destination Station ID";
+        if (destinationStationId == -1) {
+            infoArray[4][1] = "N/A";
+        } else {
+            infoArray[4][1] = String.valueOf(destinationStationId);
+        }
+
+        infoArray[5][0] = "Supply Interval (ms)";
+        infoArray[5][1] = String.valueOf(supplyInterval_ms);
+
+        infoArray[6][0] = "Supply Timer (ms)";
+        infoArray[6][1] = String.valueOf(supplyTimer_ms);
+
+        infoArray[7][0] = "Travel Timer (ms)";
+        infoArray[7][1] = String.valueOf(travelTimer_ms);
+        return infoArray;
+    }
+
     // ============================================================================
     //Thread methods
     @Override
