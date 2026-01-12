@@ -1,15 +1,17 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
 import org.betriebssysteme.model.cargo.Material;
-import org.betriebssysteme.model.cargo.Product;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusInfo;
+import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 public class MainDepot implements Station {
@@ -26,7 +28,7 @@ public class MainDepot implements Station {
         this.identificationNumber = 1;
         this.maxStorageCapacity = maxStorageCapacity;
         this.cargoStorageSemaphore = new Semaphore(1);
-        this.status = Status.OPERATING;
+        this.status = StatusWarning.STOPPED;
         this.logger = org.slf4j.LoggerFactory.getLogger("MainDepot-" + identificationNumber);
         logger.info("Main Depot " + identificationNumber + " created with max storage capacity of " + maxStorageCapacity);
         this.initialStorageCapacity = initialStorageCapacity;
@@ -40,24 +42,31 @@ public class MainDepot implements Station {
     }
 
     private void checkAndUpdateStatus() {
-        status = Status.OPERATING;
+        status = StatusInfo.OPPERATIONAL;
         for (Cargo cargo : cargoStorage.keySet()) {
             int quantity = cargoStorage.get(cargo);
             if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
                 if (quantity == 0) {
-                    status = Status.EMPTY;
-                    logger.info("Status set to EMPTY due to " + cargo);
+                    if (status != StatusWarning.EMPTY){
+                        status = StatusWarning.EMPTY;
+                        logger.info("Status set to EMPTY due to " + cargo);
+                    }
                 } else if (quantity < maxStorageCapacity * 0.25) {
-                    status = Status.LOW_CAPACITY;
-                    logger.info("Status set to LOW_CAPACITY due to " + cargo);
+                    if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY){
+                        status = StatusCritical.LOW_CAPACITY;
+                        logger.info("Status set to CRITICAL due to " + cargo);
+                    }
                 }
             } else if (cargo.getCargoTyp() == CargoTyp.PRODUCT) {
                 if (quantity >= maxStorageCapacity) {
-                    status = Status.FULL;
-                    logger.info("Status set to FULL due to " + cargo);
+                    if (status != StatusWarning.FULL){
+                        status = StatusWarning.FULL;
+                        logger.info("Status set to FULL due to " + cargo);
+                    }
                 } else if (quantity > maxStorageCapacity * 0.75) {
-                    status = Status.LOW_CAPACITY;
-                    logger.info("Status set to LOW_CAPACITY due to " + cargo);
+                    if (status != StatusWarning.FULL && status != StatusCritical.LOW_CAPACITY)
+                        status = StatusCritical.LOW_CAPACITY;
+                        logger.info("Status set to CRITICAL due to " + cargo);
                 }
             }
         }
@@ -134,5 +143,30 @@ public class MainDepot implements Station {
     @Override
     public void start() {
         // MainDepot does not have a separate thread of execution
+    }
+
+    @Override
+    public String [][] getInfoArray(){
+        String [][] infoArray = new String[cargoStorage.size()+4][2];
+
+        infoArray[0][0] = "Main Depot ID";
+        infoArray[0][1] = Integer.toString(identificationNumber);
+
+        infoArray[1][0] = "Max Storage Capacity";
+        infoArray[1][1] = Integer.toString(maxStorageCapacity);
+
+        infoArray[2][0] = "Current Status";
+        infoArray[2][1] = status.toString();
+
+        infoArray[3][0] = "Cargo";
+        infoArray[3][1] = "Quantity";
+
+        int index = 4;
+        for (Cargo cargo : cargoStorage.keySet()){
+            infoArray[index][0] = cargo.toString();
+            infoArray[index][1] = Integer.toString(cargoStorage.get(cargo));
+            index++;
+        }
+        return infoArray;
     }
 }

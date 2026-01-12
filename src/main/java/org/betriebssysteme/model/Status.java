@@ -11,4 +11,3 @@ public enum Status {
     WORKING,
     OPERATING
 }
-

@@ -2,12 +2,14 @@ package org.betriebssysteme.model.stations;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Request;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,7 @@ public abstract class Maschine extends Thread implements Station{
         this.nextMaschine = nextMaschine;
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
-        this.status = Status.OPERATING;
+        this.status = StatusInfo.OPPERATIONAL;
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
@@ -255,5 +257,46 @@ public abstract class Maschine extends Thread implements Station{
 
     public void setProductionHeadquarters(ProductionHeadquarters productionHeadquarters){
         this.productionHeadquarters = productionHeadquarters;
+    }
+
+    @Override
+    public String [][] getInfoArray(){
+        String [][] infoArray = new String[storage.size()+8][2];
+        infoArray[0][0] = "Maschine ID";
+        infoArray[0][1] = Integer.toString(identificationNumber);
+
+        infoArray[1][0] = "Status";
+        infoArray[1][1] = status.toString();
+
+        infoArray[2][0] = "Running";
+        infoArray[2][1] = Boolean.toString(running);
+
+        infoArray[3][0] = "Max Storage Capacity";
+        infoArray[3][1] = Integer.toString(maxStorageCapacity);
+
+        infoArray[4][0] = "Product Cargo";
+        infoArray[4][1] = productCargo.toString();
+
+        infoArray [5][0] = "Next Maschine ID";
+        if (nextMaschine != null){
+            infoArray[5][1] = Integer.toString(nextMaschine.getIdentificationNumber());
+        }
+        else{
+            infoArray[5][1] = "None";
+        }
+
+        infoArray [6][0] = "Time To Process (ms)";
+        infoArray[6][1] = Integer.toString(timeToProcess);
+
+        infoArray [7][0] = "Storage";
+        infoArray[7][1] = "Quantity";
+
+        int index = 8;
+        for (Map.Entry<Cargo, Integer> entry : storage.entrySet()) {
+            infoArray[index][0] = entry.getKey().toString();
+            infoArray[index][1] = Integer.toString(entry.getValue());
+            index++;
+        }
+        return infoArray;
     }
 }

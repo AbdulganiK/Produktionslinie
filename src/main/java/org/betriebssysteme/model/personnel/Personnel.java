@@ -1,8 +1,8 @@
 package org.betriebssysteme.model.personnel;
 
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
+import org.betriebssysteme.model.status.Status;
 
 import java.util.Map;
 
@@ -16,4 +16,5 @@ public interface Personnel extends Runnable {
     Task getCurrentTask();
     int getIdentificationNumber();
     void start();
+    String[][] getInfoArray();
 }

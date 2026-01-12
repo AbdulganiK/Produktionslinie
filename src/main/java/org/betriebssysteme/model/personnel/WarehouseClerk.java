@@ -2,12 +2,14 @@ package org.betriebssysteme.model.personnel;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Request;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
 import org.betriebssysteme.model.stations.Maschine;
 import org.betriebssysteme.model.stations.Station;
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusInfo;
+import org.betriebssysteme.model.status.StatusWarning;
 
 import java.util.Map;
 
@@ -35,7 +37,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.timeForTravel_ms = timeForTravel_ms;
         this.timeForTask_ms = timeForTask_ms;
         this.timeForSleep_ms = timeForSleep_ms;
-        this.status = Status.STOPPED;
+        this.status = StatusWarning.STOPPED;
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
@@ -50,27 +52,29 @@ public class WarehouseClerk extends Thread implements Personnel {
     private void runTaskCycle() {
         boolean hasRequest = getRequested();
         if (!hasRequest) {
-            status = Status.STOPPED;
+            status = StatusWarning.STOPPED;
             task = Task.JOBLESS;
             return;
         }
         else {
-            status = Status.OPERATING;
+            status = StatusInfo.COLLECT_CARGO;
             int transportedQuantity = collectCargo(cargo, currentRequest.quantity());
             try {
-                Thread.sleep(timeForTravel_ms + timeForTask_ms);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            refillCargo(cargo, transportedQuantity);
-            try {
+                Thread.sleep(timeForTask_ms);
+                status = StatusInfo.TRANSPORT_CARGO;
+                Thread.sleep(timeForTravel_ms);
+                status = StatusInfo.DELIVER_CARGO;
+                refillCargo(cargo, transportedQuantity);
+                Thread.sleep(timeForTask_ms);
+                Maschine requestedMachine = (Maschine) stations.get(currentRequest.stationId());
+                requestedMachine.markRequestAsCompleted(cargo);
+                System.out.println("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
+                status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
                 Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
+                status = StatusWarning.STOPPED;
                 throw new RuntimeException(e);
             }
-            Maschine requestedMachine = (Maschine) stations.get(currentRequest.stationId());
-            requestedMachine.markRequestAsCompleted(cargo);
-            System.out.println("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
         }
     }
 
@@ -132,7 +136,7 @@ public class WarehouseClerk extends Thread implements Personnel {
 
     @Override
     public Map getInformationMap() {
-        return Map.of();
+        return null;
     }
 
     @Override
@@ -160,6 +164,49 @@ public class WarehouseClerk extends Thread implements Personnel {
         super.start();
     }
 
+    @Override
+    public String[][] getInfoArray() {
+        String[][] infoArray = new String[10][2];
+        infoArray[0][0] = "Identification Number";
+        infoArray[0][1] = String.valueOf(identificationNumber);
+
+        infoArray[1][0] = "Status";
+        infoArray[1][1] = status.toString();
+
+        infoArray[2][0] = "Current Task";
+        infoArray[2][1] = task.toString();
+
+        infoArray[3][0] = "Origin Station ID";
+        infoArray[3][1] = String.valueOf(originStationId);
+
+        infoArray[4][0] = "Destination Station ID";
+        infoArray[4][1] = String.valueOf(destinationStationId);
+
+        infoArray[5][0] = "Cargo";
+        if (cargo != null) {
+            infoArray[5][1] = cargo.toString();
+        } else {
+            infoArray[5][1] = "N/A";
+        }
+
+        infoArray[6][0] = "Cargo Quantity";
+        if (currentRequest != null) {
+            infoArray[6][1] = String.valueOf(currentRequest.quantity());
+        } else {
+            infoArray[6][1] = "N/A";
+        }
+
+        infoArray[7][0] = "Time for Travel (ms)";
+        infoArray[7][1] = String.valueOf(timeForTravel_ms);
+
+        infoArray[8][0] = "Time for Task (ms)";
+        infoArray[8][1] = String.valueOf(timeForTask_ms);
+
+        infoArray[9][0] = "Time for Sleep (ms)";
+        infoArray[9][1] = String.valueOf(timeForSleep_ms);
+        return infoArray;
+    }
+
     // ============================================================================
     //Thread methods
     @Override
@@ -167,6 +214,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         updateStationsMap();
         while (true) {
             runTaskCycle();
+
             try {
                 Thread.sleep(timeForSleep_ms);
             } catch (InterruptedException e) {

@@ -2,10 +2,11 @@ package org.betriebssysteme.model.stations;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusWarning;
 
 public class PackagingMaschine extends Maschine {
     private Recipe recipe;
@@ -36,21 +37,33 @@ public class PackagingMaschine extends Maschine {
             storageSemaphore.acquire();
             int productStorage = storage.getOrDefault(Product.SHIPPING_PACKAGE, 0);
             if (productStorage >= maxStorageCapacity) {
-                status = Status.FULL;
+                if(status != StatusWarning.FULL){
+                    status = StatusWarning.FULL;
+                    logger.info("Product storage is FULL in PackagingMaschine " + identificationNumber);
+                }
                 sendCargoRequest(productCargo, maxStorageCapacity);
                 return;
             } else if (productStorage >= maxStorageCapacity * 0.75) {
-                status = Status.LOW_CAPACITY;
+                if(status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL){
+                    status = StatusCritical.LOW_CAPACITY;
+                    logger.info("Product storage is LOW_CAPACITY in PackagingMaschine " + identificationNumber);
+                }
                 sendCargoRequest(productCargo, productStorage);
                 return;
             }
             int storagePackingMaterial = storage.getOrDefault(Material.PACKING_MATERIAL, 0);
             if (storagePackingMaterial == 0) {
-                status = Status.EMPTY;
+                if (status != StatusWarning.EMPTY) {
+                    status = StatusWarning.EMPTY;
+                    logger.info("Packing material is EMPTY in PackagingMaschine " + identificationNumber);
+                }
                 sendCargoRequest(Material.PACKING_MATERIAL, maxStorageCapacity);
                 return;
             } else if (storagePackingMaterial <= maxStorageCapacity * 0.25) {
-                status = Status.LOW_CAPACITY;
+                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
+                    status = StatusCritical.LOW_CAPACITY;
+                    logger.info("Packing material is LOW_CAPACITY in PackagingMaschine " + identificationNumber);
+                }
                 sendCargoRequest(Material.PACKING_MATERIAL, maxStorageCapacity - storagePackingMaterial);
                 return;
             }

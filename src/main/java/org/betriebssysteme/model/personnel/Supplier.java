@@ -1,11 +1,13 @@
 package org.betriebssysteme.model.personnel;
 
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.stations.MainDepot;
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusInfo;
+import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -30,7 +32,7 @@ public class Supplier extends Thread implements Personnel {
         this.travelTimer_ms = travelTimer_ms;
         this.originStationId = -1;
         this.destinationStationId = -1;
-        this.status = Status.STOPPED;
+        this.status = StatusWarning.STOPPED;
         this.task = Task.JOBLESS;
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
         logger.info("Supplier " + identificationNumber + " created");
@@ -123,11 +125,48 @@ public class Supplier extends Thread implements Personnel {
         super.start();
     }
 
+    @Override
+    public String[][] getInfoArray() {
+        String[][] infoArray = new String[8][2];
+
+        infoArray[0][0] = "Supplier ID";
+        infoArray[0][1] = String.valueOf(identificationNumber);
+
+        infoArray[1][0] = "Status";
+        infoArray[1][1] = status.toString();
+
+        infoArray[2][0] = "Current Task";
+        infoArray[2][1] = task.toString();
+
+        infoArray[3][0] = "Origin Station ID";
+        if (originStationId == -1) {
+            infoArray[3][1] = "N/A";
+        } else {
+            infoArray[3][1] = String.valueOf(originStationId);
+        }
+        infoArray[4][0] = "Destination Station ID";
+        if (destinationStationId == -1) {
+            infoArray[4][1] = "N/A";
+        } else {
+            infoArray[4][1] = String.valueOf(destinationStationId);
+        }
+
+        infoArray[5][0] = "Supply Interval (ms)";
+        infoArray[5][1] = String.valueOf(supplyInterval_ms);
+
+        infoArray[6][0] = "Supply Timer (ms)";
+        infoArray[6][1] = String.valueOf(supplyTimer_ms);
+
+        infoArray[7][0] = "Travel Timer (ms)";
+        infoArray[7][1] = String.valueOf(travelTimer_ms);
+        return infoArray;
+    }
+
     // ============================================================================
     //Thread methods
     @Override
     public void run() {
-        status = Status.WORKING;
+        status = StatusInfo.OPPERATIONAL;
         while (true) {
             supplyRoutine();
             try {

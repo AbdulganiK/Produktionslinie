@@ -2,8 +2,9 @@ package org.betriebssysteme.model.stations;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
+import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusWarning;
 
 public class ProductionMaschine extends Maschine {
     private Recipe recipe;
@@ -37,11 +38,17 @@ public class ProductionMaschine extends Maschine {
                 if (recipe.ingredients().containsKey(cargo)) {
                     int ingredientQuantity = recipe.ingredients().get(cargo);
                     if (storedQuantity == 0) {
-                        status = Status.EMPTY;
+                        if (status != StatusWarning.EMPTY) {
+                            status = StatusWarning.EMPTY;
+                            logger.info("Ingredient " + cargo + " is empty in ProductionMaschine " + identificationNumber);
+                        }
                         sendCargoRequest(cargo, maxStorageCapacity);
                         return;
                     } else if (storedQuantity <= ingredientQuantity * 0.25) {
-                        status = Status.LOW_CAPACITY;
+                        if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
+                            status = StatusCritical.LOW_CAPACITY;
+                            logger.info("Ingredient " + cargo + " is low in ProductionMaschine " + identificationNumber);
+                        }
                         sendCargoRequest(cargo, maxStorageCapacity - storedQuantity);
                         return;
                     }
@@ -50,11 +57,17 @@ public class ProductionMaschine extends Maschine {
                     }
                 } else {
                     if (storedQuantity >= maxStorageCapacity) {
-                        status = Status.FULL;
+                        if (status != StatusWarning.FULL) {
+                            status = StatusWarning.FULL;
+                            logger.info("Product " + cargo + " storage is full in ProductionMaschine " + identificationNumber);
+                        }
                         sendCargoRequest(cargo, maxStorageCapacity);
                         return;
                     } else if (storedQuantity >= maxStorageCapacity * 0.75) {
-                        status = Status.LOW_CAPACITY;
+                        if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                            status = StatusCritical.LOW_CAPACITY;
+                            logger.info("Product " + cargo + " storage is low in ProductionMaschine " + identificationNumber);
+                        }
                         sendCargoRequest(cargo, storedQuantity);
                         return;
                     }
