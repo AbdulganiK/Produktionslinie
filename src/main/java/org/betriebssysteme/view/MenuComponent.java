@@ -1,0 +1,150 @@
+package org.betriebssysteme.view;
+
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.component.Component;
+import com.almasb.fxgl.texture.Texture;
+import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+
+public class MenuComponent extends Component {
+
+    private final Texture background;
+    private boolean visibility;
+
+    private static final int ROWS = 6;
+
+    private Group menuRoot;
+    private Text[] nameLabels  = new Text[ROWS];
+    private Text[] valueLabels = new Text[ROWS];
+    private double baseValueX;
+    private double additionalTranslateX;
+    private double additionalTranslateY;
+
+    private boolean visible;
+    private int baseZIndex;
+    private boolean baseZInitialized = false;
+
+
+    public void ensureBaseZIndex(int currentZ) {
+        if (!baseZInitialized) {
+            baseZIndex = currentZ;
+            baseZInitialized = true;
+        }
+    }
+
+    public int getBaseZIndex() {
+        return baseZIndex;
+    }
+    public MenuComponent() {
+        this.additionalTranslateX = 0;
+        this.additionalTranslateY = 0;
+        this.background = FXGL.getAssetLoader().loadTexture("Info_Menu_Machine_Asset.png");
+    }
+
+    public MenuComponent(double additionalTranslateX, double additionalTranslateY) {
+        this.additionalTranslateX = additionalTranslateX;
+        this.additionalTranslateY = additionalTranslateY;
+        this.background = FXGL.getAssetLoader().loadTexture("Info_Menu_Machine_Asset.png");
+    }
+
+    @Override
+    public void onAdded() {
+
+        menuRoot = new Group();
+
+        background.setTranslateX(0);
+        background.setTranslateY(0);
+
+
+        menuRoot.getChildren().add(background);
+
+        double w = background.getWidth();
+        double h = 200;
+
+        menuRoot.setTranslateX(-350 + this.additionalTranslateX);
+        menuRoot.setTranslateY(-350 + this.additionalTranslateY);
+        menuRoot.setScaleX(0.25);
+        menuRoot.setScaleY(0.4);
+
+
+
+        double startXNames  = w * 0.2;  // linke Spalte
+        double startXValues = w * 0.55;   // rechte Spalte
+
+        baseValueX = startXValues;
+
+        Font font = Font.font("Consolas", 40);
+
+        for (int i = 0; i < ROWS; i++) {
+
+            // individuelle Y-Position pro Zeile
+            h = h + 30;
+
+            Text nameText = new Text("Eigenschaft " + (i + 1));
+            nameText.setFill(Color.LIGHTGRAY);
+            nameText.setStrokeWidth(2);
+            nameText.setFont(font);
+            nameText.setTranslateX(startXNames);
+            nameText.setTranslateY(h);
+
+            Text valueText = new Text("15");
+            valueText.setFill(Color.LIMEGREEN);
+            valueText.setStrokeWidth(2);
+            valueText.setFont(font);
+            // HIER: nicht mehr 500, sondern Basis-X benutzen
+            valueText.setTranslateX(baseValueX);
+            valueText.setTranslateY(h);
+
+            nameLabels[i] = nameText;
+            valueLabels[i] = valueText;
+
+            menuRoot.getChildren().addAll(nameText, valueText);
+        }
+
+        setVisibility(false);
+        setID("10");
+        setGeschwindigkeit("100");
+        setProduct("Gehäuse");
+        setStatus("Laufend");
+        setLagerBestand("100 Produkte");
+        setKapazitaet("100");
+        entity.getViewComponent().addChild(menuRoot);
+    }
+
+    public void setVisibility(boolean visible) {
+        this.visibility = visible;
+        if (menuRoot != null) {
+            menuRoot.setVisible(visible);
+        }
+    }
+
+    public boolean getVisibility() {
+        return this.visibility;
+    }
+
+    public void setPropertyName(int row, String name) {
+        if (row < 0 || row >= ROWS) return;
+        nameLabels[row].setText(name);
+    }
+
+    public void setPropertyValue(int row, String value) {
+        if (row < 0 || row >= ROWS) return;
+        valueLabels[row].setText(value);
+    }
+
+    public void setProperty(int row, String name, String value) {
+        setPropertyName(row, name);
+        setPropertyValue(row, value);
+    }
+
+    public void setID(String value)                { setProperty(0, "ID", value); }
+    public void setProduct(String value)           { setProperty(1, "Produkt", value); }
+    public void setStatus(String value)            { setProperty(2, "Status", value); }
+    public void setLagerBestand(String value)      { setProperty(3, "Bestand", value); }
+    public void setGeschwindigkeit(String value)   { setProperty(4, "Speed", value); }
+    public void setKapazitaet(String value)        { setProperty(5, "Kapazität", value); }
+
+
+}
