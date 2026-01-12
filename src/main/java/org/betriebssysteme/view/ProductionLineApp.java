@@ -18,6 +18,7 @@ import org.betriebssysteme.utility.EntityCollisionHandler;
 import org.betriebssysteme.utility.EntityPlacer;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getAssetLoader;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
@@ -63,24 +64,11 @@ public class ProductionLineApp extends GameApplication {
     protected void initGame() {
 
         setLevelFromMap("map.tmx");
-
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(entityFactory);
+        Scenario scenario = new Scenario(entityFactory);
+        scenario.runFirst();
 
-        Entity machine = FXGL.spawn(EntityNames.MACHINE, 1000, 1000);
-        machine.setZIndex(100);
-        machine.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
-        Entity machine2 = FXGL.spawn(EntityNames.MACHINE);
-        ArrayList<Entity> beltsBefore = BeltFactory.spawnBeltsBeforeMachine(machine, 10);
-        ArrayList<Entity> beltsAfter = BeltFactory.spawnBeltsAfterMachine(machine, 10);
-        entityFactory.spawnItemOnBelt(beltsBefore.getFirst());
-        entityFactory.spawnItemOnBelt(beltsBefore.get(1));
-        entityFactory.spawnItemOnBelt(beltsBefore.get(2));
-        entityFactory.spawnItemOnBelt(beltsBefore.get(3));
-        entityFactory.spawnItemOnBelt(beltsBefore.get(4));
-        EntityPlacer.placeMachineAfterBelt(machine2, beltsAfter.getLast());
-        Entity storage = FXGL.spawn(EntityNames.STORAGE, 1200, 1200);
-        Entity central = FXGL.spawn(EntityNames.CENTRAL, 1800, 1200);
 
     }
 

@@ -109,6 +109,7 @@ public class MachineComponent extends Component {
         texture.playAnimationChannel(productionWhileTakingItemAnimPart1);
     }
 
+
     public void setAnimation(MachineAnimationType animationType) {
 
         switch (animationType) {

@@ -68,19 +68,16 @@ public class EntityCollisionHandler {
         physicsWorld.addCollisionHandler(new CollisionHandler(EntityType.BELT, EntityType.ITEM) {
             @Override
             protected void onCollisionBegin(Entity belt, Entity item) {
-                BeltComponent beltComp = belt.getComponent(BeltComponent.class);
                 ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
-                move.addBeltContact(beltComp.getDirection());
+                move.addBeltContact(belt);
             }
 
             @Override
             protected void onCollisionEnd(Entity belt, Entity item) {
-                if (item.hasComponent(ItemMoveComponent.class)) {
-                    ItemMoveComponent move = item.getComponent(ItemMoveComponent.class);
-                    move.removeBeltContact();
-                }
+                item.getComponentOptional(ItemMoveComponent.class)
+                        .ifPresent(move -> move.removeBeltContact(belt));
             }
-
         });
     }
+
 }
