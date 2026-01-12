@@ -2,12 +2,14 @@ package org.betriebssysteme.model.stations;
 
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Request;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Semaphore;
+
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +44,7 @@ public abstract class Maschine extends Thread implements Station{
         this.nextMaschine = nextMaschine;
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
-        this.status = Status.OPERATING;
+        this.status = StatusInfo.OPPERATIONAL;
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();

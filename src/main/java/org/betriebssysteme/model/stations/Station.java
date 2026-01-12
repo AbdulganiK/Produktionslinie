@@ -1,8 +1,7 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.cargo.Cargo;
+import org.betriebssysteme.model.status.Status;
 
 import java.util.Map;
 
@@ -25,6 +24,7 @@ public interface Station{
 
     /**
      * Get the current status of the station.
+     *
      * @return The status of the station.
      */
     Status getStatus();

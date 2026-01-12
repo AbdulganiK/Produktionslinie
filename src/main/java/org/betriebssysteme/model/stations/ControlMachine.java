@@ -3,6 +3,9 @@ package org.betriebssysteme.model.stations;
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusInfo;
+import org.betriebssysteme.model.status.StatusWarning;
 
 import java.util.Map;
 
@@ -41,22 +44,36 @@ public class ControlMachine extends Maschine{
             storageSemaphore.acquire();
             int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                status = org.betriebssysteme.model.Status.FULL;
+                if (status != StatusWarning.FULL) {
+                    status = StatusWarning.FULL;
+                    logger.info("Product storage is FULL in ControlMachine " + identificationNumber);
+                }
                 return;
             } else if (productStorage >= maxStorageCapacity * 0.25) {
-                status = org.betriebssysteme.model.Status.LOW_CAPACITY;
+                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                    status = StatusCritical.LOW_CAPACITY;
+                    logger.info("Product storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
+                }
                 return;
             } else {
-                status = org.betriebssysteme.model.Status.OPERATING;
+                if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                    status = StatusInfo.OPPERATIONAL;
+                }
             }
             int scrapStorage = storage.getOrDefault(Product.SCRAP, 0);
             if (scrapStorage >= maxStorageCapacity) {
-                status = org.betriebssysteme.model.Status.FULL;
+                if (status != StatusWarning.FULL) {
+                    status = StatusWarning.FULL;
+                    logger.info("SCRAP storage is FULL in ControlMachine " + identificationNumber);
+                }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
                 return;
             }
             else if (scrapStorage >= maxStorageCapacity * 0.75) {
-                status = org.betriebssysteme.model.Status.LOW_CAPACITY;
+                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                    status = StatusCritical.LOW_CAPACITY;
+                    logger.info("SCRAP storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
+                }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
                 return;
             }

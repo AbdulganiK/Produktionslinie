@@ -1,11 +1,13 @@
 package org.betriebssysteme.model.personnel;
 
-import org.betriebssysteme.model.Status;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.stations.MainDepot;
+import org.betriebssysteme.model.status.Status;
+import org.betriebssysteme.model.status.StatusInfo;
+import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 import java.util.Map;
@@ -30,7 +32,7 @@ public class Supplier extends Thread implements Personnel {
         this.travelTimer_ms = travelTimer_ms;
         this.originStationId = -1;
         this.destinationStationId = -1;
-        this.status = Status.STOPPED;
+        this.status = StatusWarning.STOPPED;
         this.task = Task.JOBLESS;
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
         logger.info("Supplier " + identificationNumber + " created");
@@ -164,7 +166,7 @@ public class Supplier extends Thread implements Personnel {
     //Thread methods
     @Override
     public void run() {
-        status = Status.WORKING;
+        status = StatusInfo.OPPERATIONAL;
         while (true) {
             supplyRoutine();
             try {
