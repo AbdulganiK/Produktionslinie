@@ -8,6 +8,7 @@ public enum Status {
     ERROR,
     CRITICAL,
     LOW_CAPACITY,
-    WORKING
+    WORKING,
+    OPERATING
 }
 

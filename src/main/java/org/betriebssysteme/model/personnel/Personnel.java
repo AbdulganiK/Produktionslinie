@@ -6,7 +6,7 @@ import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.Map;
 
-public interface Personnel {
+public interface Personnel extends Runnable {
     int refillCargo(Cargo cargo, int quantity);
     int collectCargo(Cargo cargo, int quantity);
     Status getStatus();
@@ -15,4 +15,5 @@ public interface Personnel {
     int getOriginStationId();
     Task getCurrentTask();
     int getIdentificationNumber();
+    void start();
 }
