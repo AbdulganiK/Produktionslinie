@@ -19,7 +19,6 @@ public abstract class Maschine extends Thread implements Station{
     protected int timeToProcess;
     protected int timeToSleep;
     protected boolean running;
-    protected ProductionHeadquarters productionHeadquarters;
     protected Status status;
     protected int maxStorageCapacity;
     protected Semaphore storageSemaphore;
@@ -27,20 +26,20 @@ public abstract class Maschine extends Thread implements Station{
     protected Map<Cargo, Boolean> requestedCargoTypes;
     protected Cargo productCargo;
     protected Logger logger;
+    protected int maschinePriority;
 
     public Maschine(int identificationNumber,
                     int timeToProcess,
                     int timeToSleep,
                     int maxStorageCapacity,
-                    ProductionHeadquarters productionHeadquarters,
                     Maschine nextMaschine,
                     Map<Cargo, Integer> initialStorage,
-                    Cargo productCargo) {
+                    Cargo productCargo,
+                    int maschinePriority){
         this.identificationNumber = identificationNumber;
         this.timeToProcess = timeToProcess;
         this.timeToSleep = timeToSleep;
         this.maxStorageCapacity = maxStorageCapacity;
-        this.productionHeadquarters = productionHeadquarters;
         this.nextMaschine = nextMaschine;
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
@@ -48,6 +47,7 @@ public abstract class Maschine extends Thread implements Station{
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
+        this.maschinePriority = maschinePriority;
         this.logger = LoggerFactory.getLogger("Maschine-" + identificationNumber);
         logger.info("Maschine " + identificationNumber + " initialized for product: " + productCargo);
     }
@@ -81,12 +81,9 @@ public abstract class Maschine extends Thread implements Station{
     protected void sendCargoRequest(Cargo cargo, int quantity) {
         boolean requestedBefore = requestedCargoTypes.getOrDefault(cargo, false);
         if (requestedBefore == false){
-            Request request = new Request(quantity,1, cargo, this.identificationNumber);
-            if (productionHeadquarters == null){
-                logger.error("No production headquarters available");
-            }
+            Request request = new Request(quantity,this.maschinePriority, cargo, this.identificationNumber);
             System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
-            productionHeadquarters.addRequest(request);
+            ProductionHeadquarters.getInstance().addRequest(request);
             logger.info("Added request to headquarters for cargo: " + cargo + " quantity: " + quantity);
         }
     }
@@ -253,10 +250,6 @@ public abstract class Maschine extends Thread implements Station{
     @Override
     public void start() {
         super.start();
-    }
-
-    public void setProductionHeadquarters(ProductionHeadquarters productionHeadquarters){
-        this.productionHeadquarters = productionHeadquarters;
     }
 
     @Override

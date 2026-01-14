@@ -12,18 +12,18 @@ public class ProductionMaschine extends Maschine {
     public ProductionMaschine(int identificationNumber,
                               int timeToSleep,
                               int maxStorageCapacity,
-                              ProductionHeadquarters productionHeadquarters,
                               Maschine nextMaschine,
                               Recipe recipe,
-                              int initialQuantityOfProduct) {
+                              int initialQuantityOfProduct,
+                              int maschinePriority) {
         super(identificationNumber,
                 recipe.productionTime(),
                 timeToSleep,
                 maxStorageCapacity,
-                productionHeadquarters,
                 nextMaschine,
                 recipe.getInitalStorage(initialQuantityOfProduct),
-                recipe.productCargo());
+                recipe.productCargo(),
+                maschinePriority);
         this.recipe = recipe;
     }
 

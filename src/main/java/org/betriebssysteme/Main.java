@@ -1,29 +1,26 @@
 package org.betriebssysteme;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.betriebssysteme.control.ProductionController;
+import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.stations.Station;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class Main {
-
-    static {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
-        String timestamp = LocalDateTime.now().format(formatter);
-        System.setProperty("log.filename", timestamp + ".log");
-    }
-
-    private static final Logger logger = LoggerFactory.getLogger(Main.class);
-
     public static void main(String[] args) {
-        logger.info("Application starting");
-        ProductionController productionController = new ProductionController();
-        productionController.createAllStations();
-        productionController.createAllPersonnel();
-        productionController.addAllToProductionHeadquarters();
-        productionController.startProductionHeadquarters();
-        logger.info("Application stopped");
+        // Start the production line
+        // All stations and personnel are created and initialized here
+        ProductionController.createProductionLine();
+
+        Map<Integer, Station> stations = ProductionHeadquarters.getInstance().getStations();
+        // Print information about all stations
+        for (Station station : stations.values()) {
+            System.out.println("Station ID: " + station.getIdentificationNumber());
+            String[][] infoArray = station.getInfoArray();
+            for (String[] infoRow : infoArray) {
+                System.out.println(infoRow[0] + ": " + infoRow[1]);
+            }
+            System.out.println("---------------------------");
+        }
     }
 }

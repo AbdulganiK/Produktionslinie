@@ -13,20 +13,20 @@ public class PackagingMaschine extends Maschine {
     public PackagingMaschine(int identificationNumber,
                               int timeToSleep,
                               int maxStorageCapacity,
-                              ProductionHeadquarters productionHeadquarters,
                               Maschine nextMaschine,
                               int initialQuantityOfProduct,
                               int productionTime,
-                              Recipe recipe
+                              Recipe recipe,
+                             int maschinePriority
                              ) {
         super(identificationNumber,
                 productionTime,
                 timeToSleep,
                 maxStorageCapacity,
-                productionHeadquarters,
                 nextMaschine,
                 recipe.getInitalStorageWithProduct(initialQuantityOfProduct),
-                Product.SHIPPING_PACKAGE);
+                Product.SHIPPING_PACKAGE,
+                maschinePriority);
         this.recipe = recipe;
     }
 

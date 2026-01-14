@@ -15,13 +15,21 @@ public class ProductionHeadquarters{
     private Map stations;
     private Map personnel;
     private Logger logger;
+    private static ProductionHeadquarters singletonInstance;
 
 
-    public ProductionHeadquarters (){
+    private ProductionHeadquarters (){
         requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
         this.stations = new HashMap();
         this.personnel = new HashMap();
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
+    }
+
+    public static ProductionHeadquarters getInstance(){
+        if (singletonInstance == null){
+            singletonInstance = new ProductionHeadquarters();
+        }
+        return singletonInstance;
     }
 
     public void startAllPersonnel(){
@@ -36,8 +44,6 @@ public class ProductionHeadquarters{
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
             stations.put(station.getIdentificationNumber(), station);
-            if (station instanceof Maschine)
-                ((Maschine) station).setProductionHeadquarters(this);
         }
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
