@@ -20,19 +20,19 @@ public class ControlMachine extends Maschine{
                           Cargo productCargo,
                           Maschine nextMaschine,
                           int productionTime,
-                          ProductionHeadquarters productionHeadquarters,
-                          int probilityOfDefectPercent) {
+                          int probilityOfDefectPercent,
+                          int maschinePriority) {
         super(identificationNumber,
                 productionTime,
                 timeToSleep,
                 maxStorageCapacity,
-                productionHeadquarters,
                 nextMaschine,
                 new java.util.HashMap<Cargo, Integer>() {{
                     put(productCargo, initialQuantityOfProduct);
                     put(Product.SCRAP, 0);
                 }},
-                productCargo);
+                productCargo,
+                maschinePriority);
         this.probilityOfDefectPercent = probilityOfDefectPercent;
     }
 

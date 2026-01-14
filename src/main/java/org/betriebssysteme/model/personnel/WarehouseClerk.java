@@ -11,6 +11,7 @@ import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class WarehouseClerk extends Thread implements Personnel {
@@ -19,21 +20,17 @@ public class WarehouseClerk extends Thread implements Personnel {
     private int identificationNumber;
     private int originStationId;
     private int destinationStationId;
-    private Map<Integer, Station> stations;
     private Task task;
     private int timeForTravel_ms;
     private int timeForTask_ms;
     private int timeForSleep_ms;
     private Request currentRequest;
-    private ProductionHeadquarters productionHeadquarters;
 
     public WarehouseClerk(int identificationNumber,
                           int timeForTravel_ms,
                           int timeForTask_ms,
-                          int timeForSleep_ms,
-                          ProductionHeadquarters productionHeadquarters) {
+                          int timeForSleep_ms) {
         this.identificationNumber = identificationNumber;
-        this.stations = productionHeadquarters.getStations();
         this.timeForTravel_ms = timeForTravel_ms;
         this.timeForTask_ms = timeForTask_ms;
         this.timeForSleep_ms = timeForSleep_ms;
@@ -41,12 +38,6 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
-        this.productionHeadquarters = productionHeadquarters;
-    }
-
-    private void updateStationsMap() {
-        this.stations = productionHeadquarters.getStations();
-        System.out.println("WarehouseClerk " + identificationNumber + " updated stations map.");
     }
 
     private void runTaskCycle() {
@@ -66,7 +57,7 @@ public class WarehouseClerk extends Thread implements Personnel {
                 status = StatusInfo.DELIVER_CARGO;
                 refillCargo(cargo, transportedQuantity);
                 Thread.sleep(timeForTask_ms);
-                Maschine requestedMachine = (Maschine) stations.get(currentRequest.stationId());
+                Maschine requestedMachine = (Maschine) ProductionHeadquarters.getInstance().getStations().get(currentRequest.stationId());
                 requestedMachine.markRequestAsCompleted(cargo);
                 System.out.println("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
@@ -79,7 +70,7 @@ public class WarehouseClerk extends Thread implements Personnel {
     }
 
     private boolean getRequested() {
-        currentRequest = productionHeadquarters.pollRequest();
+        currentRequest = ProductionHeadquarters.getInstance().pollRequest();
         if (currentRequest != null) {
             System.out.println("WarehouseClerk " + identificationNumber + " received request for " + currentRequest.cargo() + " at Station " + currentRequest.stationId());
             CargoTyp requestedCargoTyp = currentRequest.cargo().getCargoTyp();
@@ -98,17 +89,13 @@ public class WarehouseClerk extends Thread implements Personnel {
         return false;
     }
 
-    public void setProductionHeadquarters(ProductionHeadquarters productionHeadquarters) {
-        this.productionHeadquarters = productionHeadquarters;
-    }
-
 
     //============================================================================
     // Methods of Personnel interface
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
         int refilled = 0;
-        Station destinationStation = stations.get(destinationStationId);
+        Station destinationStation = (Station) ProductionHeadquarters.getInstance().getStations().get(destinationStationId);
         if (destinationStation == null){
             System.out.println("WarehouseClerk " + identificationNumber + " has no valid destination station to refill cargo.");
             return 0;
@@ -120,7 +107,7 @@ public class WarehouseClerk extends Thread implements Personnel {
     @Override
     public int collectCargo(Cargo cargo, int quantity) {
         int collected = 0;
-        Station originStation = stations.get(originStationId);
+        Station originStation = (Station) ProductionHeadquarters.getInstance().getStations().get(originStationId);
         if (originStation == null){
             System.out.println("WarehouseClerk " + identificationNumber + " has no valid origin station to collect cargo.");
             return 0;
@@ -211,7 +198,6 @@ public class WarehouseClerk extends Thread implements Personnel {
     //Thread methods
     @Override
     public void run() {
-        updateStationsMap();
         while (true) {
             runTaskCycle();
 
