@@ -84,6 +84,7 @@ public abstract class Maschine extends Thread implements Station{
             Request request = new Request(quantity,this.maschinePriority, cargo, this.identificationNumber);
             System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
             ProductionHeadquarters.getInstance().addRequest(request);
+            requestedCargoTypes.put(cargo, true);
             logger.info("Added request to headquarters for cargo: " + cargo + " quantity: " + quantity);
         }
     }
@@ -98,7 +99,6 @@ public abstract class Maschine extends Thread implements Station{
             boolean cargoDelivered = false;
             while (!cargoDelivered) {
                 try {
-                    logger.info("Trying to deliver product to next machine: " + nextMaschine.getIdentificationNumber());
                     int deliveredQuantity = nextMaschine.resiveCargo(cargo, 1);
                     if (deliveredQuantity == 0) {
                         if (running){
@@ -110,6 +110,7 @@ public abstract class Maschine extends Thread implements Station{
                     }
                     else {
                         if (!running){
+                            System.out.println("Machine " + identificationNumber + " restarting as next machine " + nextMaschine.getIdentificationNumber() + " accepted cargo.");
                             startMachine();
                         }
                         cargoDelivered = true;
@@ -146,13 +147,11 @@ public abstract class Maschine extends Thread implements Station{
     public void stopMachine() {
         running = false;
         logger.debug("Stopping machine" + identificationNumber);
-        System.out.println("Machine " + identificationNumber + " stopped.");
     }
 
     public void startMachine() {
         running = true;
         logger.debug("Starting machine" + identificationNumber);
-        System.out.println("------------------- Machine " + identificationNumber + " started.");
     }
 
     public boolean isRunning() {

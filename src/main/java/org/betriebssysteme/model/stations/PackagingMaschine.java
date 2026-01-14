@@ -101,9 +101,11 @@ public class PackagingMaschine extends Maschine {
             }
             if (!cargoPrductionIsPossible && running) {
                 stopMachine();
+                System.out.println("Packaging Machine " + identificationNumber + " stopped due to insufficient ingredients or full storage");
             }
             if (cargoPrductionIsPossible && !running) {
                 startMachine();
+                System.out.println("Packaging Machine " + identificationNumber + " started production");
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

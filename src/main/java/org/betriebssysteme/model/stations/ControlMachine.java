@@ -98,8 +98,10 @@ public class ControlMachine extends Maschine{
             }
             if (productionPossible && running == false){
                 startMachine();
+                System.out.println("ControlMachine " + identificationNumber + " started as all conditions are met");
             } else if (!productionPossible && running == true) {
                 stopMachine();
+                System.out.println("ControlMachine " + identificationNumber + " stopped due to insufficient storage conditions");
             }
         }
         catch (InterruptedException e) {
