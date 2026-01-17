@@ -17,4 +17,6 @@ public interface Personnel extends Runnable {
     int getIdentificationNumber();
     void start();
     String[][] getInfoArray();
+    int getIdOfDestinationStation();
+    void setReady();
 }

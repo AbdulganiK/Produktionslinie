@@ -23,6 +23,8 @@ public class Supplier extends Thread implements Personnel {
     private int supplyTimer_ms;
     private int travelTimer_ms;
     private Logger logger;
+    private int idOfCurrentDestinationStation;
+    private boolean ready = false;
 
     public Supplier(int identificationNumber, MainDepot mainDepot, int supplyInterval_ms, int supplyTimer_ms, int travelTimer_ms) {
         this.identificationNumber = identificationNumber;
@@ -40,23 +42,23 @@ public class Supplier extends Thread implements Personnel {
 
     private void supplyRoutine() {
         task = Task.DELIVERING;
-        destinationStationId = mainDepot.getIdentificationNumber();
+        idOfCurrentDestinationStation = mainDepot.getIdentificationNumber();
         logger.info("Supplier starting supply routine to Main Depot");
         try {
             Thread.sleep(travelTimer_ms);
+            //awaitReady(); TODO: Implement ready check if needed
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
-        originStationId = mainDepot.getIdentificationNumber();
-        destinationStationId = -1;
+        idOfCurrentDestinationStation = -1;
         try {
             Thread.sleep(travelTimer_ms);
+            //awaitReady(); TODO: Implement ready check if needed
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        originStationId = -1;
         logger.info("Supplier finishing supply routine to Main Depot");
     }
 
@@ -67,11 +69,28 @@ public class Supplier extends Thread implements Personnel {
             throw new RuntimeException(e);
         }
         // TODO Implement the depot refilling logic
+        for (Material material : Material.values()) {
+            mainDepot.resiveCargo(material, mainDepot.getMaxStorageCapacity());
+        }
+        mainDepot.handOverCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
+        mainDepot.handOverCargo(Product.SHIPPING_PACKAGE, mainDepot.getMaxStorageCapacity());
+        // TODO End of depot refilling logic
         logger.info("Supplier refilled depot and collected cargo");
     }
 
-    // ============================================================================
-    //Personnel methods
+    private synchronized void awaitReady() throws InterruptedException {
+        while (!ready) {
+            wait();
+        }
+    }
+
+    //============================================================================
+    // Methods of Personnel interface
+    @Override
+    public synchronized void setReady() {
+        ready = true;
+        notifyAll();
+    }
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
         for (Material material : Material.values()) {
@@ -160,6 +179,11 @@ public class Supplier extends Thread implements Personnel {
         infoArray[7][0] = "Travel Timer (ms)";
         infoArray[7][1] = String.valueOf(travelTimer_ms);
         return infoArray;
+    }
+
+    @Override
+    public int getIdOfDestinationStation() {
+        return destinationStationId;
     }
 
     // ============================================================================
