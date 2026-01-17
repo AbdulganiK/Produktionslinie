@@ -27,6 +27,8 @@ public class WarehouseClerk extends Thread implements Personnel {
     private int timeForSleep_ms;
     private Request currentRequest;
     private Logger logger;
+    private int idOfCurrentDestinationStation;
+    private boolean ready = false;
 
     /**
      * Constructor for WarehouseClerk.
@@ -63,7 +65,9 @@ public class WarehouseClerk extends Thread implements Personnel {
         else {
             try {
                 // Travel to origin station
+                idOfCurrentDestinationStation = originStationId;
                 status = StatusInfo.TRAVEL_TO_STATION;
+                //awaitReady(); TODO: Implement ready check if needed
                 Thread.sleep(timeForTravel_ms);
 
                 // Collect cargo from origin station
@@ -73,6 +77,8 @@ public class WarehouseClerk extends Thread implements Personnel {
 
                 // Travel to destination station
                 status = StatusInfo.TRANSPORT_CARGO;
+                idOfCurrentDestinationStation = destinationStationId;
+                //awaitReady(); TODO: Implement ready check if needed
                 Thread.sleep(timeForTravel_ms);
 
                 // Deliver cargo to destination station
@@ -88,6 +94,8 @@ public class WarehouseClerk extends Thread implements Personnel {
 
                 // Travel back to headquarters
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
+                idOfCurrentDestinationStation = 0; // Headquarters station ID
+                //awaitReady(); TODO: Implement ready check if needed
                 Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
                 status = StatusWarning.STOPPED;
@@ -117,9 +125,21 @@ public class WarehouseClerk extends Thread implements Personnel {
         return false;
     }
 
+    private synchronized void awaitReady() throws InterruptedException {
+        while (!ready) {
+            wait();
+        }
+    }
+
 
     //============================================================================
     // Methods of Personnel interface
+    @Override
+    public synchronized void setReady() {
+        ready = true;
+        notifyAll();
+    }
+
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
         int refilled = 0;
@@ -220,6 +240,11 @@ public class WarehouseClerk extends Thread implements Personnel {
         infoArray[9][0] = "Time for Sleep (ms)";
         infoArray[9][1] = String.valueOf(timeForSleep_ms);
         return infoArray;
+    }
+
+    @Override
+    public int getIdOfDestinationStation() {
+        return idOfCurrentDestinationStation;
     }
 
     // ============================================================================

@@ -27,6 +27,7 @@ public abstract class Maschine extends Thread implements Station{
     protected Cargo productCargo;
     protected Logger logger;
     protected int maschinePriority;
+    protected boolean cargoHandoverToNextMaschineInProgress = false;
 
     public Maschine(int identificationNumber,
                     int timeToProcess,
@@ -113,8 +114,11 @@ public abstract class Maschine extends Thread implements Station{
                             System.out.println("Machine " + identificationNumber + " restarting as next machine " + nextMaschine.getIdentificationNumber() + " accepted cargo.");
                             startMachine();
                         }
+                        cargoHandoverToNextMaschineInProgress = true;
                         cargoDelivered = true;
                         logger.info("Product delivered to next machine: " + nextMaschine.getIdentificationNumber());
+                        Thread.sleep(500); // Simulate time taken for handover
+                        cargoHandoverToNextMaschineInProgress = false;
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
@@ -160,6 +164,10 @@ public abstract class Maschine extends Thread implements Station{
 
     public void setNextMaschine(Maschine nextMaschine) {
         this.nextMaschine = nextMaschine;
+    }
+
+    public boolean getCargoHandoverToNextMaschineInProgress(){
+        return cargoHandoverToNextMaschineInProgress;
     }
 
     // ============================================================================
