@@ -1,5 +1,8 @@
 package org.betriebssysteme.model.status;
 
+/**
+ * Enum representing warning status types.
+ */
 public enum StatusWarning implements Status{
     STOPPED,
     FULL,

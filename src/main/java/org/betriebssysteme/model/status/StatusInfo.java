@@ -1,5 +1,8 @@
 package org.betriebssysteme.model.status;
 
+/**
+ * Enum representing informational status types.
+ */
 public enum StatusInfo implements Status {
     PRODUCING,
     STORE_PRODUCT,
@@ -9,7 +12,8 @@ public enum StatusInfo implements Status {
     TRANSPORT_CARGO,
     TRAVEL_TO_HEADQUARTERS,
     CHECK_STORAGE,
-    OPPERATIONAL
+    OPPERATIONAL,
+    TRAVEL_TO_STATION
     ;
 
     @Override

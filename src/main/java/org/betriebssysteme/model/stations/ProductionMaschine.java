@@ -52,9 +52,6 @@ public class ProductionMaschine extends Maschine {
                         sendCargoRequest(cargo, maxStorageCapacity - storedQuantity);
                         return;
                     }
-                    else{
-                        requestedCargoTypes.put(cargo, false);
-                    }
                 } else {
                     if (storedQuantity >= maxStorageCapacity) {
                         if (status != StatusWarning.FULL) {
@@ -90,22 +87,18 @@ public class ProductionMaschine extends Maschine {
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
-                if (storedQuantity < ingredientQuantity && running) {
-                    logger.info("Not enough ingredients to produce product of " + identificationNumber);
+                if (storedQuantity < ingredientQuantity) {
                     cargoPrductionIsPossible = false;
+                    break;
                 }
             }
-            //int currentProductQuantity = storage.getOrDefault(productCargo, 0);
-            //if (currentProductQuantity >= maxStorageCapacity && running) {
-            //    logger.info("Storage full, cannot produce more product of " + identificationNumber);
-            //    cargoPrductionIsPossible = false;
-            //}
-            // TODO decide if we want to stop production when storage is full
             if (!cargoPrductionIsPossible && running) {
                 stopMachine();
+                System.out.println("ProductionMaschine " + identificationNumber + " stopped due to insufficient ingredients");
             }
             if (cargoPrductionIsPossible && !running) {
                 startMachine();
+                System.out.println("ProductionMaschine " + identificationNumber + " started as all ingredients are available");
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

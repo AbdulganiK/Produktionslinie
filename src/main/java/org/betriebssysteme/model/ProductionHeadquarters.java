@@ -1,8 +1,7 @@
 package org.betriebssysteme.model;
 
 import org.betriebssysteme.model.personnel.Personnel;
-import org.betriebssysteme.model.personnel.Supplier;
-import org.betriebssysteme.model.stations.Maschine;
+import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.slf4j.Logger;
 
@@ -14,7 +13,7 @@ public class ProductionHeadquarters{
     private Semaphore requestQueueSemaphore = new Semaphore(1);
     private Map stations;
     private Map personnel;
-    private Logger logger;
+    private static Logger logger;
     private static ProductionHeadquarters singletonInstance;
 
 
@@ -28,6 +27,7 @@ public class ProductionHeadquarters{
     public static ProductionHeadquarters getInstance(){
         if (singletonInstance == null){
             singletonInstance = new ProductionHeadquarters();
+            logger.info("Production Headquarters instance created");
         }
         return singletonInstance;
     }
@@ -41,10 +41,6 @@ public class ProductionHeadquarters{
     }
 
     public void startAllStations(){
-        for (Object stationObj : stations.values()) {
-            Station station = (Station) stationObj;
-            stations.put(station.getIdentificationNumber(), station);
-        }
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
             station.start();
@@ -67,13 +63,7 @@ public class ProductionHeadquarters{
     }
 
     public Map getStations(){
-        Map<Integer, Station> stationsMap = new HashMap<>();
-        for (Object stationObj : stations.values()) {
-            Station station = (Station) stationObj;
-            stationsMap.put(station.getIdentificationNumber(), station);
-        }
-        System.out.println("Stations map retrieved with " + stationsMap.size() + " stations.");
-        return stationsMap;
+        return stations;
     }
 
     public Map getPersonnel(){

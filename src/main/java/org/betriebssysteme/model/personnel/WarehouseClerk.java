@@ -10,6 +10,7 @@ import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
+import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,15 @@ public class WarehouseClerk extends Thread implements Personnel {
     private int timeForTask_ms;
     private int timeForSleep_ms;
     private Request currentRequest;
+    private Logger logger;
 
+    /**
+     * Constructor for WarehouseClerk.
+     * @param identificationNumber ID of the WarehouseClerk
+     * @param timeForTravel_ms time taken to travel between stations in milliseconds
+     * @param timeForTask_ms time taken to perform tasks (collecting/delivering cargo) in milliseconds
+     * @param timeForSleep_ms time taken to sleep between task cycles in milliseconds
+     */
     public WarehouseClerk(int identificationNumber,
                           int timeForTravel_ms,
                           int timeForTask_ms,
@@ -38,8 +47,12 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
+        this.logger = org.slf4j.LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
     }
 
+    /**
+     * Runs a single task cycle for the WarehouseClerk.
+     */
     private void runTaskCycle() {
         boolean hasRequest = getRequested();
         if (!hasRequest) {
@@ -48,18 +61,32 @@ public class WarehouseClerk extends Thread implements Personnel {
             return;
         }
         else {
-            status = StatusInfo.COLLECT_CARGO;
-            int transportedQuantity = collectCargo(cargo, currentRequest.quantity());
             try {
+                // Travel to origin station
+                status = StatusInfo.TRAVEL_TO_STATION;
+                Thread.sleep(timeForTravel_ms);
+
+                // Collect cargo from origin station
+                status = StatusInfo.COLLECT_CARGO;
+                int transportedQuantity = collectCargo(cargo, currentRequest.quantity());
                 Thread.sleep(timeForTask_ms);
+
+                // Travel to destination station
                 status = StatusInfo.TRANSPORT_CARGO;
                 Thread.sleep(timeForTravel_ms);
+
+                // Deliver cargo to destination station
                 status = StatusInfo.DELIVER_CARGO;
                 refillCargo(cargo, transportedQuantity);
                 Thread.sleep(timeForTask_ms);
+
+                // Mark request as completed
                 Maschine requestedMachine = (Maschine) ProductionHeadquarters.getInstance().getStations().get(currentRequest.stationId());
                 requestedMachine.markRequestAsCompleted(cargo);
+                logger.info("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
                 System.out.println("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
+
+                // Travel back to headquarters
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
                 Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
@@ -72,17 +99,18 @@ public class WarehouseClerk extends Thread implements Personnel {
     private boolean getRequested() {
         currentRequest = ProductionHeadquarters.getInstance().pollRequest();
         if (currentRequest != null) {
-            System.out.println("WarehouseClerk " + identificationNumber + " received request for " + currentRequest.cargo() + " at Station " + currentRequest.stationId());
             CargoTyp requestedCargoTyp = currentRequest.cargo().getCargoTyp();
             cargo = currentRequest.cargo();
             if (requestedCargoTyp == CargoTyp.MATERIAL) {
                 task = Task.DELIVERING;
-                originStationId = 1;
+                originStationId = 1; // Headquarters station ID
                 destinationStationId = currentRequest.stationId();
+                logger.info("WarehouseClerk " + identificationNumber + " received a request to deliver MATERIAL " + cargo + " to Station " + currentRequest.stationId());
             } else if (requestedCargoTyp == CargoTyp.PRODUCT) {
                 task = Task.EMPTYING;
                 originStationId = currentRequest.stationId();
-                destinationStationId = 1;
+                destinationStationId = 1; // Headquarters station ID
+                logger.info("WarehouseClerk " + identificationNumber + " received a request to collect PRODUCT " + cargo + " from Station " + currentRequest.stationId());
             }
             return true;
         }
@@ -97,7 +125,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         int refilled = 0;
         Station destinationStation = (Station) ProductionHeadquarters.getInstance().getStations().get(destinationStationId);
         if (destinationStation == null){
-            System.out.println("WarehouseClerk " + identificationNumber + " has no valid destination station to refill cargo.");
+            logger.warn("WarehouseClerk " + identificationNumber + " has no valid destination for the destination station ID: " + destinationStationId);
             return 0;
         }
         refilled = destinationStation.resiveCargo(cargo, quantity);
@@ -109,7 +137,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         int collected = 0;
         Station originStation = (Station) ProductionHeadquarters.getInstance().getStations().get(originStationId);
         if (originStation == null){
-            System.out.println("WarehouseClerk " + identificationNumber + " has no valid origin station to collect cargo.");
+            logger.warn("WarehouseClerk " + identificationNumber + " has no valid origin for the origin station ID: " + originStationId);
             return 0;
         }
         collected = originStation.handOverCargo(cargo, quantity);

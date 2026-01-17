@@ -41,6 +41,7 @@ public class ProductionController {
     private ControlMachine driveUnitQualityControlMachine;
     private PackagingMaschine packagingMaschine;
     private WarehouseClerk warehouseClerk1;
+    private WarehouseClerk warehouseClerk2;
 
     public ProductionController() {
         logger.info("ProductionController initialized");
@@ -151,13 +152,17 @@ public class ProductionController {
     public void createAllPersonnel() {
         supplier = new Supplier(11,
                 mainDepot,
-                10000,
-                1000,
-                1000);
+                100000,
+                5000,
+                2000);
         warehouseClerk1 = new WarehouseClerk(12,
-                1000,
-                2000,
-                1000);
+                10000,
+                5000,
+                2000);
+        warehouseClerk2 = new WarehouseClerk(13,
+                10000,
+                5000,
+                2000);
     }
 
     public void addAllToProductionHeadquarters() {
@@ -174,6 +179,7 @@ public class ProductionController {
         productionHeadquarters.addStation(packagingMaschine);
         productionHeadquarters.addPersonnel(supplier);
         productionHeadquarters.addPersonnel(warehouseClerk1);
+        productionHeadquarters.addPersonnel(warehouseClerk2);
     }
 
     public void startProductionHeadquarters() {

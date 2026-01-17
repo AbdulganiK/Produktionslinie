@@ -41,7 +41,14 @@ public interface Station{
      */
     int getIdentificationNumber();
 
+    /**
+     * Start the station's operations.
+     */
     void start();
 
+    /**
+     * Get an array of information about the station.
+     * @return A 2D array containing station information.
+     */
     String [][] getInfoArray();
 }
