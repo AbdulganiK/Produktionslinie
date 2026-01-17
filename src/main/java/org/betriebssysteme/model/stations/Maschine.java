@@ -110,7 +110,7 @@ public abstract class Maschine extends Thread implements Station{
         requestedCargoTypes.put(cargo, false);
     }
 
-
+    /*
     protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
             boolean cargoDelivered = false;
@@ -143,10 +143,10 @@ public abstract class Maschine extends Thread implements Station{
         } else {
             logger.warn("Next machine is null, cannot deliver product");
         }
-    }
+    }*/
 
     //TODO: Alternative implementation with notification
-    /*
+
     protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
             boolean cargoNotified = false;
@@ -178,7 +178,7 @@ public abstract class Maschine extends Thread implements Station{
         else {
             logger.warn("Next machine is null, cannot deliver product");
         }
-    }*/
+    }
 
     protected void storeProduct(Cargo cargo) {
         try {

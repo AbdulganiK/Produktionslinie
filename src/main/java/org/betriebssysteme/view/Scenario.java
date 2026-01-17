@@ -6,6 +6,7 @@ import com.almasb.fxgl.entity.EntityFactory;
 import com.almasb.fxgl.entity.SpawnData;
 import org.betriebssysteme.control.ProductionController;
 import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.stations.Maschine;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.utility.EntityPlacer;
 
@@ -21,8 +22,6 @@ public class Scenario {
     public Scenario(EntityProductionLineFactory entityFactory) {
         this.entityFactory = entityFactory;
     }
-
-
 
 
     public void runFirst() {
@@ -41,7 +40,6 @@ public class Scenario {
         FXGL.spawn(EntityNames.CENTRAL, 1150, 1050);
 
 
-
         // Erste Reihe
         // -----------------------------------------
         // Erste Produktionsmaschine in der ersten Reihe
@@ -54,7 +52,7 @@ public class Scenario {
         // 3 Belts vor der Maschine und nach der Maschine
         BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine1, 3);
         var b = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine1, 7);
-        entityFactory.spawnItemOnBelt(b.get(1));
+        firstRowProdmachine1.getComponent(MachineComponent.class).setBelt(b.get(1));
 
 
         // zweite Produktionsmaschine in der ersten Reihe
@@ -67,11 +65,10 @@ public class Scenario {
         // 3 Belts vor der Maschine und nach der Maschine
         BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine2, 3);
         ArrayList<Entity> b1R1 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine2, 3);
-        entityFactory.spawnItemOnBelt(b1R1.get(1));
+        firstRowProdmachine2.getComponent(MachineComponent.class).setBelt(b1R1.get(1));
 
         // belts zur zweiten Reihe
         ArrayList<Entity> bob1 = BeltFactory.spawnBeltOnBelt(b1R1.getLast(), 10, BeltDirection.HORIZONTAL);
-        entityFactory.spawnItemOnBelt(bob1.get(3));
 
 
         // dritte Produktionsmaschine in der ersten Reihe
@@ -83,7 +80,8 @@ public class Scenario {
 
         // 3 Belts vor der Maschine und nach der Maschine
         BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine3, 3);
-        BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine3, 7);
+        var belt3 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine3, 7);
+        firstRowProdmachine3.getComponent(MachineComponent.class).setBelt(belt3.get(1));
 
         // vierte Produktionsmaschine in der ersten Reihe
         SpawnData machineData4 = new SpawnData(1450, 700, 100);
@@ -96,8 +94,7 @@ public class Scenario {
         BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine4, 3);
         ArrayList<Entity> r1M4 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine4, 3);
         BeltFactory.spawnBeltOnBelt(r1M4.getLast(), 10, BeltDirection.HORIZONTAL);
-        entityFactory.spawnItemOnBelt(r1M4.get(2));
-
+        firstRowProdmachine4.getComponent(MachineComponent.class).setBelt(r1M4.get(1));
         // Zweite Reihe
         // -----------------------------------------
         // Erste Produktionsmaschine in der zweiten Reihe
@@ -111,9 +108,8 @@ public class Scenario {
         BeltFactory.spawnBeltsBeforeMachine(seccondRowProdmachine1, 2);
 
         // Belts nach der Maschine (analog erste Reihe)
-        ArrayList<Entity> b1R2 = BeltFactory.spawnBeltsAfterMachine(seccondRowProdmachine1, 1);
-        entityFactory.spawnItemOnBelt(b1R2.get(1));
-
+        ArrayList<Entity> b1R2 = BeltFactory.spawnBeltsAfterMachine(seccondRowProdmachine1, 2);
+        seccondRowProdmachine1.getComponent(MachineComponent.class).setBelt(b1R2.get(1));
 
         // Zweite Produktionsmaschine in der zweiten Reihe
         SpawnData machineData6 = new SpawnData(1400, 400, 100);
@@ -122,12 +118,14 @@ public class Scenario {
         seccondRowProdmachine2.setZIndex(100);
         seccondRowProdmachine2.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
+
         // 3 Belts vor der Maschine
         BeltFactory.spawnBeltsBeforeMachine(seccondRowProdmachine2, 2);
 
+
         // Belts nach der Maschine + Item wie bei den anderen
-        ArrayList<Entity> b2R2 = BeltFactory.spawnBeltsAfterMachine(seccondRowProdmachine2, 1);
-        entityFactory.spawnItemOnBelt(b2R2.get(1));
+        ArrayList<Entity> b2R2 = BeltFactory.spawnBeltsAfterMachine(seccondRowProdmachine2, 2);
+        seccondRowProdmachine2.getComponent(MachineComponent.class).setBelt(b2R2.get(1));
 
         // dritte Reihe
         // -----------------------------------------
@@ -141,13 +139,10 @@ public class Scenario {
 
         // Maschine direkt an Band PLatzieren
         EntityPlacer.placeMachineAfterBelt(thirdRowProdmachine1, b1R2.getLast());
+        thirdRowProdmachine1.getComponent(MachineComponent.class).setBelt(b1R2.get(1));
 
         // Band nach Maschine
-        var productBelt = BeltFactory.spawnBeltsAfterMachine(thirdRowProdmachine1, 16);
-        entityFactory.spawnItemOnBelt(productBelt.get(4));
-        entityFactory.spawnItemOnBelt(productBelt.get(8));
-        entityFactory.spawnItemOnBelt(productBelt.get(6));
-        entityFactory.spawnItemOnBelt(productBelt.get(10));
+        var productBelt = BeltFactory.spawnBeltsAfterMachine(thirdRowProdmachine1, 17);
 
 
         // Zweite KotnrollMaschine dritte Reihe
@@ -160,9 +155,8 @@ public class Scenario {
         // Maschine direkt an Band Platzieren
         EntityPlacer.placeMachineAfterBelt(thirdRowProdmachine2, b2R2.getLast());
         var sideProductbelt = BeltFactory.spawnBeltsAfterMachine(thirdRowProdmachine2, 2);
-        entityFactory.spawnItemOnBelt(sideProductbelt.get(1));
         BeltFactory.spawnBeltOnBelt(sideProductbelt.getLast(), 10, BeltDirection.HORIZONTAL);
-
+        thirdRowProdmachine2.getComponent(MachineComponent.class).setBelt(sideProductbelt.get(1));
         // vierte Reihe
         // -----------------------------------------
         // Erste KontrollMascine dritte Reihe
@@ -175,8 +169,6 @@ public class Scenario {
         EntityPlacer.placeMachineAfterBelt(fourthRowProdmachine1, productBelt.getLast());
 
         BeltFactory.spawnBeltsAfterMachine(fourthRowProdmachine1, 1);
-
-
 
 
     }

@@ -72,6 +72,19 @@ public class ProductionLineApp extends GameApplication {
 
     }
 
+    public Entity spawnItemOnBelt(Entity belt) {
+        Point2D center = belt.getCenter();
+
+        double itemHalfW = 16;
+        double itemHalfH = 16;
+
+        return FXGL.spawn(
+                EntityNames.ITEM,
+                center.getX() - itemHalfW,
+                center.getY() - itemHalfH
+        );
+    }
+
 
     public static void main(String[] args) {
         launch(args);

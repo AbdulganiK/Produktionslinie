@@ -4,10 +4,8 @@ import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsWorld;
 import javafx.geometry.Point2D;
-import org.betriebssysteme.view.BeltComponent;
-import org.betriebssysteme.view.EntityType;
-import org.betriebssysteme.view.ItemMoveComponent;
-import org.betriebssysteme.view.MachineComponent;
+import org.betriebssysteme.model.stations.Maschine;
+import org.betriebssysteme.view.*;
 
 public class EntityCollisionHandler {
 
@@ -19,6 +17,8 @@ public class EntityCollisionHandler {
                 moveComponent.setDirection(Point2D.ZERO);
                 if (machine.getComponent(MachineComponent.class).isDoorOpen()) {
                     item.removeFromWorld();
+                    Maschine maschineData = (Maschine) machine.getComponent(StationComponent.class).getStation();
+                    maschineData.notifyMachineCargoHandoverCompleted();
                 }
             }
         });
