@@ -49,6 +49,7 @@ public class ProductionController {
 
     public void createAllStations() {
         mainDepot = new MainDepot(100, 50);
+        // erste Reihe Produktion
         driveUnitHouseProductionMaschine = new ProductionMaschine(
                 21,
                 500,
@@ -67,6 +68,7 @@ public class ProductionController {
                 5,
                 1
                 );
+        // Zweite Reihe
         driveUnitProductionMaschine = new ProductionMaschine(
                 23,
                 1000,
@@ -76,6 +78,7 @@ public class ProductionController {
                 5,
                 2
                 );
+        // erste Reihe
         controlUnitHouseProductionMaschine = new ProductionMaschine(
                 24,
                 500,
@@ -94,6 +97,7 @@ public class ProductionController {
                 5,
                 1
                 );
+        // Zweite Reihe
         controlUnitProductionMaschine = new ProductionMaschine(
                 26,
                 1000,
@@ -103,6 +107,7 @@ public class ProductionController {
                 5,
                 2
                 );
+        // dritte Reihe
         controlUnitQualityControlMachine = new ControlMachine(
                 31,
                 500,
@@ -125,6 +130,7 @@ public class ProductionController {
                 30,
                 3
         );
+        // vierte
         packagingMaschine = new PackagingMaschine(
                 41,
                 1500,
@@ -152,7 +158,7 @@ public class ProductionController {
     public void createAllPersonnel() {
         supplier = new Supplier(11,
                 mainDepot,
-                100000,
+                1000,
                 5000,
                 2000);
         warehouseClerk1 = new WarehouseClerk(12,

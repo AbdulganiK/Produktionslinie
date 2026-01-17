@@ -3,10 +3,15 @@ package org.betriebssysteme.view;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.EntityFactory;
+import com.almasb.fxgl.entity.SpawnData;
+import org.betriebssysteme.control.ProductionController;
+import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.utility.EntityPlacer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class Scenario {
@@ -21,10 +26,28 @@ public class Scenario {
 
 
     public void runFirst() {
+        // Start the production line
+        // All stations and personnel are created and initialized here
+        ProductionController.createProductionLine();
+        Map<Integer, Station> stations = ProductionHeadquarters.getInstance().getStations();
+
+
+        // Lager Spawnen
+        SpawnData storageData = new SpawnData(500, 950);
+        storageData.put("station", stations.get(1));
+        FXGL.spawn(EntityNames.STORAGE, storageData);
+
+        // Zentrale Spawnen
+        FXGL.spawn(EntityNames.CENTRAL, 1150, 1050);
+
+
+
         // Erste Reihe
         // -----------------------------------------
         // Erste Produktionsmaschine in der ersten Reihe
-        Entity firstRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, 500, 700);
+        SpawnData data = new SpawnData(500, 700, 100);
+        data.put("station", stations.get(21));
+        Entity firstRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, data);
         firstRowProdmachine1.setZIndex(100);
         firstRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -35,7 +58,9 @@ public class Scenario {
 
 
         // zweite Produktionsmaschine in der ersten Reihe
-        Entity firstRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, 750, 700);
+        SpawnData machineData2 = new SpawnData(750, 700, 100);
+        machineData2.put("station", stations.get(22));
+        Entity firstRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData2);
         firstRowProdmachine2.setZIndex(100);
         firstRowProdmachine2.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -50,7 +75,9 @@ public class Scenario {
 
 
         // dritte Produktionsmaschine in der ersten Reihe
-        Entity firstRowProdmachine3 = FXGL.spawn(EntityNames.MACHINE, 1200, 700);
+        SpawnData machineData3 = new SpawnData(1200, 700, 100);
+        machineData3.put("station", stations.get(24));
+        Entity firstRowProdmachine3 = FXGL.spawn(EntityNames.MACHINE, machineData3);
         firstRowProdmachine3.setZIndex(100);
         firstRowProdmachine3.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -59,7 +86,9 @@ public class Scenario {
         BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine3, 7);
 
         // vierte Produktionsmaschine in der ersten Reihe
-        Entity firstRowProdmachine4 = FXGL.spawn(EntityNames.MACHINE, 1450, 700);
+        SpawnData machineData4 = new SpawnData(1450, 700, 100);
+        machineData4.put("station", stations.get(25));
+        Entity firstRowProdmachine4 = FXGL.spawn(EntityNames.MACHINE, machineData4);
         firstRowProdmachine4.setZIndex(100);
         firstRowProdmachine4.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -72,7 +101,9 @@ public class Scenario {
         // Zweite Reihe
         // -----------------------------------------
         // Erste Produktionsmaschine in der zweiten Reihe
-        Entity seccondRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, 700, 400);
+        SpawnData machineData5 = new SpawnData(700, 400, 100);
+        machineData5.put("station", stations.get(23));
+        Entity seccondRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData5);
         seccondRowProdmachine1.setZIndex(100);
         seccondRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -85,7 +116,9 @@ public class Scenario {
 
 
         // Zweite Produktionsmaschine in der zweiten Reihe
-        Entity seccondRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, 1400, 400);
+        SpawnData machineData6 = new SpawnData(1400, 400, 100);
+        machineData6.put("station", stations.get(26));
+        Entity seccondRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData6);
         seccondRowProdmachine2.setZIndex(100);
         seccondRowProdmachine2.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -100,7 +133,9 @@ public class Scenario {
         // -----------------------------------------
 
         // Erste KontrollMascine dritte Reihe
-        Entity thirdRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, 700, 400);
+        SpawnData machineData7 = new SpawnData(700, 400, 100);
+        machineData7.put("station", stations.get(31));
+        Entity thirdRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData7);
         thirdRowProdmachine1.setZIndex(100);
         thirdRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -116,7 +151,9 @@ public class Scenario {
 
 
         // Zweite KotnrollMaschine dritte Reihe
-        Entity thirdRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, 700, 400);
+        SpawnData machineData8 = new SpawnData(700, 400, 100);
+        machineData8.put("station", stations.get(32));
+        Entity thirdRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData8);
         thirdRowProdmachine2.setZIndex(100);
         thirdRowProdmachine2.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
@@ -129,7 +166,9 @@ public class Scenario {
         // vierte Reihe
         // -----------------------------------------
         // Erste KontrollMascine dritte Reihe
-        Entity fourthRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, 700, 400);
+        SpawnData machineData9 = new SpawnData(700, 400, 100);
+        machineData9.put("station", stations.get(41));
+        Entity fourthRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData9);
         fourthRowProdmachine1.setZIndex(100);
         fourthRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 

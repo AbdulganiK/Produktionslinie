@@ -13,6 +13,7 @@ import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import org.betriebssysteme.model.stations.Station;
 
 import java.awt.*;
 
@@ -22,7 +23,9 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.MACHINE)
     public Entity newMachine(SpawnData data) {
+        Station station = data.get("station");
         return FXGL.entityBuilder(data)
+                .with(new StationComponent(station))
                 .with(new MenuComponent())
                 .type(EntityType.MACHINE)
                 .with(new MachineComponent())
@@ -34,8 +37,10 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.STORAGE)
     public Entity newStorage(SpawnData data) {
+        Station station = data.get("station");
         return FXGL.entityBuilder(data)
                 .type(EntityType.STORAGE)
+                .with(new StationComponent(station))
                 .with(new MenuComponent(350, 0))
                 .with(new StatusComponent())
                 .with(new StorageComponent())

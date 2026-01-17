@@ -13,7 +13,7 @@ public class MenuComponent extends Component {
     private final Texture background;
     private boolean visibility;
 
-    private static final int ROWS = 6;
+    private static final int ROWS = 9;
 
     private Group menuRoot;
     private Text[] nameLabels  = new Text[ROWS];
@@ -82,14 +82,14 @@ public class MenuComponent extends Component {
             // individuelle Y-Position pro Zeile
             h = h + 30;
 
-            Text nameText = new Text("Eigenschaft " + (i + 1));
+            Text nameText = new Text("");
             nameText.setFill(Color.LIGHTGRAY);
             nameText.setStrokeWidth(2);
             nameText.setFont(font);
             nameText.setTranslateX(startXNames);
             nameText.setTranslateY(h);
 
-            Text valueText = new Text("15");
+            Text valueText = new Text("");
             valueText.setFill(Color.LIMEGREEN);
             valueText.setStrokeWidth(2);
             valueText.setFont(font);
@@ -104,12 +104,6 @@ public class MenuComponent extends Component {
         }
 
         setVisibility(false);
-        setID("10");
-        setGeschwindigkeit("100");
-        setProduct("Gehäuse");
-        setStatus("Laufend");
-        setLagerBestand("100 Produkte");
-        setKapazitaet("100");
         entity.getViewComponent().addChild(menuRoot);
     }
 
@@ -139,9 +133,23 @@ public class MenuComponent extends Component {
         setPropertyValue(row, value);
     }
 
-    public void setID(String value)                { setProperty(0, "ID", value); }
-    public void setProduct(String value)           { setProperty(1, "Produkt", value); }
-    public void setStatus(String value)            { setProperty(2, "Status", value); }
+    public void setNameLabels(String[] labels) {
+        int max = Math.min(labels.length, nameLabels.length);
+
+        for (int i = 0; i < max; i++) {
+            nameLabels[i].setText(labels[i]);
+        }
+    }
+
+    public void setValueLabels(String[] labels) {
+        int max = Math.min(labels.length, valueLabels.length);
+
+        for (int i = 0; i < max; i++) {
+            valueLabels[i].setText(labels[i]);
+        }
+    }
+
+
     public void setLagerBestand(String value)      { setProperty(3, "Bestand", value); }
     public void setGeschwindigkeit(String value)   { setProperty(4, "Speed", value); }
     public void setKapazitaet(String value)        { setProperty(5, "Kapazität", value); }
