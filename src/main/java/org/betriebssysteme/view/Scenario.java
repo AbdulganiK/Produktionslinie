@@ -139,10 +139,11 @@ public class Scenario {
 
         // Maschine direkt an Band PLatzieren
         EntityPlacer.placeMachineAfterBelt(thirdRowProdmachine1, b1R2.getLast());
-        thirdRowProdmachine1.getComponent(MachineComponent.class).setBelt(b1R2.get(1));
+
 
         // Band nach Maschine
         var productBelt = BeltFactory.spawnBeltsAfterMachine(thirdRowProdmachine1, 17);
+        thirdRowProdmachine1.getComponent(MachineComponent.class).setBelt(productBelt.get(1));
 
 
         // Zweite KotnrollMaschine dritte Reihe

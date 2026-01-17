@@ -88,6 +88,13 @@ public class MachineComponent extends Component {
     @Override
     public void onUpdate(double tpf) {
         Maschine maschine = (Maschine) entity.getComponent(StationComponent.class).getStation();
+        StatusComponent statusComponent = entity.getComponent(StatusComponent.class);
+        maschine.getStatus();
+        switch (maschine.getStatus().getStatusTyp()) {
+            case INFO -> statusComponent.running();
+            case WARNING -> statusComponent.warning();
+            case CRITICAL -> statusComponent.error();
+        }
         if (maschine.getCargoHandoverToNextMaschineInProgress()) {
             ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
             if (belt != null) {
