@@ -83,13 +83,13 @@ public class MainDepot implements Station {
             if (currentQuantity + quantity <= maxStorageCapacity) {
                 cargoStorage.put(cargo, currentQuantity + quantity);
                 checkAndUpdateStatus();
-                System.out.println("MainDepot " + identificationNumber + " accepted " + quantity + " of " + cargo);
+                logger.info("MainDepot " + identificationNumber + " accepted " + quantity + " of " + cargo);
                 return quantity;
             } else {
                 int acceptedQuantity = maxStorageCapacity - currentQuantity;
                 cargoStorage.put(cargo, maxStorageCapacity);
                 checkAndUpdateStatus();
-                System.out.println("MainDepot " + identificationNumber + " accepted only " + acceptedQuantity + " of " + cargo + " requested: " + quantity);
+                logger.info("MainDepot " + identificationNumber + " accepted only " + acceptedQuantity + " of " + cargo + " requested: " + quantity);
                 return acceptedQuantity;
             }
         } catch (Exception e) {
@@ -108,12 +108,12 @@ public class MainDepot implements Station {
             if (currentQuantity >= quantity) {
                 cargoStorage.put(cargo, currentQuantity - quantity);
                 checkAndUpdateStatus();
-                System.out.println("MainDepot " + identificationNumber + " handed over " + quantity + " of " + cargo);
+                logger.info("MainDepot " + identificationNumber + " handed over " + quantity + " of " + cargo);
                 return quantity;
             } else {
                 cargoStorage.put(cargo, 0);
                 checkAndUpdateStatus();
-                System.out.println("MainDepot " + identificationNumber + " handed over only " + currentQuantity + " of " + cargo + " requested: " + quantity);
+                logger.info("MainDepot " + identificationNumber + " handed over only " + currentQuantity + " of " + cargo + " requested: " + quantity);
                 return currentQuantity;
             }
         } catch (Exception e) {
@@ -149,10 +149,10 @@ public class MainDepot implements Station {
     public String [][] getInfoArray(){
         String [][] infoArray = new String[cargoStorage.size()+4][2];
 
-        infoArray[0][0] = "Main Depot ID";
+        infoArray[0][0] = "ID";
         infoArray[0][1] = Integer.toString(identificationNumber);
 
-        infoArray[1][0] = "Max Storage Capacity";
+        infoArray[1][0] = "Max Capacity";
         infoArray[1][1] = Integer.toString(maxStorageCapacity);
 
         infoArray[2][0] = "Current Status";
