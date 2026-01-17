@@ -133,8 +133,6 @@ public abstract class Maschine extends Thread implements Station{
                         cargoHandoverToNextMaschineInProgress = true;
                         cargoDelivered = true;
                         logger.info("Product delivered to next machine: " + nextMaschine.getIdentificationNumber());
-                        Thread.sleep(500); // Simulate time taken for handover
-                        cargoHandoverToNextMaschineInProgress = false;
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
@@ -171,8 +169,6 @@ public abstract class Maschine extends Thread implements Station{
                         notifyNextMaschineOfCargoSending(cargo);
                         cargoNotified = true;
                         cargoHandoverToNextMaschineInProgress = true;
-                        Thread.sleep(500);
-                        cargoHandoverToNextMaschineInProgress = false;
                     }
                 } catch (InterruptedException e) {
                     throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
@@ -220,7 +216,11 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     public boolean getCargoHandoverToNextMaschineInProgress(){
-        return cargoHandoverToNextMaschineInProgress;
+        boolean cargoHandoverToNextMaschineInProgressCopy = cargoHandoverToNextMaschineInProgress;
+        if (cargoHandoverToNextMaschineInProgressCopy == true){
+            cargoHandoverToNextMaschineInProgress = false;
+        }
+        return cargoHandoverToNextMaschineInProgressCopy;
     }
 
     public boolean getRemainingStorageCapacity(Cargo cargo){
