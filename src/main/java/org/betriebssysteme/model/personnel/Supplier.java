@@ -42,6 +42,7 @@ public class Supplier extends Thread implements Personnel {
 
     private void supplyRoutine() {
         task = Task.DELIVERING;
+        destinationStationId = mainDepot.getIdentificationNumber();
         idOfCurrentDestinationStation = mainDepot.getIdentificationNumber();
         logger.info("Supplier starting supply routine to Main Depot");
         try {
@@ -52,6 +53,8 @@ public class Supplier extends Thread implements Personnel {
         }
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
+        originStationId = mainDepot.getIdentificationNumber();
+        destinationStationId = -1;
         idOfCurrentDestinationStation = -1;
         try {
             Thread.sleep(travelTimer_ms);
@@ -157,13 +160,13 @@ public class Supplier extends Thread implements Personnel {
         infoArray[2][0] = "Current Task";
         infoArray[2][1] = task.toString();
 
-        infoArray[3][0] = "Origin Station ID";
+        infoArray[3][0] = "Origin ID";
         if (originStationId == -1) {
             infoArray[3][1] = "N/A";
         } else {
             infoArray[3][1] = String.valueOf(originStationId);
         }
-        infoArray[4][0] = "Destination Station ID";
+        infoArray[4][0] = "Destination ID";
         if (destinationStationId == -1) {
             infoArray[4][1] = "N/A";
         } else {
@@ -175,9 +178,6 @@ public class Supplier extends Thread implements Personnel {
 
         infoArray[6][0] = "Supply Timer (ms)";
         infoArray[6][1] = String.valueOf(supplyTimer_ms);
-
-        infoArray[7][0] = "Travel Timer (ms)";
-        infoArray[7][1] = String.valueOf(travelTimer_ms);
         return infoArray;
     }
 
