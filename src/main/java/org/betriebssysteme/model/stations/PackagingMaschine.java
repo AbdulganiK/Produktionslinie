@@ -6,6 +6,7 @@ import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
 import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusCritical;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
@@ -35,6 +36,7 @@ public class PackagingMaschine extends Maschine {
     @Override
     protected void checkStorageStatus() {
         try {
+            Status newStatus = StatusInfo.OPPERATIONAL;
             storageSemaphore.acquire();
             logger.info("Checking storage status of PackagingMaschine " + identificationNumber);
             // Check recipe ingredients
@@ -42,16 +44,16 @@ public class PackagingMaschine extends Maschine {
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 if (storedQuantity == 0) {
-                    if (status != StatusWarning.EMPTY) {
-                        status = StatusWarning.EMPTY;
+                    if (newStatus != StatusWarning.EMPTY) {
+                        newStatus = StatusWarning.EMPTY;
                         logger.info("Ingredient " + cargo + " is empty in PackagingMaschine " + identificationNumber);
                     }
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL){
                         sendCargoRequest(cargo, maxStorageCapacity);
                     }
                 } else if (storedQuantity <= maxStorageCapacity * 0.25 || storedQuantity < ingredientQuantity) {
-                    if (status != StatusWarning.EMPTY) {
-                        status = StatusCritical.LOW_CAPACITY;
+                    if (newStatus != StatusWarning.EMPTY) {
+                        newStatus = StatusCritical.LOW_CAPACITY;
                         logger.info("Ingredient " + cargo + " is low in PackagingMaschine " + identificationNumber);
                     }
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
@@ -59,8 +61,8 @@ public class PackagingMaschine extends Maschine {
                     }
                 }
                 else if (storedQuantity >= maxStorageCapacity) {
-                    if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY) {
-                        status = StatusWarning.FULL;
+                    if (newStatus != StatusWarning.EMPTY && newStatus != StatusCritical.LOW_CAPACITY) {
+                        newStatus = StatusWarning.FULL;
                         logger.info("Ingredient " + cargo + " storage is FULL in PackagingMaschine " + identificationNumber);
                     }
                 }
@@ -68,22 +70,19 @@ public class PackagingMaschine extends Maschine {
             // Check product storage
             int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                if (status != StatusWarning.FULL) {
-                    status = StatusWarning.FULL;
+                if (newStatus != StatusWarning.FULL) {
+                    newStatus = StatusWarning.FULL;
                     logger.info("Product storage is FULL in PackagingMaschine " + identificationNumber);
                     sendCargoRequest(productCargo, productStorage);
                 }
             } else if (productStorage >= maxStorageCapacity * 0.75) {
-                if (status != StatusCritical.LOW_CAPACITY) {
-                    status = StatusCritical.LOW_CAPACITY;
+                if (newStatus != StatusCritical.LOW_CAPACITY) {
+                    newStatus = StatusCritical.LOW_CAPACITY;
                     logger.info("Product storage is LOW_CAPACITY in PackagingMaschine " + identificationNumber);
                     sendCargoRequest(productCargo, productStorage);
                 }
             }
-            // Set status to OPERATIONAL if no warnings or critical statuses are set
-            if (status != StatusWarning.FULL && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
-                status = StatusInfo.OPPERATIONAL;
-            }
+            status = newStatus;
         }
         catch (Exception e) {
             throw new RuntimeException(e);

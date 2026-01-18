@@ -3,6 +3,7 @@ package org.betriebssysteme.model.stations;
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusCritical;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
@@ -40,46 +41,45 @@ public class ControlMachine extends Maschine{
     @Override
     protected void checkStorageStatus() {
         try {
+            Status newStatus = StatusInfo.OPPERATIONAL;
             logger.info("Checking storage status of ControlMachine " + identificationNumber);
             storageSemaphore.acquire();
             // Check product storage
             int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                if (status != StatusWarning.EMPTY) {
-                    status = StatusWarning.FULL;
+                if (newStatus != StatusWarning.EMPTY) {
+                    newStatus = StatusWarning.FULL;
                     logger.info("Product storage is FULL in ControlMachine " + identificationNumber);
                 }
             } else if (productStorage >= maxStorageCapacity * 0.25 && productStorage != 0) {
-                if (status != StatusWarning.EMPTY) {
-                    status = StatusCritical.LOW_CAPACITY;
+                if (newStatus != StatusWarning.EMPTY) {
+                    newStatus = StatusCritical.LOW_CAPACITY;
                     logger.info("Product storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
                 }
             }
             else if (productStorage == 0) {
-                if (status != StatusWarning.EMPTY) {
-                    status = StatusWarning.EMPTY;
+                if (newStatus != StatusWarning.EMPTY) {
+                    newStatus = StatusWarning.EMPTY;
                     logger.info("Product storage is EMPTY in ControlMachine " + identificationNumber);
                 }
             }
             // Check SCRAP storage
             int scrapStorage = storage.getOrDefault(Product.SCRAP, 0);
             if (scrapStorage >= maxStorageCapacity) {
-                if (status != StatusWarning.FULL) {
-                    status = StatusWarning.FULL;
+                if (newStatus != StatusWarning.FULL) {
+                    newStatus = StatusWarning.FULL;
                     logger.info("SCRAP storage is FULL in ControlMachine " + identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
             }
             else if (scrapStorage >= maxStorageCapacity * 0.75) {
-                if (status != StatusCritical.LOW_CAPACITY) {
-                    status = StatusCritical.LOW_CAPACITY;
+                if (newStatus != StatusCritical.LOW_CAPACITY) {
+                    newStatus = StatusCritical.LOW_CAPACITY;
                     logger.info("SCRAP storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
             }
-            if (status != StatusWarning.FULL && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
-                status = StatusInfo.OPPERATIONAL;
-            }
+            status = newStatus;
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
