@@ -42,7 +42,7 @@ public class MainDepot implements Station {
     }
 
     private void checkAndUpdateStatus() {
-        status = StatusInfo.OPPERATIONAL;
+        status = StatusInfo.OPERATIONAL;
         for (Cargo cargo : cargoStorage.keySet()) {
             int quantity = cargoStorage.get(cargo);
             if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {

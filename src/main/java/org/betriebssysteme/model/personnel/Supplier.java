@@ -190,7 +190,7 @@ public class Supplier extends Thread implements Personnel {
     //Thread methods
     @Override
     public void run() {
-        status = StatusInfo.OPPERATIONAL;
+        status = StatusInfo.OPERATIONAL;
         while (true) {
             supplyRoutine();
             try {

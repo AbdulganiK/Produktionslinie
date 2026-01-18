@@ -1,10 +1,8 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
-import org.betriebssysteme.model.cargo.Material;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusCritical;
@@ -36,7 +34,7 @@ public class PackagingMaschine extends Maschine {
     @Override
     protected void checkStorageStatus() {
         try {
-            Status newStatus = StatusInfo.OPPERATIONAL;
+            Status newStatus = StatusInfo.OPERATIONAL;
             storageSemaphore.acquire();
             logger.info("Checking storage status of PackagingMaschine " + identificationNumber);
             // Check recipe ingredients

@@ -1,14 +1,11 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusCritical;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
-
-import java.util.Map;
 
 public class ControlMachine extends Maschine{
     private int probilityOfDefectPercent;
@@ -41,7 +38,7 @@ public class ControlMachine extends Maschine{
     @Override
     protected void checkStorageStatus() {
         try {
-            Status newStatus = StatusInfo.OPPERATIONAL;
+            Status newStatus = StatusInfo.OPERATIONAL;
             logger.info("Checking storage status of ControlMachine " + identificationNumber);
             storageSemaphore.acquire();
             // Check product storage

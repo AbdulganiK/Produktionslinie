@@ -1,6 +1,5 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
@@ -33,7 +32,7 @@ public class ProductionMaschine extends Maschine {
     @Override
     protected void checkStorageStatus() {
         try {
-            Status newStatus = StatusInfo.OPPERATIONAL;
+            Status newStatus = StatusInfo.OPERATIONAL;
             logger.info("Checking storage status of ProductionMaschine " + identificationNumber);
             storageSemaphore.acquire();
             for (Cargo cargo : recipe.ingredients().keySet()) {

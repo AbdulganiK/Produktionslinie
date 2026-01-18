@@ -48,7 +48,7 @@ public abstract class Maschine extends Thread implements Station{
         this.nextMaschine = nextMaschine;
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
-        this.status = StatusInfo.OPPERATIONAL;
+        this.status = StatusInfo.OPERATIONAL;
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
