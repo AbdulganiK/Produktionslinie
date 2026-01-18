@@ -87,7 +87,7 @@ public class PackagingMaschine extends Maschine {
                 if (storedQuantity < ingredientQuantity) {
                     cargoPrductionIsPossible = false;
                     if (running) {
-                        System.out.println("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
+                        logger.info("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
                     }
                 }
             }
@@ -96,7 +96,7 @@ public class PackagingMaschine extends Maschine {
                 logger.info("Storage full, cannot produce more product of " + identificationNumber);
                 cargoPrductionIsPossible = false;
                 if (running) {
-                    System.out.println("Packaging Machine " + identificationNumber + " storage full for product " + productCargo);
+                    logger.info("Packaging Machine " + identificationNumber + " storage full for product " + productCargo);
                 }
             }
             if (!cargoPrductionIsPossible && running) {
