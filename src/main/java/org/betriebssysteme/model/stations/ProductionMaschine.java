@@ -5,6 +5,7 @@ import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
 import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 public class ProductionMaschine extends Maschine {
@@ -37,20 +38,30 @@ public class ProductionMaschine extends Maschine {
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 if (storedQuantity == 0) {
-                    if (status != StatusWarning.EMPTY) {
-                        status = StatusWarning.EMPTY;
-                        logger.info("Ingredient " + cargo + " is empty in ProductionMaschine " + identificationNumber);
-                    }
+                    status = StatusWarning.EMPTY;
+                    logger.info("Ingredient " + cargo + " is empty in ProductionMaschine " + identificationNumber);
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL){
                         sendCargoRequest(cargo, maxStorageCapacity);
                     }
-                } else if (storedQuantity <= maxStorageCapacity * 0.25) {
-                    if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
+                } else if (storedQuantity <= maxStorageCapacity * 0.25 || storedQuantity < ingredientQuantity) {
+                    if (status != StatusWarning.EMPTY) {
                         status = StatusCritical.LOW_CAPACITY;
                         logger.info("Ingredient " + cargo + " is low in ProductionMaschine " + identificationNumber);
                     }
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
                         sendCargoRequest(cargo, maxStorageCapacity - storedQuantity);
+                    }
+                }
+                else if (storedQuantity >= maxStorageCapacity) {
+                    if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY) {
+                        status = StatusWarning.FULL;
+                        logger.info("Ingredient " + cargo + " storage is FULL in ProductionMaschine " + identificationNumber);
+                    }
+                }
+                else{
+                    if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                        status = StatusInfo.OPPERATIONAL;
+                        logger.info("Ingredient " + cargo + " storage is OK in ProductionMaschine " + identificationNumber);
                     }
                 }
             }

@@ -42,24 +42,26 @@ public class ControlMachine extends Maschine{
         try {
             logger.info("Checking storage status of ControlMachine " + identificationNumber);
             storageSemaphore.acquire();
+            // Check product storage
             int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                if (status != StatusWarning.FULL) {
+                if (status != StatusWarning.EMPTY) {
                     status = StatusWarning.FULL;
                     logger.info("Product storage is FULL in ControlMachine " + identificationNumber);
                 }
-                return;
-            } else if (productStorage >= maxStorageCapacity * 0.25) {
-                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+            } else if (productStorage >= maxStorageCapacity * 0.25 && productStorage != 0) {
+                if (status != StatusWarning.EMPTY) {
                     status = StatusCritical.LOW_CAPACITY;
                     logger.info("Product storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
                 }
-                return;
-            } else {
-                if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
-                    status = StatusInfo.OPPERATIONAL;
+            }
+            else if (productStorage == 0) {
+                if (status != StatusWarning.EMPTY) {
+                    status = StatusWarning.EMPTY;
+                    logger.info("Product storage is EMPTY in ControlMachine " + identificationNumber);
                 }
             }
+            // Check SCRAP storage
             int scrapStorage = storage.getOrDefault(Product.SCRAP, 0);
             if (scrapStorage >= maxStorageCapacity) {
                 if (status != StatusWarning.FULL) {
@@ -67,21 +69,20 @@ public class ControlMachine extends Maschine{
                     logger.info("SCRAP storage is FULL in ControlMachine " + identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
-                return;
             }
             else if (scrapStorage >= maxStorageCapacity * 0.75) {
-                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL) {
+                if (status != StatusCritical.LOW_CAPACITY) {
                     status = StatusCritical.LOW_CAPACITY;
                     logger.info("SCRAP storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
-                return;
             }
-        }
-        catch (InterruptedException e) {
+            if (status != StatusWarning.FULL && status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
+                status = StatusInfo.OPPERATIONAL;
+            }
+        } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        finally {
+        } finally {
             storageSemaphore.release();
         }
     }
