@@ -80,25 +80,19 @@ public class StatusComponent extends Component {
     // ERROR: nur Rot leuchtet
     public void error() {
         allOff();
-        firstLight.setFill(Color.RED);
-        secondLight.setFill(Color.RED);
         thirdLight.setFill(Color.RED);
     }
 
     // RUNNING: nur Grün leuchtet
     public void running() {
         allOff();
-        thirdLight.setFill(Color.GREEN);
         firstLight.setFill(Color.GREEN);
-        secondLight.setFill(Color.GREEN);
     }
 
     // WARNING: nur Orange leuchtet
     public void warning() {
         allOff();
-        firstLight.setFill(Color.ORANGE);
         secondLight.setFill(Color.ORANGE);
-        thirdLight.setFill(Color.ORANGE);
     }
 
     public void turnAllOff() {

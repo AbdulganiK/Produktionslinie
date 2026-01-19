@@ -42,6 +42,8 @@ public class ProductionController {
     private PackagingMaschine packagingMaschine;
     private WarehouseClerk warehouseClerk1;
     private WarehouseClerk warehouseClerk2;
+    private WarehouseClerk warehouseClerk3;
+    private WarehouseClerk warehouseClerk4;
 
     public ProductionController() {
         logger.info("ProductionController initialized");
@@ -49,6 +51,7 @@ public class ProductionController {
 
     public void createAllStations() {
         mainDepot = new MainDepot(100, 50);
+        // erste Reihe Produktion
         driveUnitHouseProductionMaschine = new ProductionMaschine(
                 21,
                 500,
@@ -67,6 +70,7 @@ public class ProductionController {
                 5,
                 1
                 );
+        // Zweite Reihe
         driveUnitProductionMaschine = new ProductionMaschine(
                 23,
                 1000,
@@ -76,6 +80,7 @@ public class ProductionController {
                 5,
                 2
                 );
+        // erste Reihe
         controlUnitHouseProductionMaschine = new ProductionMaschine(
                 24,
                 500,
@@ -94,6 +99,7 @@ public class ProductionController {
                 5,
                 1
                 );
+        // Zweite Reihe
         controlUnitProductionMaschine = new ProductionMaschine(
                 26,
                 1000,
@@ -103,6 +109,7 @@ public class ProductionController {
                 5,
                 2
                 );
+        // dritte Reihe
         controlUnitQualityControlMachine = new ControlMachine(
                 31,
                 500,
@@ -125,6 +132,7 @@ public class ProductionController {
                 30,
                 3
         );
+        // vierte
         packagingMaschine = new PackagingMaschine(
                 41,
                 1500,
@@ -152,7 +160,7 @@ public class ProductionController {
     public void createAllPersonnel() {
         supplier = new Supplier(11,
                 mainDepot,
-                100000,
+                1000,
                 5000,
                 2000);
         warehouseClerk1 = new WarehouseClerk(12,
@@ -160,6 +168,14 @@ public class ProductionController {
                 5000,
                 2000);
         warehouseClerk2 = new WarehouseClerk(13,
+                10000,
+                5000,
+                2000);
+        warehouseClerk3 = new WarehouseClerk(14,
+                10000,
+                5000,
+                2000);
+        warehouseClerk4 = new WarehouseClerk(15,
                 10000,
                 5000,
                 2000);
@@ -180,6 +196,8 @@ public class ProductionController {
         productionHeadquarters.addPersonnel(supplier);
         productionHeadquarters.addPersonnel(warehouseClerk1);
         productionHeadquarters.addPersonnel(warehouseClerk2);
+        productionHeadquarters.addPersonnel(warehouseClerk3);
+        productionHeadquarters.addPersonnel(warehouseClerk4);
     }
 
     public void startProductionHeadquarters() {

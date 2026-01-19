@@ -1,11 +1,12 @@
 package org.betriebssysteme.model.stations;
 
-import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
-import org.betriebssysteme.model.cargo.Material;
+import org.betriebssysteme.model.cargo.CargoTyp;
 import org.betriebssysteme.model.cargo.Product;
+import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusCritical;
+import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 public class PackagingMaschine extends Maschine {
@@ -33,41 +34,55 @@ public class PackagingMaschine extends Maschine {
     @Override
     protected void checkStorageStatus() {
         try {
-            logger.info("Checking storage status of ProductionMaschine " + identificationNumber);
+            Status newStatus = StatusInfo.OPERATIONAL;
             storageSemaphore.acquire();
-            int productStorage = storage.getOrDefault(Product.SHIPPING_PACKAGE, 0);
+            logger.info("Checking storage status of PackagingMaschine " + identificationNumber);
+            // Check recipe ingredients
+            for (Cargo cargo : recipe.ingredients().keySet()) {
+                int storedQuantity = storage.getOrDefault(cargo, 0);
+                int ingredientQuantity = recipe.ingredients().get(cargo);
+                if (storedQuantity == 0) {
+                    if (newStatus != StatusWarning.EMPTY) {
+                        newStatus = StatusWarning.EMPTY;
+                        logger.info("Ingredient " + cargo + " is empty in PackagingMaschine " + identificationNumber);
+                    }
+                    if (cargo.getCargoTyp() == CargoTyp.MATERIAL){
+                        sendCargoRequest(cargo, maxStorageCapacity);
+                    }
+                } else if (storedQuantity <= maxStorageCapacity * 0.25 || storedQuantity < ingredientQuantity) {
+                    if (newStatus != StatusWarning.EMPTY) {
+                        newStatus = StatusCritical.LOW_CAPACITY;
+                        logger.info("Ingredient " + cargo + " is low in PackagingMaschine " + identificationNumber);
+                    }
+                    if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
+                        sendCargoRequest(cargo, maxStorageCapacity - storedQuantity);
+                    }
+                }
+                else if (storedQuantity >= maxStorageCapacity) {
+                    if (newStatus != StatusWarning.EMPTY && newStatus != StatusCritical.LOW_CAPACITY) {
+                        newStatus = StatusWarning.FULL;
+                        logger.info("Ingredient " + cargo + " storage is FULL in PackagingMaschine " + identificationNumber);
+                    }
+                }
+            }
+            // Check product storage
+            int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                if(status != StatusWarning.FULL){
-                    status = StatusWarning.FULL;
+                if (newStatus != StatusWarning.FULL) {
+                    newStatus = StatusWarning.FULL;
                     logger.info("Product storage is FULL in PackagingMaschine " + identificationNumber);
+                    sendCargoRequest(productCargo, productStorage);
                 }
-                sendCargoRequest(productCargo, maxStorageCapacity);
-                return;
             } else if (productStorage >= maxStorageCapacity * 0.75) {
-                if(status != StatusCritical.LOW_CAPACITY && status != StatusWarning.FULL){
-                    status = StatusCritical.LOW_CAPACITY;
+                if (newStatus != StatusCritical.LOW_CAPACITY) {
+                    newStatus = StatusCritical.LOW_CAPACITY;
                     logger.info("Product storage is LOW_CAPACITY in PackagingMaschine " + identificationNumber);
+                    sendCargoRequest(productCargo, productStorage);
                 }
-                sendCargoRequest(productCargo, productStorage);
-                return;
             }
-            int storagePackingMaterial = storage.getOrDefault(Material.PACKING_MATERIAL, 0);
-            if (storagePackingMaterial == 0) {
-                if (status != StatusWarning.EMPTY) {
-                    status = StatusWarning.EMPTY;
-                    logger.info("Packing material is EMPTY in PackagingMaschine " + identificationNumber);
-                }
-                sendCargoRequest(Material.PACKING_MATERIAL, maxStorageCapacity);
-                return;
-            } else if (storagePackingMaterial <= maxStorageCapacity * 0.25) {
-                if (status != StatusCritical.LOW_CAPACITY && status != StatusWarning.EMPTY) {
-                    status = StatusCritical.LOW_CAPACITY;
-                    logger.info("Packing material is LOW_CAPACITY in PackagingMaschine " + identificationNumber);
-                }
-                sendCargoRequest(Material.PACKING_MATERIAL, maxStorageCapacity - storagePackingMaterial);
-                return;
-            }
-        } catch (Exception e) {
+            status = newStatus;
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
         finally {
@@ -87,7 +102,7 @@ public class PackagingMaschine extends Maschine {
                 if (storedQuantity < ingredientQuantity) {
                     cargoPrductionIsPossible = false;
                     if (running) {
-                        System.out.println("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
+                        logger.info("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
                     }
                 }
             }
@@ -96,7 +111,7 @@ public class PackagingMaschine extends Maschine {
                 logger.info("Storage full, cannot produce more product of " + identificationNumber);
                 cargoPrductionIsPossible = false;
                 if (running) {
-                    System.out.println("Packaging Machine " + identificationNumber + " storage full for product " + productCargo);
+                    logger.info("Packaging Machine " + identificationNumber + " storage full for product " + productCargo);
                 }
             }
             if (!cargoPrductionIsPossible && running) {

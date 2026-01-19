@@ -5,7 +5,9 @@ import org.betriebssysteme.model.Request;
 import org.betriebssysteme.model.cargo.Cargo;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.Semaphore;
 
 import org.betriebssysteme.model.status.Status;
@@ -27,6 +29,9 @@ public abstract class Maschine extends Thread implements Station{
     protected Cargo productCargo;
     protected Logger logger;
     protected int maschinePriority;
+    protected boolean cargoHandoverToNextMaschineInProgress = false;
+    Semaphore notificationSemaphore = new Semaphore(1);
+    protected Queue<Cargo> cargosOnTransit = new LinkedList<Cargo>();
 
     public Maschine(int identificationNumber,
                     int timeToProcess,
@@ -43,7 +48,7 @@ public abstract class Maschine extends Thread implements Station{
         this.nextMaschine = nextMaschine;
         this.storage = initialStorage;
         this.storageSemaphore = new Semaphore(1);
-        this.status = StatusInfo.OPPERATIONAL;
+        this.status = StatusInfo.OPERATIONAL;
         this.running = true;
         this.productCargo = productCargo;
         this.requestedCargoTypes = new HashMap<Cargo, Boolean>();
@@ -89,11 +94,23 @@ public abstract class Maschine extends Thread implements Station{
         }
     }
 
+    public void addCargoRequestNotification(Cargo cargo){
+        try {
+            notificationSemaphore.acquire();
+            cargosOnTransit.add(cargo);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            notificationSemaphore.release();
+        }
+    }
+
     public void markRequestAsCompleted(Cargo cargo){
         System.out.println("Machine " + identificationNumber + " marked request as completed for cargo: " + cargo);
         requestedCargoTypes.put(cargo, false);
     }
 
+    /*
     protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
             boolean cargoDelivered = false;
@@ -113,6 +130,7 @@ public abstract class Maschine extends Thread implements Station{
                             System.out.println("Machine " + identificationNumber + " restarting as next machine " + nextMaschine.getIdentificationNumber() + " accepted cargo.");
                             startMachine();
                         }
+                        cargoHandoverToNextMaschineInProgress = true;
                         cargoDelivered = true;
                         logger.info("Product delivered to next machine: " + nextMaschine.getIdentificationNumber());
                     }
@@ -123,6 +141,41 @@ public abstract class Maschine extends Thread implements Station{
             logger.info("Delivering product to next machine: " + nextMaschine.getIdentificationNumber());
             nextMaschine.resiveCargo(cargo, 1);
         } else {
+            logger.warn("Next machine is null, cannot deliver product");
+        }
+    }*/
+
+    //TODO: Alternative implementation with notification
+
+    protected void deliverToNextMachine(Cargo cargo) {
+        if (nextMaschine != null) {
+            boolean cargoNotified = false;
+            while (!cargoNotified) {
+                try {
+                    boolean remainingCapacity = nextMaschine.getRemainingStorageCapacity(cargo);
+                    if (!remainingCapacity) {
+                        if (running){
+                            System.out.println("Machine " + identificationNumber + " stopping due to next machine " + nextMaschine.getIdentificationNumber() + " storage full.");
+                            stopMachine();
+                        }
+                        logger.info("Next machine storage full, retrying in 500ms");
+                        Thread.sleep(500);
+                    }
+                    else {
+                        if (!running){
+                            System.out.println("Machine " + identificationNumber + " restarting as next machine " + nextMaschine.getIdentificationNumber() + " has capacity.");
+                            startMachine();
+                        }
+                        notifyNextMaschineOfCargoSending(cargo);
+                        cargoNotified = true;
+                        cargoHandoverToNextMaschineInProgress = true;
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
+                }
+            }
+        }
+        else {
             logger.warn("Next machine is null, cannot deliver product");
         }
     }
@@ -160,6 +213,71 @@ public abstract class Maschine extends Thread implements Station{
 
     public void setNextMaschine(Maschine nextMaschine) {
         this.nextMaschine = nextMaschine;
+    }
+
+    public boolean getCargoHandoverToNextMaschineInProgress(){
+        boolean cargoHandoverToNextMaschineInProgressCopy = cargoHandoverToNextMaschineInProgress;
+        if (cargoHandoverToNextMaschineInProgressCopy == true){
+            cargoHandoverToNextMaschineInProgress = false;
+        }
+        return cargoHandoverToNextMaschineInProgressCopy;
+    }
+
+    public boolean getRemainingStorageCapacity(Cargo cargo){
+        int remainingCapacity = 0;
+        try {
+            storageSemaphore.acquire();
+            int currentQuantity = storage.getOrDefault(cargo, 0);
+            remainingCapacity = maxStorageCapacity - currentQuantity;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            storageSemaphore.release();
+        }
+        try {
+            notificationSemaphore.acquire();
+            for (Cargo c : cargosOnTransit){
+                if (c.equals(cargo)){
+                    remainingCapacity -= 1;
+                }
+            }
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            notificationSemaphore.release();
+        }
+        return remainingCapacity > 0;
+    }
+
+    protected void notifyNextMaschineOfCargoSending(Cargo cargo){
+        if (nextMaschine != null) {
+            nextMaschine.addCargoRequestNotification(cargo);
+            logger.info("Notified next machine " + nextMaschine.getIdentificationNumber() + " of cargo sending: " + cargo);
+        }
+    }
+
+    public void notifyMachineCargoHandoverCompleted(){
+        Cargo cargo;
+        try {
+            notificationSemaphore.acquire();
+            cargo = cargosOnTransit.poll();
+            if (cargo == null){
+                logger.warn("Machine " + identificationNumber + " received notification of cargo handover completed but no cargo found on transit.");
+                return;
+            }
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            notificationSemaphore.release();
+        }
+        int warningQuantity = resiveCargo(cargo, 1);
+        if (warningQuantity > 0){
+            logger.warn("Machine " + identificationNumber + " received notification of cargo handover completed for cargo: " + cargo + " but still has " + warningQuantity + " cargo in progress.");
+        }
     }
 
     // ============================================================================

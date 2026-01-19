@@ -12,7 +12,7 @@ public enum StatusInfo implements Status {
     TRANSPORT_CARGO,
     TRAVEL_TO_HEADQUARTERS,
     CHECK_STORAGE,
-    OPPERATIONAL,
+    OPERATIONAL,
     TRAVEL_TO_STATION
     ;
 

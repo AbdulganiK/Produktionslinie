@@ -1,10 +1,12 @@
 package org.betriebssysteme.view;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import javafx.util.Duration;
+import org.betriebssysteme.model.stations.Maschine;
 import org.betriebssysteme.utility.EventHandler;
 
 public class MachineComponent extends Component {
@@ -19,6 +21,8 @@ public class MachineComponent extends Component {
 
     private AnimationChannel productionWithoutTakingItemAnim;
     private AnimationChannel offAnim;
+
+    private Entity belt;
 
 
     private boolean doorOpen = false;
@@ -75,6 +79,28 @@ public class MachineComponent extends Component {
         );
 
         this.texture = new AnimatedTexture(offAnim);
+    }
+
+    public void setBelt(Entity belt) {
+        this.belt = belt;
+    }
+
+    @Override
+    public void onUpdate(double tpf) {
+        Maschine maschine = (Maschine) entity.getComponent(StationComponent.class).getStation();
+        StatusComponent statusComponent = entity.getComponent(StatusComponent.class);
+        maschine.getStatus();
+        switch (maschine.getStatus().getStatusTyp()) {
+            case INFO -> statusComponent.running();
+            case WARNING -> statusComponent.warning();
+            case CRITICAL -> statusComponent.error();
+        }
+        if (maschine.getCargoHandoverToNextMaschineInProgress()) {
+            ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
+            if (belt != null) {
+                app.spawnItemOnBelt(this.belt);
+            }
+        }
     }
 
     public void handleMachineClick(javafx.scene.input.MouseEvent e) {
