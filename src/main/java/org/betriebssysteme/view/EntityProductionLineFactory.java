@@ -13,6 +13,7 @@ import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 
 import java.awt.*;
@@ -89,6 +90,29 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .with(new MenuComponent(300, -100))
                 .build();
 
+    }
+
+    @Spawns(EntityNames.WAREHOUSE_CLERK)
+    public Entity newWarehouseClerk(SpawnData data) {
+        WarehouseClerk clerk = data.get("clerk");
+
+        return FXGL.entityBuilder(data)
+                .type(EntityType.WAREHOUSE_CLERK)
+                .with(new WarehouseClerkComponent(clerk))
+                .with(new MenuComponent(0, -120))
+                .build();
+    }
+
+    @Spawns(EntityNames.SUPPLIER)
+    public Entity newSupplier(SpawnData data) {
+        var supplier = (org.betriebssysteme.model.personnel.Supplier) data.get("supplier");
+
+        return FXGL.entityBuilder(data)
+                .type(EntityType.SUPPLIER)
+                .with(new SupplierComponent(supplier))
+                .with(new MenuComponent(0, -120))
+                .zIndex(1000)
+                .build();
     }
 
     public Entity spawnItemOnBelt(Entity belt) {

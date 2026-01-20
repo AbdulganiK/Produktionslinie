@@ -64,18 +64,17 @@ public class MenuComponent extends Component {
         double h = 200;
 
         menuRoot.setTranslateX(-350 + this.additionalTranslateX);
-        menuRoot.setTranslateY(-350 + this.additionalTranslateY);
-        menuRoot.setScaleX(0.25);
-        menuRoot.setScaleY(0.4);
+        menuRoot.setTranslateY(-450 + this.additionalTranslateY);
 
+        menuRoot.setScaleX(0.3);
+        menuRoot.setScaleY(0.6);
 
-
-        double startXNames  = w * 0.2;  // linke Spalte
-        double startXValues = w * 0.55;   // rechte Spalte
+        double startXNames =  200 ;  // linke Spalte
+        double startXValues = w * 0.59;   // rechte Spalte
 
         baseValueX = startXValues;
 
-        Font font = Font.font("Consolas", 40);
+        Font font = Font.font("Consolas", 28);
 
         for (int i = 0; i < ROWS; i++) {
 
