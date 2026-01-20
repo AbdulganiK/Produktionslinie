@@ -1,6 +1,7 @@
 {
   "stations": {
     "mainDepot": {
+      "identificationNumber": 1,
       "maxStorageCapacity": 100,
       "initialStorageCapacity": 50
     },

@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.personnel;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Task;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Material;
@@ -16,7 +17,7 @@ public class Supplier extends Thread implements Personnel {
     private int identificationNumber;
     private Status status;
     private Task task;
-    private MainDepot mainDepot;
+    private int mainDepotId;
     private int originStationId;
     private int destinationStationId;
     private int supplyInterval_ms;
@@ -26,9 +27,9 @@ public class Supplier extends Thread implements Personnel {
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
 
-    public Supplier(int identificationNumber, MainDepot mainDepot, int supplyInterval_ms, int supplyTimer_ms, int travelTimer_ms) {
+    public Supplier(int identificationNumber, int supplyInterval_ms, int supplyTimer_ms, int travelTimer_ms, int mainDepotId) {
         this.identificationNumber = identificationNumber;
-        this.mainDepot = mainDepot;
+        this.mainDepotId = mainDepotId;
         this.supplyInterval_ms = supplyInterval_ms;
         this.supplyTimer_ms = supplyTimer_ms;
         this.travelTimer_ms = travelTimer_ms;
@@ -37,13 +38,13 @@ public class Supplier extends Thread implements Personnel {
         this.status = StatusWarning.STOPPED;
         this.task = Task.JOBLESS;
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
-        logger.info("Supplier " + identificationNumber + " created");
+        logger.info("Supplier " + identificationNumber + " created with supply interval: " + supplyInterval_ms + " ms, supply timer: " + supplyTimer_ms + " ms.");
     }
 
     private void supplyRoutine() {
         task = Task.DELIVERING;
-        destinationStationId = mainDepot.getIdentificationNumber();
-        idOfCurrentDestinationStation = mainDepot.getIdentificationNumber();
+        destinationStationId = mainDepotId;
+        idOfCurrentDestinationStation = mainDepotId;
         logger.info("Supplier starting supply routine to Main Depot");
         try {
             Thread.sleep(travelTimer_ms);
@@ -53,7 +54,7 @@ public class Supplier extends Thread implements Personnel {
         }
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
-        originStationId = mainDepot.getIdentificationNumber();
+        originStationId = mainDepotId;
         destinationStationId = -1;
         idOfCurrentDestinationStation = -1;
         try {
@@ -72,11 +73,16 @@ public class Supplier extends Thread implements Personnel {
             throw new RuntimeException(e);
         }
         // TODO Implement the depot refilling logic
-        for (Material material : Material.values()) {
-            mainDepot.resiveCargo(material, mainDepot.getMaxStorageCapacity());
+        MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
+        if (mainDepot == null) {
+            logger.error("Main Depot with ID " + mainDepotId + " not found!");
+            return;
         }
-        mainDepot.handOverCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
-        mainDepot.handOverCargo(Product.SHIPPING_PACKAGE, mainDepot.getMaxStorageCapacity());
+        for (Material material : Material.values()) {
+            refillCargo(material, mainDepot.getMaxStorageCapacity());
+        }
+        collectCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
+        collectCargo(Product.PACKAGE, mainDepot.getMaxStorageCapacity());
         // TODO End of depot refilling logic
         logger.info("Supplier refilled depot and collected cargo");
     }
@@ -96,17 +102,16 @@ public class Supplier extends Thread implements Personnel {
     }
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
-        for (Material material : Material.values()) {
-            mainDepot.resiveCargo(material, mainDepot.getMaxStorageCapacity());
-        }
+        MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
+        mainDepot.resiveCargo(cargo, quantity);
         logger.info("Depot refilled with materials");
         return 0;
     }
 
     @Override
     public int collectCargo(Cargo cargo, int quantity) {
-        mainDepot.handOverCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
-        mainDepot.handOverCargo(Product.SHIPPING_PACKAGE, mainDepot.getMaxStorageCapacity());
+        MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
+        mainDepot.handOverCargo(cargo, quantity);
         logger.info("Collected cargo from depot");
         return 0;
     }

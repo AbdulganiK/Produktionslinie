@@ -182,9 +182,10 @@ public class ProductionController {
         JsonNode personnel = productionConfigData.get("personnel");
 
         JsonNode sup = personnel.get("supplier");
+        JsonNode mainDepotNode = productionConfigData.get("stations").get("mainDepot");
         supplier = new Supplier(
                 sup.get("identificationNumber").asInt(),
-                mainDepot,
+                mainDepotNode.get("identificationNumber").asInt(),
                 sup.get("supplyInterval_ms").asInt(),
                 sup.get("supplyTimer_ms").asInt(),
                 sup.get("travelTimer_ms").asInt()
