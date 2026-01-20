@@ -29,6 +29,7 @@ public class WarehouseClerk extends Thread implements Personnel {
     private Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
+    private int maxCargoCapacity;
 
     /**
      * Constructor for WarehouseClerk.
@@ -40,7 +41,8 @@ public class WarehouseClerk extends Thread implements Personnel {
     public WarehouseClerk(int identificationNumber,
                           int timeForTravel_ms,
                           int timeForTask_ms,
-                          int timeForSleep_ms) {
+                          int timeForSleep_ms,
+                          int maxCargoCapacity) {
         this.identificationNumber = identificationNumber;
         this.timeForTravel_ms = timeForTravel_ms;
         this.timeForTask_ms = timeForTask_ms;
@@ -49,6 +51,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
+        this.maxCargoCapacity = maxCargoCapacity;
         this.logger = org.slf4j.LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
         logger.info("WarehouseClerk " + identificationNumber +" ms, task time: " + timeForTask_ms + " ms, sleep time: " + timeForSleep_ms + " ms.");
     }
@@ -73,7 +76,13 @@ public class WarehouseClerk extends Thread implements Personnel {
 
                 // Collect cargo from origin station
                 status = StatusInfo.COLLECT_CARGO;
-                int transportedQuantity = collectCargo(cargo, currentRequest.quantity());
+                int transportedQuantity = 0;
+                if (maxCargoCapacity <= currentRequest.quantity()) {
+                    transportedQuantity = collectCargo(cargo, maxCargoCapacity);
+                }
+                else{
+                    transportedQuantity = collectCargo(cargo, maxCargoCapacity);
+                }
                 Thread.sleep(timeForTask_ms);
 
                 // Travel to destination station
