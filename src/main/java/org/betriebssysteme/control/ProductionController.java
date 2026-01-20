@@ -1,6 +1,5 @@
 package org.betriebssysteme.control;
-
-import org.betriebssysteme.Main;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.cargo.ProductRecipes;
@@ -13,7 +12,7 @@ import org.betriebssysteme.model.stations.ProductionMaschine;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,104 +44,126 @@ public class ProductionController {
     private WarehouseClerk warehouseClerk3;
     private WarehouseClerk warehouseClerk4;
 
+    private final JsonNode productionConfigData;
+
     public ProductionController() {
+        this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfig.json");
         logger.info("ProductionController initialized");
     }
 
     public void createAllStations() {
-        mainDepot = new MainDepot(100, 50);
-        // erste Reihe Produktion
+        JsonNode stations = productionConfigData.get("stations");
+
+        JsonNode md = stations.get("mainDepot");
+        mainDepot = new MainDepot(
+                md.get("maxStorageCapacity").asInt(),
+                md.get("initialStorageCapacity").asInt()
+        );
+
+        JsonNode duHouse = stations.get("driveUnitHouseProductionMaschine");
         driveUnitHouseProductionMaschine = new ProductionMaschine(
-                21,
-                500,
-                25,
+                duHouse.get("identificationNumber").asInt(),
+                duHouse.get("timeToSleep").asInt(),
+                duHouse.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getDriveHousingRecipe(),
-                5,
-                1
-                );
+                duHouse.get("initialQuantityOfProduct").asInt(),
+                duHouse.get("maschinePriority").asInt()
+        );
+
+        JsonNode duPcb = stations.get("driveUnitCircuitBoardProductionMaschine");
         driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
-                22,
-                700,
-                25,
+                duPcb.get("identificationNumber").asInt(),
+                duPcb.get("timeToSleep").asInt(),
+                duPcb.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getDrivePcbRecipe(),
-                5,
-                1
-                );
-        // Zweite Reihe
+                duPcb.get("initialQuantityOfProduct").asInt(),
+                duPcb.get("maschinePriority").asInt()
+        );
+
+        JsonNode duUnit = stations.get("driveUnitProductionMaschine");
         driveUnitProductionMaschine = new ProductionMaschine(
-                23,
-                1000,
-                25,
+                duUnit.get("identificationNumber").asInt(),
+                duUnit.get("timeToSleep").asInt(),
+                duUnit.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getDriveUnitRecipe(),
-                5,
-                2
-                );
-        // erste Reihe
+                duUnit.get("initialQuantityOfProduct").asInt(),
+                duUnit.get("maschinePriority").asInt()
+        );
+
+        JsonNode cuHouse = stations.get("controlUnitHouseProductionMaschine");
         controlUnitHouseProductionMaschine = new ProductionMaschine(
-                24,
-                500,
-                25,
+                cuHouse.get("identificationNumber").asInt(),
+                cuHouse.get("timeToSleep").asInt(),
+                cuHouse.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getControlHousingRecipe(),
-                5,
-                1
-                );
+                cuHouse.get("initialQuantityOfProduct").asInt(),
+                cuHouse.get("maschinePriority").asInt()
+        );
+
+        JsonNode cuPcb = stations.get("controlUnitCircuitBoardProductionMaschine");
         controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
-                25,
-                700,
-                25,
+                cuPcb.get("identificationNumber").asInt(),
+                cuPcb.get("timeToSleep").asInt(),
+                cuPcb.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getControlPcbRecipe(),
-                5,
-                1
-                );
-        // Zweite Reihe
+                cuPcb.get("initialQuantityOfProduct").asInt(),
+                cuPcb.get("maschinePriority").asInt()
+        );
+
+        JsonNode cuUnit = stations.get("controlUnitProductionMaschine");
         controlUnitProductionMaschine = new ProductionMaschine(
-                26,
-                1000,
-                25,
+                cuUnit.get("identificationNumber").asInt(),
+                cuUnit.get("timeToSleep").asInt(),
+                cuUnit.get("maxStorageCapacity").asInt(),
                 null,
                 productRecipes.getControlUnitRecipe(),
-                5,
-                2
-                );
-        // dritte Reihe
+                cuUnit.get("initialQuantityOfProduct").asInt(),
+                cuUnit.get("maschinePriority").asInt()
+        );
+
+        JsonNode cuQc = stations.get("controlUnitQualityControlMachine");
         controlUnitQualityControlMachine = new ControlMachine(
-                31,
-                500,
-                10,
-                5,
+                cuQc.get("identificationNumber").asInt(),
+                cuQc.get("timeToSleep").asInt(),
+                cuQc.get("maxStorageCapacity").asInt(),
+                cuQc.get("initialQuantityOfProduct").asInt(),
                 Product.CONTROL_UNIT,
                 null,
-                800,
-                30,
-                3
-                );
+                cuQc.get("productionTime").asInt(),
+                cuQc.get("probilityOfDefectPercent").asInt(),
+                cuQc.get("maschinePriority").asInt()
+        );
+
+        JsonNode duQc = stations.get("driveUnitQualityControlMachine");
         driveUnitQualityControlMachine = new ControlMachine(
-                32,
-                500,
-                10,
-                5,
+                duQc.get("identificationNumber").asInt(),
+                duQc.get("timeToSleep").asInt(),
+                duQc.get("maxStorageCapacity").asInt(),
+                duQc.get("initialQuantityOfProduct").asInt(),
                 Product.DRIVE_UNIT,
                 null,
-                800,
-                30,
-                3
+                duQc.get("productionTime").asInt(),
+                duQc.get("probilityOfDefectPercent").asInt(),
+                duQc.get("maschinePriority").asInt()
         );
-        // vierte
+
+        JsonNode pack = stations.get("packagingMaschine");
         packagingMaschine = new PackagingMaschine(
-                41,
-                1500,
-                15,
+                pack.get("identificationNumber").asInt(),
+                pack.get("timeToSleep").asInt(),
+                pack.get("maxStorageCapacity").asInt(),
                 null,
-                10,
-                1200,
+                pack.get("initialQuantityOfProduct").asInt(),
+                pack.get("productionTime").asInt(),
                 productRecipes.getShippingPackageRecipe(),
-                4
+                pack.get("maschinePriority").asInt()
         );
+
         setNextMachines();
     }
 
@@ -158,27 +179,48 @@ public class ProductionController {
     }
 
     public void createAllPersonnel() {
-        supplier = new Supplier(11,
+        JsonNode personnel = productionConfigData.get("personnel");
+
+        JsonNode sup = personnel.get("supplier");
+        supplier = new Supplier(
+                sup.get("identificationNumber").asInt(),
                 mainDepot,
-                1000,
-                5000,
-                2000);
-        warehouseClerk1 = new WarehouseClerk(12,
-                10000,
-                5000,
-                2000);
-        warehouseClerk2 = new WarehouseClerk(13,
-                10000,
-                5000,
-                2000);
-        warehouseClerk3 = new WarehouseClerk(14,
-                10000,
-                5000,
-                2000);
-        warehouseClerk4 = new WarehouseClerk(15,
-                10000,
-                5000,
-                2000);
+                sup.get("supplyInterval_ms").asInt(),
+                sup.get("supplyTimer_ms").asInt(),
+                sup.get("travelTimer_ms").asInt()
+        );
+
+        JsonNode w1 = personnel.get("warehouseClerk1");
+        warehouseClerk1 = new WarehouseClerk(
+                w1.get("identificationNumber").asInt(),
+                w1.get("timeForTravel_ms").asInt(),
+                w1.get("timeForTask_ms").asInt(),
+                w1.get("timeForSleep_ms").asInt()
+        );
+
+        JsonNode w2 = personnel.get("warehouseClerk2");
+        warehouseClerk2 = new WarehouseClerk(
+                w2.get("identificationNumber").asInt(),
+                w2.get("timeForTravel_ms").asInt(),
+                w2.get("timeForTask_ms").asInt(),
+                w2.get("timeForSleep_ms").asInt()
+        );
+
+        JsonNode w3 = personnel.get("warehouseClerk3");
+        warehouseClerk3 = new WarehouseClerk(
+                w3.get("identificationNumber").asInt(),
+                w3.get("timeForTravel_ms").asInt(),
+                w3.get("timeForTask_ms").asInt(),
+                w3.get("timeForSleep_ms").asInt()
+        );
+
+        JsonNode w4 = personnel.get("warehouseClerk4");
+        warehouseClerk4 = new WarehouseClerk(
+                w4.get("identificationNumber").asInt(),
+                w4.get("timeForTravel_ms").asInt(),
+                w4.get("timeForTask_ms").asInt(),
+                w4.get("timeForSleep_ms").asInt()
+        );
     }
 
     public void addAllToProductionHeadquarters() {

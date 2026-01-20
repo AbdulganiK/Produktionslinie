@@ -1,0 +1,25 @@
+{
+  "recipes": {
+    "driveHousingRecipe": {
+      "productionTime": 7000
+    },
+    "controlHousingRecipe": {
+      "productionTime": 6000
+    },
+    "drivePcbRecipe": {
+      "productionTime": 8000
+    },
+    "controlPcbRecipe": {
+      "productionTime": 7500
+    },
+    "driveUnitRecipe": {
+      "productionTime": 10000
+    },
+    "controlUnitRecipe": {
+      "productionTime": 9500
+    },
+    "shippingPackageRecipe": {
+      "productionTime": 2000
+    }
+  }
+}

@@ -1,12 +1,19 @@
 package org.betriebssysteme.model.cargo;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import org.betriebssysteme.control.JSONConfig;
 import org.betriebssysteme.model.Recipe;
 
 import java.util.HashMap;
 
 public class ProductRecipes {
+
+    JsonNode recipeConfig =
+            JSONConfig.loadConfig("assets/config/recipes.json")
+                    .get("recipes");
+
     private Recipe driveHousingRecipe = new Recipe(
-            7000,
+            recipeConfig.get("driveHousingRecipe").get("productionTime").asInt(),
             Product.DRIVE_HOUSING,
             new HashMap<Cargo, Integer>() {{
                 put(Material.GLUE, 1);
@@ -15,7 +22,7 @@ public class ProductRecipes {
     );
 
     private Recipe controlHousingRecipe = new Recipe(
-            6000,
+            recipeConfig.get("controlHousingRecipe").get("productionTime").asInt(),
             Product.CONTROL_HOUSING,
             new HashMap<Cargo, Integer>() {{
                 put(Material.GLUE, 1);
@@ -24,7 +31,7 @@ public class ProductRecipes {
     );
 
     private Recipe drivePcbRecipe = new Recipe(
-            8000,
+            recipeConfig.get("drivePcbRecipe").get("productionTime").asInt(),
             Product.DRIVE_PCB,
             new HashMap<Cargo, Integer>() {{
                 put(Material.CIRCUIT_BOARD_COMPONENTS, 2);
@@ -33,7 +40,7 @@ public class ProductRecipes {
     );
 
     private Recipe controlPcbRecipe = new Recipe(
-            7500,
+            recipeConfig.get("controlPcbRecipe").get("productionTime").asInt(),
             Product.CONTROL_PCB,
             new HashMap<Cargo, Integer>() {{
                 put(Material.DISPLAYS, 1);
@@ -42,7 +49,7 @@ public class ProductRecipes {
     );
 
     private Recipe driveUnitRecipe = new Recipe(
-            10000,
+            recipeConfig.get("driveUnitRecipe").get("productionTime").asInt(),
             Product.DRIVE_UNIT,
             new HashMap<Cargo, Integer>() {{
                 put(Product.DRIVE_HOUSING, 1);
@@ -51,7 +58,7 @@ public class ProductRecipes {
     );
 
     private Recipe controlUnitRecipe = new Recipe(
-            9500,
+            recipeConfig.get("controlUnitRecipe").get("productionTime").asInt(),
             Product.CONTROL_UNIT,
             new HashMap<Cargo, Integer>() {{
                 put(Product.CONTROL_HOUSING, 1);
@@ -60,7 +67,7 @@ public class ProductRecipes {
     );
 
     private Recipe shippingPackageRecipe = new Recipe(
-            2000,
+            recipeConfig.get("shippingPackageRecipe").get("productionTime").asInt(),
             Product.SHIPPING_PACKAGE,
             new HashMap<Cargo, Integer>() {{
                 put(Material.PACKING_MATERIAL, 3);
