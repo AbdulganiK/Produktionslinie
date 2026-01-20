@@ -26,7 +26,7 @@ public class PackagingMaschine extends Maschine {
                 maxStorageCapacity,
                 nextMaschine,
                 recipe.getInitalStorageWithProduct(initialQuantityOfProduct),
-                Product.SHIPPING_PACKAGE,
+                Product.PACKAGE,
                 maschinePriority);
         this.recipe = recipe;
     }

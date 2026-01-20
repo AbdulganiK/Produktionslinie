@@ -50,6 +50,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
         this.logger = org.slf4j.LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
+        logger.info("WarehouseClerk " + identificationNumber +" ms, task time: " + timeForTask_ms + " ms, sleep time: " + timeForSleep_ms + " ms.");
     }
 
     /**
