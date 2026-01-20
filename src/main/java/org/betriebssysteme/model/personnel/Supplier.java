@@ -11,6 +11,7 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Supplier extends Thread implements Personnel {
@@ -26,8 +27,15 @@ public class Supplier extends Thread implements Personnel {
     private Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
+    private HashMap<Cargo, Integer> cargoStorage = new HashMap<>();
+    private int maxCapacity;
 
-    public Supplier(int identificationNumber, int supplyInterval_ms, int supplyTimer_ms, int travelTimer_ms, int mainDepotId) {
+    public Supplier(int identificationNumber,
+                    int supplyInterval_ms,
+                    int supplyTimer_ms,
+                    int travelTimer_ms,
+                    int mainDepotId,
+                    int maxCapacity) {
         this.identificationNumber = identificationNumber;
         this.mainDepotId = mainDepotId;
         this.supplyInterval_ms = supplyInterval_ms;
@@ -37,11 +45,22 @@ public class Supplier extends Thread implements Personnel {
         this.destinationStationId = -1;
         this.status = StatusWarning.STOPPED;
         this.task = Task.JOBLESS;
+        this.maxCapacity = maxCapacity;
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
         logger.info("Supplier " + identificationNumber + " created with supply interval: " + supplyInterval_ms + " ms, supply timer: " + supplyTimer_ms + " ms.");
+        this.cargoStorage = new HashMap<>();
     }
 
     private void supplyRoutine() {
+        // Initialize Supplier cargo storage
+        int cargoCapacityPerMaterial = maxCapacity / Material.values().length;
+        for (Material material : Material.values()) {
+            cargoStorage.put(material, cargoCapacityPerMaterial);
+        }
+        for (Product product : Product.values()) {
+            cargoStorage.put(product, 0);
+        }
+
         task = Task.DELIVERING;
         destinationStationId = mainDepotId;
         idOfCurrentDestinationStation = mainDepotId;
@@ -73,18 +92,24 @@ public class Supplier extends Thread implements Personnel {
             throw new RuntimeException(e);
         }
         // TODO Implement the depot refilling logic
-        MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
-        if (mainDepot == null) {
-            logger.error("Main Depot with ID " + mainDepotId + " not found!");
-            return;
-        }
         for (Material material : Material.values()) {
-            refillCargo(material, mainDepot.getMaxStorageCapacity());
+            int currentQuantity = cargoStorage.get(material);
+            int resizedQuantity = refillCargo(material, currentQuantity);
+            cargoStorage.put(material, currentQuantity - resizedQuantity);
         }
-        collectCargo(Product.SCRAP, mainDepot.getMaxStorageCapacity());
-        collectCargo(Product.PACKAGE, mainDepot.getMaxStorageCapacity());
-        // TODO End of depot refilling logic
-        logger.info("Supplier refilled depot and collected cargo");
+        int freeCapacity = maxCapacity - cargoStorage.values().stream().mapToInt(Integer::intValue).sum();
+        int collectedQuantity = collectCargo(Product.PACKAGE, freeCapacity);
+        freeCapacity -= collectedQuantity;
+        collectedQuantity = collectCargo(Product.SCRAP, freeCapacity);
+        freeCapacity -= collectedQuantity;
+        if (freeCapacity > 0) {
+            logger.info("Supplier has free capacity left after collecting cargo: " + freeCapacity);
+            System.out.println("Supplier has free capacity left after collecting cargo");
+        }
+        else {
+            logger.info("Supplier cargo storage is full after collecting cargo.");
+            System.out.println("Supplier cargo storage is full after collecting cargo");
+        }
     }
 
     private synchronized void awaitReady() throws InterruptedException {
@@ -103,17 +128,17 @@ public class Supplier extends Thread implements Personnel {
     @Override
     public int refillCargo(Cargo cargo, int quantity) {
         MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
-        mainDepot.resiveCargo(cargo, quantity);
+        int resivedQuantity = mainDepot.resiveCargo(cargo, quantity);
         logger.info("Depot refilled with materials");
-        return 0;
+        return resivedQuantity;
     }
 
     @Override
     public int collectCargo(Cargo cargo, int quantity) {
         MainDepot mainDepot = (MainDepot) ProductionHeadquarters.getInstance().getStations().get(mainDepotId);
-        mainDepot.handOverCargo(cargo, quantity);
+        int receivedQuantity = mainDepot.handOverCargo(cargo, quantity);
         logger.info("Collected cargo from depot");
-        return 0;
+        return receivedQuantity;
     }
 
     @Override

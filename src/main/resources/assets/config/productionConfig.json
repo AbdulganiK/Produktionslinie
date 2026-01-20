@@ -84,31 +84,36 @@
       "identificationNumber": 11,
       "supplyInterval_ms": 1000,
       "supplyTimer_ms": 5000,
-      "travelTimer_ms": 2000
+      "travelTimer_ms": 2000,
+      "maxCapacity": 40
     },
     "warehouseClerk1": {
       "identificationNumber": 12,
       "timeForTravel_ms": 10000,
       "timeForTask_ms": 5000,
-      "timeForSleep_ms": 2000
+      "timeForSleep_ms": 2000,
+      "maxCapacity": 10
     },
     "warehouseClerk2": {
       "identificationNumber": 13,
       "timeForTravel_ms": 10000,
       "timeForTask_ms": 5000,
-      "timeForSleep_ms": 2000
+      "timeForSleep_ms": 2000,
+      "maxCapacity": 10
     },
     "warehouseClerk3": {
       "identificationNumber": 14,
       "timeForTravel_ms": 10000,
       "timeForTask_ms": 5000,
-      "timeForSleep_ms": 2000
+      "timeForSleep_ms": 2000,
+      "maxCapacity": 10
     },
     "warehouseClerk4": {
       "identificationNumber": 15,
       "timeForTravel_ms": 10000,
       "timeForTask_ms": 5000,
-      "timeForSleep_ms": 2000
+      "timeForSleep_ms": 2000,
+      "maxCapacity": 10
     }
   }
 }

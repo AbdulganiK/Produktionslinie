@@ -189,7 +189,8 @@ public class ProductionController {
                 sup.get("supplyInterval_ms").asInt(),
                 sup.get("supplyTimer_ms").asInt(),
                 sup.get("travelTimer_ms").asInt(),
-                mainDepotNode.get("identificationNumber").asInt()
+                mainDepotNode.get("identificationNumber").asInt(),
+                sup.get("maxCapacity").asInt()
         );
 
         JsonNode w1 = personnel.get("warehouseClerk1");
@@ -197,7 +198,8 @@ public class ProductionController {
                 w1.get("identificationNumber").asInt(),
                 w1.get("timeForTravel_ms").asInt(),
                 w1.get("timeForTask_ms").asInt(),
-                w1.get("timeForSleep_ms").asInt()
+                w1.get("timeForSleep_ms").asInt(),
+                w1.get("maxCapacity").asInt()
         );
 
         JsonNode w2 = personnel.get("warehouseClerk2");
@@ -205,7 +207,8 @@ public class ProductionController {
                 w2.get("identificationNumber").asInt(),
                 w2.get("timeForTravel_ms").asInt(),
                 w2.get("timeForTask_ms").asInt(),
-                w2.get("timeForSleep_ms").asInt()
+                w2.get("timeForSleep_ms").asInt(),
+                w2.get("maxCapacity").asInt()
         );
 
         JsonNode w3 = personnel.get("warehouseClerk3");
@@ -213,7 +216,8 @@ public class ProductionController {
                 w3.get("identificationNumber").asInt(),
                 w3.get("timeForTravel_ms").asInt(),
                 w3.get("timeForTask_ms").asInt(),
-                w3.get("timeForSleep_ms").asInt()
+                w3.get("timeForSleep_ms").asInt(),
+                w3.get("maxCapacity").asInt()
         );
 
         JsonNode w4 = personnel.get("warehouseClerk4");
@@ -221,7 +225,8 @@ public class ProductionController {
                 w4.get("identificationNumber").asInt(),
                 w4.get("timeForTravel_ms").asInt(),
                 w4.get("timeForTask_ms").asInt(),
-                w4.get("timeForSleep_ms").asInt()
+                w4.get("timeForSleep_ms").asInt(),
+                w4.get("maxCapacity").asInt()
         );
     }
 
