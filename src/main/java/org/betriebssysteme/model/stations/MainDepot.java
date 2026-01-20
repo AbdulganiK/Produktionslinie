@@ -23,9 +23,9 @@ public class MainDepot implements Station {
     private Logger logger;
     private int initialStorageCapacity;
 
-    public MainDepot (int maxStorageCapacity, int initialStorageCapacity) {
+    public MainDepot (int identificationNumber, int maxStorageCapacity, int initialStorageCapacity) {
         this.cargoStorage = new HashMap<Cargo, Integer>();
-        this.identificationNumber = 1;
+        this.identificationNumber = identificationNumber;
         this.maxStorageCapacity = maxStorageCapacity;
         this.cargoStorageSemaphore = new Semaphore(1);
         this.status = StatusWarning.STOPPED;
