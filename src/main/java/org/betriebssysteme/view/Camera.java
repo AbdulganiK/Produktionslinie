@@ -24,23 +24,7 @@ public class Camera {
         });
 
         scene.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
-            if (e.isMiddleButtonDown() && lastDragPos != null) {
-
-                double dxScreen = e.getSceneX() - lastDragPos.getX();
-                double dyScreen = e.getSceneY() - lastDragPos.getY();
-
-                double zoom = vp.getZoom();
-
-                // Screen-Pixel in Weltverschiebung umrechnen
-                double dxWorld = -dxScreen / zoom;
-                double dyWorld = -dyScreen / zoom;
-
-                vp.setX(vp.getX() + dxWorld);
-                vp.setY(vp.getY() + dyWorld);
-
-                lastDragPos = new Point2D(e.getSceneX(), e.getSceneY());
-            }
-            if (e.isSecondaryButtonDown() && lastDragPos != null) {
+            if ((e.isMiddleButtonDown() || e.isSecondaryButtonDown()) && lastDragPos != null) {
 
                 double dxScreen = e.getSceneX() - lastDragPos.getX();
                 double dyScreen = e.getSceneY() - lastDragPos.getY();
