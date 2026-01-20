@@ -56,6 +56,7 @@ public class ProductionController {
 
         JsonNode md = stations.get("mainDepot");
         mainDepot = new MainDepot(
+                md.get("identificationNumber").asInt(),
                 md.get("maxStorageCapacity").asInt(),
                 md.get("initialStorageCapacity").asInt()
         );
@@ -185,10 +186,10 @@ public class ProductionController {
         JsonNode mainDepotNode = productionConfigData.get("stations").get("mainDepot");
         supplier = new Supplier(
                 sup.get("identificationNumber").asInt(),
-                mainDepotNode.get("identificationNumber").asInt(),
                 sup.get("supplyInterval_ms").asInt(),
                 sup.get("supplyTimer_ms").asInt(),
-                sup.get("travelTimer_ms").asInt()
+                sup.get("travelTimer_ms").asInt(),
+                mainDepotNode.get("identificationNumber").asInt()
         );
 
         JsonNode w1 = personnel.get("warehouseClerk1");
