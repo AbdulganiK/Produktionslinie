@@ -6,4 +6,6 @@ public interface EntityNames {
     public static final String BELT = "belt";
     public static final String ITEM = "item";
     public static final String CENTRAL = "central";
+    public static final String WAREHOUSE_CLERK = "warehouse_clerk";
+    public static final String SUPPLIER = "supplier";
 }

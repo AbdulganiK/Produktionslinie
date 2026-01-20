@@ -13,6 +13,7 @@ import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
+import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 
 import java.awt.*;
@@ -24,16 +25,11 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.MACHINE)
     public Entity newMachine(SpawnData data) {
         Station station = data.get("station");
-        MachineComponent machineComponent = new MachineComponent();
-        if (data.hasKey("belt")) {
-            Entity belt = data.get("belt");
-            machineComponent.setBelt(belt);
-        }
         return FXGL.entityBuilder(data)
                 .with(new StationComponent(station))
                 .with(new MenuComponent())
                 .type(EntityType.MACHINE)
-                .with(machineComponent)
+                .with(new MachineComponent())
                 .with(new StatusComponent())
                 .with(new CollidableComponent(true))
                 .bbox(new HitBox(BoundingShape.box(64, 64)))
@@ -95,6 +91,44 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .build();
 
     }
+
+    @Spawns(EntityNames.WAREHOUSE_CLERK)
+    public Entity newWarehouseClerk(SpawnData data) {
+        WarehouseClerk clerk = data.get("clerk");
+
+        return FXGL.entityBuilder(data)
+                .type(EntityType.WAREHOUSE_CLERK)
+                .with(new WarehouseClerkComponent(clerk))
+                .with(new MenuComponent(0, -120))
+                .build();
+    }
+
+    @Spawns(EntityNames.SUPPLIER)
+    public Entity newSupplier(SpawnData data) {
+        var supplier = (org.betriebssysteme.model.personnel.Supplier) data.get("supplier");
+
+        return FXGL.entityBuilder(data)
+                .type(EntityType.SUPPLIER)
+                .with(new SupplierComponent(supplier))
+                .with(new MenuComponent(0, -120))
+                .zIndex(1000)
+                .build();
+    }
+
+    public Entity spawnItemOnBelt(Entity belt) {
+        Point2D center = belt.getCenter();
+
+        double itemHalfW = 16;
+        double itemHalfH = 16;
+
+        return FXGL.spawn(
+                EntityNames.ITEM,
+                center.getX() - itemHalfW,
+                center.getY() - itemHalfH
+        );
+    }
+
+
 
 
 
