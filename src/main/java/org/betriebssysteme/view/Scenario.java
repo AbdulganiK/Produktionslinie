@@ -57,13 +57,11 @@ public class Scenario {
         // Lieferant Spawnen
         for (Personnel personnel : personnels.values()) {
             if (personnel instanceof Supplier) {
-                SpawnData supplierData = new SpawnData(100 + OFFSET_X, 400 + OFFSET_Y);
+                SpawnData supplierData = new SpawnData(800, 1750);
                 supplierData.put("supplier",  personnel);
                 FXGL.spawn(EntityNames.SUPPLIER, supplierData);
             }
         }
-
-
 
 
 

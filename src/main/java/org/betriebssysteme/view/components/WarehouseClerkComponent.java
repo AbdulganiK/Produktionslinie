@@ -23,7 +23,6 @@ public class WarehouseClerkComponent extends Component {
     public void onAdded() {
         AStarMoveComponent<?> move = entity.getComponent(AStarMoveComponent.class);
 
-        // Feuert, wenn AStarMoveComponent meint: angekommen (Pfad fertig)
         move.atDestinationProperty().addListener((obs, oldV, atDest) -> {
             if (!atDest) return;
 

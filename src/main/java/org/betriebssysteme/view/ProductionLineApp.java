@@ -35,8 +35,6 @@ public class ProductionLineApp extends GameApplication {
     private Entity clerk;
     private AStarGrid grid;
 
-    private Entity emptyPoint;
-
 
     @Override
     protected void initInput() {
@@ -60,8 +58,7 @@ public class ProductionLineApp extends GameApplication {
         getPhysicsWorld().setGravity(0, 0);
         // Collision Handling
         EntityCollisionHandler.addCollisionBetweenMachineAndEntity(getPhysicsWorld());
-        EntityCollisionHandler.addCollisionBetweenItems(getPhysicsWorld());
-        EntityCollisionHandler.addCollisionBetweenSupplierAndStorage(getPhysicsWorld());
+        // EntityCollisionHandler.addCollisionBetweenItems(getPhysicsWorld());
         EntityCollisionHandler.addCollisionBetweenItemAndBelt(getPhysicsWorld());
     }
 
@@ -86,22 +83,11 @@ public class ProductionLineApp extends GameApplication {
         rect.setStroke(Color.BLACK);
         rect.setStrokeType(StrokeType.INSIDE);
 
-        Group view = new Group(rect);
-        view.setMouseTransparent(true);
-
-
-        this.emptyPoint = entityBuilder()
-                .at(100 + 690, 400 + 300)
-                .view(view)
-                .buildAndAttach();
 
 
 
     }
 
-    public Entity getEmptyPoint() {
-        return emptyPoint;
-    }
 
     public Entity spawnItemOnBelt(Entity belt) {
         Point2D center = belt.getCenter();

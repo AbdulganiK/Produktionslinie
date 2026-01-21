@@ -30,7 +30,6 @@ public class CentralPlatformComponent extends Component {
         deck.setStrokeWidth(2);
         deck.setTranslateX((PAD_WIDTH - deck.getWidth()) / 2);
 
-        // dünnere Kante direkt unter dem Deck
         Rectangle deckEdge = new Rectangle(deck.getWidth(), 10);
         deckEdge.setFill(Color.rgb(45, 50, 65));
         deckEdge.setTranslateX(deck.getTranslateX());

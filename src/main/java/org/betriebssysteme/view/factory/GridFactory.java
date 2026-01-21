@@ -34,7 +34,6 @@ public class GridFactory {
                 label.setStyle("-fx-font-size: 10px;");
                 label.setMouseTransparent(true);
 
-                // Text leicht nach innen verschieben
                 label.setTranslateX(4);
                 label.setTranslateY(12);
 

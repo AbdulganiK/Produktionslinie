@@ -116,7 +116,8 @@ public class EntityProductionLineFactory implements EntityFactory {
         WarehouseClerk personnel = data.get("personnel");
         return FXGL.entityBuilder(data)
                 .type(EntityType.WAREHOUSE_CLERK)
-                .viewWithBBox(new Rectangle(50, 50, Color.BLUE))
+                //.viewWithBBox(new Rectangle(50, 50, Color.BLUE))
+                .with(new WarehouseClerkAnimComponent())
                 .with(new CellMoveComponent(50, 50, 150))
                 .with(new AStarMoveComponent(app.getGrid()))
                 .with(new WarehouseClerkComponent(personnel))
