@@ -17,28 +17,28 @@
     "drivePcbRecipe": {
       "productionTime": 8000,
         "components": {
-            "PCB_COMPONENTS": 2,
+            "PCBS": 2,
             "MOTORS": 2
         }
     },
     "controlPcbRecipe": {
       "productionTime": 7500,
         "components": {
-            "PCB_COMPONENTS": 2,
+            "PCBS": 2,
             "DISPLAYS": 1
         }
     },
     "driveUnitRecipe": {
       "productionTime": 10000,
         "components": {
-            "DRIVE_HOUSING": 1,
+            "DRIVE_CASE": 1,
             "DRIVE_PCB": 1
         }
     },
     "controlUnitRecipe": {
       "productionTime": 9500,
         "components": {
-            "CONTROL_HOUSING": 1,
+            "CONTROL_CASE": 1,
             "CONTROL_PCB": 1
         }
     },
