@@ -199,7 +199,8 @@ public class ProductionController {
                 w1.get("timeForTravel_ms").asInt(),
                 w1.get("timeForTask_ms").asInt(),
                 w1.get("timeForSleep_ms").asInt(),
-                w1.get("maxCapacity").asInt()
+                w1.get("maxCapacity").asInt(),
+                mainDepotNode.get("identificationNumber").asInt()
         );
 
         JsonNode w2 = personnel.get("warehouseClerk2");
@@ -208,7 +209,8 @@ public class ProductionController {
                 w2.get("timeForTravel_ms").asInt(),
                 w2.get("timeForTask_ms").asInt(),
                 w2.get("timeForSleep_ms").asInt(),
-                w2.get("maxCapacity").asInt()
+                w2.get("maxCapacity").asInt(),
+                mainDepotNode.get("identificationNumber").asInt()
         );
 
         JsonNode w3 = personnel.get("warehouseClerk3");
@@ -217,7 +219,8 @@ public class ProductionController {
                 w3.get("timeForTravel_ms").asInt(),
                 w3.get("timeForTask_ms").asInt(),
                 w3.get("timeForSleep_ms").asInt(),
-                w3.get("maxCapacity").asInt()
+                w3.get("maxCapacity").asInt(),
+                mainDepotNode.get("identificationNumber").asInt()
         );
 
         JsonNode w4 = personnel.get("warehouseClerk4");
@@ -226,7 +229,8 @@ public class ProductionController {
                 w4.get("timeForTravel_ms").asInt(),
                 w4.get("timeForTask_ms").asInt(),
                 w4.get("timeForSleep_ms").asInt(),
-                w4.get("maxCapacity").asInt()
+                w4.get("maxCapacity").asInt(),
+                mainDepotNode.get("identificationNumber").asInt()
         );
     }
 

@@ -15,12 +15,14 @@ public class ProductionHeadquarters{
     private Map personnel;
     private static Logger logger;
     private static ProductionHeadquarters singletonInstance;
+    private int identificationNumber;
 
 
     private ProductionHeadquarters (){
         requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
         this.stations = new HashMap();
         this.personnel = new HashMap();
+        this.identificationNumber = 0;
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
     }
 
@@ -80,6 +82,10 @@ public class ProductionHeadquarters{
 
     public void addPersonnel(Personnel person) {
         personnel.put(person.getIdentificationNumber(), person);
+    }
+
+    public int getIdentificationNumber() {
+        return identificationNumber;
     }
 
 }
