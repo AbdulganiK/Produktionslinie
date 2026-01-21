@@ -30,6 +30,8 @@ public class WarehouseClerk extends Thread implements Personnel {
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
     private int maxCargoCapacity;
+    private int mainDepotId;
+    private int headquartersId;
 
     /**
      * Constructor for WarehouseClerk.
@@ -42,7 +44,8 @@ public class WarehouseClerk extends Thread implements Personnel {
                           int timeForTravel_ms,
                           int timeForTask_ms,
                           int timeForSleep_ms,
-                          int maxCargoCapacity) {
+                          int maxCargoCapacity,
+                          int mainDepotId) {
         this.identificationNumber = identificationNumber;
         this.timeForTravel_ms = timeForTravel_ms;
         this.timeForTask_ms = timeForTask_ms;
@@ -51,6 +54,8 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.task = Task.JOBLESS;
+        this.mainDepotId = mainDepotId;
+        this.headquartersId = 0;
         this.maxCargoCapacity = maxCargoCapacity;
         this.logger = org.slf4j.LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
         logger.info("WarehouseClerk " + identificationNumber +" ms, task time: " + timeForTask_ms + " ms, sleep time: " + timeForSleep_ms + " ms.");
@@ -104,7 +109,7 @@ public class WarehouseClerk extends Thread implements Personnel {
 
                 // Travel back to headquarters
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
-                idOfCurrentDestinationStation = 0; // Headquarters station ID
+                idOfCurrentDestinationStation = headquartersId; // Headquarters station ID
                 //awaitReady(); TODO: Implement ready check if needed
                 Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
@@ -121,13 +126,13 @@ public class WarehouseClerk extends Thread implements Personnel {
             cargo = currentRequest.cargo();
             if (requestedCargoTyp == CargoTyp.MATERIAL) {
                 task = Task.DELIVERING;
-                originStationId = 1; // Headquarters station ID
+                originStationId = mainDepotId; // Headquarters station ID
                 destinationStationId = currentRequest.stationId();
                 logger.info("WarehouseClerk " + identificationNumber + " received a request to deliver MATERIAL " + cargo + " to Station " + currentRequest.stationId());
             } else if (requestedCargoTyp == CargoTyp.PRODUCT) {
                 task = Task.EMPTYING;
                 originStationId = currentRequest.stationId();
-                destinationStationId = 1; // Headquarters station ID
+                destinationStationId = mainDepotId; // Headquarters station ID
                 logger.info("WarehouseClerk " + identificationNumber + " received a request to collect PRODUCT " + cargo + " from Station " + currentRequest.stationId());
             }
             return true;

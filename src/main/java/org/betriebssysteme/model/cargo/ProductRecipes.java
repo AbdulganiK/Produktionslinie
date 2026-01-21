@@ -22,56 +22,37 @@ public class ProductRecipes {
     private Recipe controlHousingRecipe = new Recipe(
             recipeConfig.get("controlHousingRecipe").get("productionTime").asInt(),
             Product.CONTROL_CASE,
-            new HashMap<Cargo, Integer>() {{
-                put(Material.GLUE, 1);
-                put(Material.PLASTIC, 2);
-            }}
+            loadCargoMap(recipeConfig.get("controlHousingRecipe").get("components"))
     );
 
     private Recipe drivePcbRecipe = new Recipe(
             recipeConfig.get("drivePcbRecipe").get("productionTime").asInt(),
             Product.DRIVE_PCB,
-            new HashMap<Cargo, Integer>() {{
-                put(Material.PCBS, 2);
-                put(Material.MOTORS, 2);
-            }}
+            loadCargoMap(recipeConfig.get("drivePcbRecipe").get("components"))
     );
 
     private Recipe controlPcbRecipe = new Recipe(
             recipeConfig.get("controlPcbRecipe").get("productionTime").asInt(),
             Product.CONTROL_PCB,
-            new HashMap<Cargo, Integer>() {{
-                put(Material.DISPLAYS, 1);
-                put(Material.PCBS, 2);
-            }}
+            loadCargoMap(recipeConfig.get("controlPcbRecipe").get("components"))
     );
 
     private Recipe driveUnitRecipe = new Recipe(
             recipeConfig.get("driveUnitRecipe").get("productionTime").asInt(),
             Product.DRIVE_UNIT,
-            new HashMap<Cargo, Integer>() {{
-                put(Product.DRIVE_CASE, 1);
-                put(Product.DRIVE_PCB, 1);
-            }}
+            loadCargoMap(recipeConfig.get("driveUnitRecipe").get("components"))
     );
 
     private Recipe controlUnitRecipe = new Recipe(
             recipeConfig.get("controlUnitRecipe").get("productionTime").asInt(),
             Product.CONTROL_UNIT,
-            new HashMap<Cargo, Integer>() {{
-                put(Product.CONTROL_CASE, 1);
-                put(Product.CONTROL_PCB, 1);
-            }}
+            loadCargoMap(recipeConfig.get("controlUnitRecipe").get("components"))
     );
 
     private Recipe shippingPackageRecipe = new Recipe(
             recipeConfig.get("shippingPackageRecipe").get("productionTime").asInt(),
             Product.PACKAGE,
-            new HashMap<Cargo, Integer>() {{
-                put(Material.WRAPPING, 3);
-                put(Product.DRIVE_UNIT, 1);
-                put(Product.CONTROL_UNIT, 1);
-            }}
+            loadCargoMap(recipeConfig.get("shippingPackageRecipe").get("components"))
     );
 
     private HashMap<Cargo, Integer> loadCargoMap(JsonNode node) {
