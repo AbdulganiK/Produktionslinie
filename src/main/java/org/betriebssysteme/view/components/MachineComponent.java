@@ -109,6 +109,7 @@ public class MachineComponent extends Component {
         EventHandler.handleMenuCLick(e, entity);
     }
 
+
     @Override
     public void onAdded() {
         entity.getViewComponent().addChild(this.texture);
