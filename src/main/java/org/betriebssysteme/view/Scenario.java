@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import org.betriebssysteme.control.ProductionController;
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.utility.EntityPlacer;
@@ -19,6 +24,8 @@ import org.betriebssysteme.view.factory.EntityNames;
 import org.betriebssysteme.view.factory.EntityProductionLineFactory;
 
 import java.util.*;
+
+import static com.almasb.fxgl.dsl.FXGL.entityBuilder;
 
 public class Scenario {
 
@@ -48,10 +55,21 @@ public class Scenario {
         FXGL.spawn(EntityNames.STORAGE, storageData);
 
         // Lieferant Spawnen
-        FXGL.spawn(EntityNames.SUPPLIER, 100 + OFFSET_X, 400 + OFFSET_Y);
+        for (Personnel personnel : personnels.values()) {
+            if (personnel instanceof Supplier) {
+                SpawnData supplierData = new SpawnData(100 + OFFSET_X, 400 + OFFSET_Y);
+                supplierData.put("supplier",  personnel);
+                FXGL.spawn(EntityNames.SUPPLIER, supplierData);
+            }
+        }
+
+
+
+
 
         // Zentrale Spawnen
         SpawnData centralData = new SpawnData(1150 + OFFSET_X, 1050 + OFFSET_Y);
+        centralData.put("station", ProductionHeadquarters.getInstance());
         centralData.put("cellX", 41);
         centralData.put("cellY", 26);
         FXGL.spawn(EntityNames.CENTRAL, centralData);

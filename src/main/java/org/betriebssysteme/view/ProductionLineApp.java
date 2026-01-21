@@ -11,6 +11,7 @@ import javafx.geometry.Point2D;
 
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Group;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -33,6 +34,8 @@ public class ProductionLineApp extends GameApplication {
     private EntityProductionLineFactory entityFactory = new EntityProductionLineFactory();
     private Entity clerk;
     private AStarGrid grid;
+
+    private Entity emptyPoint;
 
 
     @Override
@@ -79,10 +82,25 @@ public class ProductionLineApp extends GameApplication {
         // Laden des Scenario
         Scenario scenario = new Scenario(entityFactory);
         scenario.runFirst();
+        Rectangle rect = new Rectangle(50, 50, Color.BLACK);
+        rect.setStroke(Color.BLACK);
+        rect.setStrokeType(StrokeType.INSIDE);
+
+        Group view = new Group(rect);
+        view.setMouseTransparent(true);
+
+
+        this.emptyPoint = entityBuilder()
+                .at(100 + 690, 400 + 300)
+                .view(view)
+                .buildAndAttach();
 
 
 
+    }
 
+    public Entity getEmptyPoint() {
+        return emptyPoint;
     }
 
     public Entity spawnItemOnBelt(Entity belt) {

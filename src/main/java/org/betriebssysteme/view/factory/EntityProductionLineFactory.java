@@ -14,7 +14,9 @@ import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.view.ProductionLineApp;
@@ -52,6 +54,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .bbox(hitBox)
                 .with(new StationComponent(station))
                 .with(new CollidableComponent(true))
+                .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
                 .with(new MenuComponent(350, 0))
                 .with(new StatusComponent())
                 .with(new NotWalkableComponent(app.getGrid(), 6, 0, 0, 0))
@@ -97,11 +100,9 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.CENTRAL)
     public Entity newCentral(SpawnData data) {
         ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
-        Station station = data.get("station");
         return FXGL.entityBuilder(data)
                 .type(EntityType.CENTRAL)
                 .with(new CentralPlatformComponent())
-                .with(new StationComponent(station))
                 .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
                 .with(new NotWalkableComponent(app.getGrid(), 7,0, 0, -2))
                 .with(new MenuComponent(300, -100))
@@ -126,11 +127,15 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.SUPPLIER)
     public Entity newSupplier(SpawnData data) {
+        ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
+        Supplier supplier = data.get("supplier");
         HitBox hitBox = new HitBox(new Point2D(55, 25), BoundingShape.box(30, 60));
         return FXGL.entityBuilder(data)
                 .type(EntityType.SUPPLIER)
                 .with(new CollidableComponent(true))
-                .with(new SupplierComponent())
+                .with(new CellMoveComponent(50, 50, 150))
+                .with(new AStarMoveComponent(app.getGrid()))
+                .with(new SupplierComponent(supplier))
                 .bbox(hitBox)
                 .with(new MenuComponent(0, -120))
                 .zIndex(1000)
