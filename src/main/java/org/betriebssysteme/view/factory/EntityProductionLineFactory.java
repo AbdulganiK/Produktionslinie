@@ -22,7 +22,7 @@ public class EntityProductionLineFactory implements EntityFactory {
         Station station = data.get("station");
         return FXGL.entityBuilder(data)
                 .with(new StationComponent(station))
-                .with(new MenuComponent())
+                .with(new MenuComponent(30, 0))
                 .type(EntityType.MACHINE)
                 .with(new MachineComponent())
                 .with(new StatusComponent())

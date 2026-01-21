@@ -69,20 +69,20 @@ public class MenuComponent extends Component {
         menuRoot.setTranslateX(-350 + this.additionalTranslateX);
         menuRoot.setTranslateY(-450 + this.additionalTranslateY);
 
-        menuRoot.setScaleX(0.3);
-        menuRoot.setScaleY(0.6);
+        menuRoot.setScaleX(0.4);
+        menuRoot.setScaleY(0.8);
 
         double startXNames = 200;  // linke Spalte
         double startXValues = w * 0.59;   // rechte Spalte
 
         baseValueX = startXValues;
 
-        Font font = Font.font("Consolas", 28);
+        Font font = Font.font("Consolas", 22);
 
         for (int i = 0; i < ROWS; i++) {
 
             // individuelle Y-Position pro Zeile
-            h = h + 30;
+            h = h + 20;
 
             Text nameText = new Text("");
             nameText.setFill(Color.LIGHTGRAY);
