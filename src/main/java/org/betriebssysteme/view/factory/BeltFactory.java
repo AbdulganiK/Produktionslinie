@@ -1,7 +1,9 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.factory;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
+import org.betriebssysteme.view.animationtyps.BeltAnimationType;
+import org.betriebssysteme.view.components.BeltComponent;
 
 import java.util.ArrayList;
 

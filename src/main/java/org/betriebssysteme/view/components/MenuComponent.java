@@ -1,6 +1,7 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.texture.Texture;
 import javafx.scene.Group;
@@ -16,7 +17,7 @@ public class MenuComponent extends Component {
     private static final int ROWS = 9;
 
     private Group menuRoot;
-    private Text[] nameLabels  = new Text[ROWS];
+    private Text[] nameLabels = new Text[ROWS];
     private Text[] valueLabels = new Text[ROWS];
     private double baseValueX;
     private double additionalTranslateX;
@@ -25,6 +26,7 @@ public class MenuComponent extends Component {
     private boolean visible;
     private int baseZIndex;
     private boolean baseZInitialized = false;
+    private int zIndexBeforeVisible;
 
 
     public void ensureBaseZIndex(int currentZ) {
@@ -37,6 +39,7 @@ public class MenuComponent extends Component {
     public int getBaseZIndex() {
         return baseZIndex;
     }
+
     public MenuComponent() {
         this.additionalTranslateX = 0;
         this.additionalTranslateY = 0;
@@ -69,7 +72,7 @@ public class MenuComponent extends Component {
         menuRoot.setScaleX(0.3);
         menuRoot.setScaleY(0.6);
 
-        double startXNames =  200 ;  // linke Spalte
+        double startXNames = 200;  // linke Spalte
         double startXValues = w * 0.59;   // rechte Spalte
 
         baseValueX = startXValues;
@@ -108,10 +111,23 @@ public class MenuComponent extends Component {
 
     public void setVisibility(boolean visible) {
         this.visibility = visible;
+
         if (menuRoot != null) {
             menuRoot.setVisible(visible);
+
+            if (visible) {
+                int highestZ = entity.getWorld()
+                        .getEntities()
+                        .stream()
+                        .mapToInt(Entity::getZIndex)
+                        .max()
+                        .orElse(0);
+
+                entity.setZIndex(highestZ + 1);
+            }
         }
     }
+
 
     public boolean getVisibility() {
         return this.visibility;
@@ -149,9 +165,17 @@ public class MenuComponent extends Component {
     }
 
 
-    public void setLagerBestand(String value)      { setProperty(3, "Bestand", value); }
-    public void setGeschwindigkeit(String value)   { setProperty(4, "Speed", value); }
-    public void setKapazitaet(String value)        { setProperty(5, "Kapazität", value); }
+    public void setLagerBestand(String value) {
+        setProperty(3, "Bestand", value);
+    }
+
+    public void setGeschwindigkeit(String value) {
+        setProperty(4, "Speed", value);
+    }
+
+    public void setKapazitaet(String value) {
+        setProperty(5, "Kapazität", value);
+    }
 
 
 }

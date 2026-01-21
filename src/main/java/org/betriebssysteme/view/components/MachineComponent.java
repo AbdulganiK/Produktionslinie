@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
@@ -8,6 +8,8 @@ import com.almasb.fxgl.texture.AnimationChannel;
 import javafx.util.Duration;
 import org.betriebssysteme.model.stations.Maschine;
 import org.betriebssysteme.utility.EventHandler;
+import org.betriebssysteme.view.animationtyps.MachineAnimationType;
+import org.betriebssysteme.view.ProductionLineApp;
 
 public class MachineComponent extends Component {
 

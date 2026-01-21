@@ -1,9 +1,10 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.component.Component;
 import javafx.geometry.Point2D;
+
 public class ItemMoveComponent extends Component {
 
     private Point2D direction = Point2D.ZERO;

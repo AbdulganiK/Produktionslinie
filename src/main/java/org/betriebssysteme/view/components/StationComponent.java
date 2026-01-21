@@ -1,9 +1,7 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.entity.component.Component;
 import org.betriebssysteme.model.stations.Station;
-
-import java.util.Arrays;
 
 public class StationComponent extends Component {
     private final Station station;

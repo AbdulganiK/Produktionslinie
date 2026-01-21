@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.animationtyps;
 
 public enum MachineAnimationType {
     ON,

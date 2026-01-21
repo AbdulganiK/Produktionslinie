@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import com.almasb.fxgl.entity.component.Component;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
-import org.betriebssysteme.utility.EventHandler;
+import org.betriebssysteme.view.factory.WarehouseClerkSkin;
 
 public class WarehouseClerkComponent extends Component {
 
@@ -103,38 +103,7 @@ public class WarehouseClerkComponent extends Component {
     }
 
     private void buildPathFromCurrentPositionTo(int stationId) {
-        currentTargetId = stationId;
-        currentPath.clear();
-        pathIndex = 0;
 
-        Point2D arrival = Scenario.STATION_ARRIVAL_POS.get(stationId);
-        if (arrival == null) return;
-
-        List<Point2D> route = Scenario.PATH_TO_STATION.get(stationId);
-        if (route == null) route = List.of();
-
-        Point2D cur = entity.getPosition();
-
-        for (Point2D node : route) {
-            addViaCorridorNode(node, cur);
-        }
-
-        double approachY = route.isEmpty()
-                ? Scenario.BOTTOM_Y
-                : route.get(route.size() - 1).getY();
-
-        Point2D last = currentPath.isEmpty() ? cur : currentPath.get(currentPath.size() - 1);
-
-        if (Math.abs(last.getY() - approachY) > 0.5) {
-            currentPath.add(new Point2D(last.getX(), approachY));
-            last = currentPath.get(currentPath.size() - 1);
-        }
-
-        if (Math.abs(last.getX() - arrival.getX()) > 0.5) {
-            currentPath.add(new Point2D(arrival.getX(), approachY));
-        }
-
-        currentPath.add(arrival);
     }
 
     private boolean moveTowardsAndReturnReached(Point2D target, double tpf) {
