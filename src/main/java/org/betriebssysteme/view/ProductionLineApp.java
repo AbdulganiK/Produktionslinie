@@ -2,25 +2,18 @@ package org.betriebssysteme.view;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
-import com.almasb.fxgl.app.scene.Viewport;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.GameWorld;
-import com.almasb.fxgl.entity.level.tiled.TiledMap;
-import com.almasb.fxgl.physics.CollisionHandler;
 import javafx.geometry.Point2D;
 
 
-
-import javafx.scene.input.ScrollEvent;
-import com.almasb.fxgl.entity.level.tiled.TiledMap;
+import javafx.geometry.Rectangle2D;
 import org.betriebssysteme.utility.EntityCollisionHandler;
-import org.betriebssysteme.utility.EntityPlacer;
+import org.betriebssysteme.view.extras.Camera;
+import org.betriebssysteme.view.extras.Zoom;
+import org.betriebssysteme.view.factory.EntityNames;
+import org.betriebssysteme.view.factory.EntityProductionLineFactory;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import static com.almasb.fxgl.dsl.FXGLForKtKt.getAssetLoader;
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
@@ -55,6 +48,7 @@ public class ProductionLineApp extends GameApplication {
         // Collision Handling
         EntityCollisionHandler.addCollisionBetweenMachineAndEntity(getPhysicsWorld());
         EntityCollisionHandler.addCollisionBetweenItems(getPhysicsWorld());
+        EntityCollisionHandler.addCollisionBetweenSupplierAndStorage(getPhysicsWorld());
         EntityCollisionHandler.addCollisionBetweenItemAndBelt(getPhysicsWorld());
     }
 
@@ -64,6 +58,9 @@ public class ProductionLineApp extends GameApplication {
     protected void initGame() {
 
         setLevelFromMap("map.tmx");
+
+
+
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(entityFactory);
         Scenario scenario = new Scenario(entityFactory);
@@ -84,6 +81,8 @@ public class ProductionLineApp extends GameApplication {
                 center.getY() - itemHalfH
         );
     }
+
+
 
 
     public static void main(String[] args) {

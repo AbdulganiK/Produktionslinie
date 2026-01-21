@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.entity.component.Component;
 import javafx.geometry.Point2D;
@@ -197,13 +197,7 @@ public class StorageComponent extends Component {
         // Root-Gruppe an Entity hängen
         entity.getViewComponent().addChild(root);
 
-        // einfache Hitbox über Gebäude + Boden
-        entity.getBoundingBoxComponent().clearHitBoxes();
-        entity.getBoundingBoxComponent().addHitBox(
-                new com.almasb.fxgl.physics.HitBox("STORAGE",
-                        new Point2D(0, 0),
-                        com.almasb.fxgl.physics.BoundingShape.box(PAD_WIDTH, PAD_HEIGHT + 40))
-        );
+
 
         root.setOnMouseClicked(this::handleStorageClick);
     }

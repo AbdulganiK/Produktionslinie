@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.factory;
 
 public enum EntityType {
     MACHINE,

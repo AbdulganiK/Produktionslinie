@@ -1,11 +1,17 @@
 package org.betriebssysteme.utility;
 
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.physics.CollisionHandler;
 import com.almasb.fxgl.physics.PhysicsWorld;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 import org.betriebssysteme.model.stations.Maschine;
-import org.betriebssysteme.view.*;
+import org.betriebssysteme.view.components.ItemMoveComponent;
+import org.betriebssysteme.view.components.MachineComponent;
+import org.betriebssysteme.view.components.StationComponent;
+import org.betriebssysteme.view.components.SupplierComponent;
+import org.betriebssysteme.view.factory.EntityType;
 
 public class EntityCollisionHandler {
 
@@ -22,6 +28,25 @@ public class EntityCollisionHandler {
                 }
             }
         });
+    }
+
+    public static void addCollisionBetweenSupplierAndStorage(PhysicsWorld physicsWorld) {
+        physicsWorld.addCollisionHandler(new CollisionHandler(EntityType.STORAGE, EntityType.SUPPLIER) {
+            @Override
+            protected void onCollisionBegin(Entity storage, Entity supplier) {
+                System.out.println("KOLLISIONN");
+               supplier.setVisible(false);
+               supplier.getComponent(SupplierComponent.class).driveAwayFromStorage();
+            }
+
+            @Override
+            protected void onCollisionEnd(Entity storage, Entity supplier) {
+                FXGL.getGameTimer().runOnceAfter(() -> {
+                    supplier.setVisible(true);
+                }, Duration.seconds(1));
+            }
+        });
+
     }
 
     public static void addCollisionBetweenItems(PhysicsWorld physicsWorld) {

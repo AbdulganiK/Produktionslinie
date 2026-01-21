@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.factory;
 
 public interface EntityNames {
     public static final String MACHINE = "machine";

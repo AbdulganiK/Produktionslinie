@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.factory;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
@@ -8,15 +8,10 @@ import com.almasb.fxgl.entity.Spawns;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
-import com.almasb.fxgl.physics.PhysicsComponent;
-import com.almasb.fxgl.texture.Texture;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.paint.Color;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
-
-import java.awt.*;
+import org.betriebssysteme.view.components.*;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.texture;
 
@@ -39,9 +34,13 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.STORAGE)
     public Entity newStorage(SpawnData data) {
         Station station = data.get("station");
+        HitBox hitBox = new HitBox(new Point2D(10, 20), BoundingShape.box(160, 70));
+
         return FXGL.entityBuilder(data)
                 .type(EntityType.STORAGE)
+                .bbox(hitBox)
                 .with(new StationComponent(station))
+                .with(new CollidableComponent(true))
                 .with(new MenuComponent(350, 0))
                 .with(new StatusComponent())
                 .with(new StorageComponent())
@@ -105,11 +104,12 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.SUPPLIER)
     public Entity newSupplier(SpawnData data) {
-        var supplier = (org.betriebssysteme.model.personnel.Supplier) data.get("supplier");
-
+        HitBox hitBox = new HitBox(new Point2D(55, 25), BoundingShape.box(30, 60));
         return FXGL.entityBuilder(data)
                 .type(EntityType.SUPPLIER)
-                .with(new SupplierComponent(supplier))
+                .with(new CollidableComponent(true))
+                .with(new SupplierComponent())
+                .bbox(hitBox)
                 .with(new MenuComponent(0, -120))
                 .zIndex(1000)
                 .build();

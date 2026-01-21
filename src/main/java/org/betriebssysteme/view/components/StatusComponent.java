@@ -1,4 +1,4 @@
-package org.betriebssysteme.view;
+package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.entity.component.Component;
 import javafx.scene.Group;

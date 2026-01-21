@@ -1,6 +1,4 @@
-package org.betriebssysteme.view;
-
-import java.util.concurrent.ThreadLocalRandom;
+package org.betriebssysteme.view.factory;
 
 public enum WarehouseClerkSkin {
     BLOND("Blondworker_Front.png","Blondworker_Back.png","Blondworker_Right.png","Blondworker_Left.png"),
