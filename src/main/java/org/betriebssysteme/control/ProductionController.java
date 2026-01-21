@@ -9,8 +9,7 @@ import org.betriebssysteme.model.stations.ControlMachine;
 import org.betriebssysteme.model.stations.MainDepot;
 import org.betriebssysteme.model.stations.PackagingMaschine;
 import org.betriebssysteme.model.stations.ProductionMaschine;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -19,10 +18,8 @@ import org.slf4j.LoggerFactory;
 
 public class ProductionController {
     private MainDepot mainDepot;
+    private Supplier supplier;
     private ProductRecipes productRecipes = new ProductRecipes();
-    private final List<Supplier> suppliers = new ArrayList<>();
-    private final List<WarehouseClerk> warehouseClerks = new ArrayList<>();
-    private final JsonNode productionConfigData;
 
     static {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
@@ -42,7 +39,12 @@ public class ProductionController {
     private ControlMachine controlUnitQualityControlMachine;
     private ControlMachine driveUnitQualityControlMachine;
     private PackagingMaschine packagingMaschine;
+    private WarehouseClerk warehouseClerk1;
+    private WarehouseClerk warehouseClerk2;
+    private WarehouseClerk warehouseClerk3;
+    private WarehouseClerk warehouseClerk4;
 
+    private final JsonNode productionConfigData;
 
     public ProductionController() {
         this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfig.json");
@@ -178,44 +180,55 @@ public class ProductionController {
     }
 
     public void createAllPersonnel() {
-        JsonNode personnelNode = productionConfigData.get("personnel");
+        JsonNode personnel = productionConfigData.get("personnel");
 
-        int mainDepotId = productionConfigData
-                .get("stations")
-                .get("mainDepot")
-                .get("identificationNumber")
-                .asInt();
+        JsonNode sup = personnel.get("supplier");
+        JsonNode mainDepotNode = productionConfigData.get("stations").get("mainDepot");
+        supplier = new Supplier(
+                sup.get("identificationNumber").asInt(),
+                sup.get("supplyInterval_ms").asInt(),
+                sup.get("supplyTimer_ms").asInt(),
+                sup.get("travelTimer_ms").asInt(),
+                mainDepotNode.get("identificationNumber").asInt(),
+                sup.get("maxCapacity").asInt()
+        );
 
-        suppliers.clear();
-        JsonNode suppliersNode = personnelNode.get("suppliers");
-        if (suppliersNode != null && suppliersNode.isArray()) {
-            for (JsonNode supNode : suppliersNode) {
-                suppliers.add(new Supplier(
-                        supNode.get("identificationNumber").asInt(),
-                        supNode.get("supplyInterval_ms").asInt(),
-                        supNode.get("supplyTimer_ms").asInt(),
-                        supNode.get("travelTimer_ms").asInt(),
-                        mainDepotId,
-                        supNode.get("maxCapacity").asInt()
-                ));
-            }
-        }
+        JsonNode w1 = personnel.get("warehouseClerk1");
+        warehouseClerk1 = new WarehouseClerk(
+                w1.get("identificationNumber").asInt(),
+                w1.get("timeForTravel_ms").asInt(),
+                w1.get("timeForTask_ms").asInt(),
+                w1.get("timeForSleep_ms").asInt(),
+                w1.get("maxCapacity").asInt()
+        );
 
-        warehouseClerks.clear();
-        JsonNode clerksNode = personnelNode.get("warehouseClerks");
-        if (clerksNode != null && clerksNode.isArray()) {
-            for (JsonNode clerkNode : clerksNode) {
-                warehouseClerks.add(new WarehouseClerk(
-                        clerkNode.get("identificationNumber").asInt(),
-                        clerkNode.get("timeForTravel_ms").asInt(),
-                        clerkNode.get("timeForTask_ms").asInt(),
-                        clerkNode.get("timeForSleep_ms").asInt(),
-                        clerkNode.get("maxCapacity").asInt()
-                ));
-            }
-        }
+        JsonNode w2 = personnel.get("warehouseClerk2");
+        warehouseClerk2 = new WarehouseClerk(
+                w2.get("identificationNumber").asInt(),
+                w2.get("timeForTravel_ms").asInt(),
+                w2.get("timeForTask_ms").asInt(),
+                w2.get("timeForSleep_ms").asInt(),
+                w2.get("maxCapacity").asInt()
+        );
+
+        JsonNode w3 = personnel.get("warehouseClerk3");
+        warehouseClerk3 = new WarehouseClerk(
+                w3.get("identificationNumber").asInt(),
+                w3.get("timeForTravel_ms").asInt(),
+                w3.get("timeForTask_ms").asInt(),
+                w3.get("timeForSleep_ms").asInt(),
+                w3.get("maxCapacity").asInt()
+        );
+
+        JsonNode w4 = personnel.get("warehouseClerk4");
+        warehouseClerk4 = new WarehouseClerk(
+                w4.get("identificationNumber").asInt(),
+                w4.get("timeForTravel_ms").asInt(),
+                w4.get("timeForTask_ms").asInt(),
+                w4.get("timeForSleep_ms").asInt(),
+                w4.get("maxCapacity").asInt()
+        );
     }
-
 
     public void addAllToProductionHeadquarters() {
         ProductionHeadquarters productionHeadquarters = ProductionHeadquarters.getInstance();
@@ -229,13 +242,11 @@ public class ProductionController {
         productionHeadquarters.addStation(controlUnitQualityControlMachine);
         productionHeadquarters.addStation(driveUnitQualityControlMachine);
         productionHeadquarters.addStation(packagingMaschine);
-        for (Supplier s : suppliers) {
-            productionHeadquarters.addPersonnel(s);
-        }
-        for (WarehouseClerk w : warehouseClerks) {
-            productionHeadquarters.addPersonnel(w);
-        }
-
+        productionHeadquarters.addPersonnel(supplier);
+        productionHeadquarters.addPersonnel(warehouseClerk1);
+        productionHeadquarters.addPersonnel(warehouseClerk2);
+        productionHeadquarters.addPersonnel(warehouseClerk3);
+        productionHeadquarters.addPersonnel(warehouseClerk4);
     }
 
     public void startProductionHeadquarters() {
