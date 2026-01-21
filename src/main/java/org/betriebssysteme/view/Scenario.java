@@ -34,8 +34,8 @@ public class Scenario {
         Map<Integer, Station> stations = ProductionHeadquarters.getInstance().getStations();
 
         // Verschiebung Richtung Mitte
-        final int OFFSET_X = 1000;
-        final int OFFSET_Y = 150;
+        final int OFFSET_X = 690;
+        final int OFFSET_Y = 300;
 
         // Lager Spawnen
         SpawnData storageData = new SpawnData(100 + OFFSET_X, 100 + OFFSET_Y);
