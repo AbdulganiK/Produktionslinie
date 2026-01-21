@@ -48,6 +48,9 @@ public class Scenario {
         // Zentrale Spawnen
         FXGL.spawn(EntityNames.CENTRAL, 1150 + OFFSET_X, 1050 + OFFSET_Y);
 
+        // Lieferant Spawnen
+        FXGL.spawn(EntityNames.WAREHOUSE_CLERK);
+
 
         // Erste Reihe
         // -----------------------------------------

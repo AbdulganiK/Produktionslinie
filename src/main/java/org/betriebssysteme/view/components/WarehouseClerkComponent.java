@@ -17,7 +17,7 @@ public class WarehouseClerkComponent extends Component {
 
     @Override
     public void onAdded() {
-        entity.getComponent(AStarMoveComponent.class).moveToCell((2150 / 50)+10, (1200 / 50));
+        entity.getComponent(AStarMoveComponent.class).moveToCell(8, 17);
     }
 
 
