@@ -22,6 +22,7 @@ public class ProductionController {
     private ProductRecipes productRecipes = new ProductRecipes();
     private final List<Supplier> suppliers = new ArrayList<>();
     private final List<WarehouseClerk> warehouseClerks = new ArrayList<>();
+    private final JsonNode productionConfigData;
 
     static {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm_ss");
@@ -42,7 +43,6 @@ public class ProductionController {
     private ControlMachine driveUnitQualityControlMachine;
     private PackagingMaschine packagingMaschine;
 
-    private final JsonNode productionConfigData;
 
     public ProductionController() {
         this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfig.json");
