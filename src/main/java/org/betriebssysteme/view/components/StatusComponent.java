@@ -31,7 +31,7 @@ public class StatusComponent extends Component {
     @Override
     public void onAdded() {
 
-        double panelWidth = 68;
+        double panelWidth = 40;
         double panelHeight = 30;
 
 
@@ -73,6 +73,10 @@ public class StatusComponent extends Component {
         } else {
             this.firstLight.setFill(Color.RED);
         }
+    }
+
+    public void setColorFirstLamp(Color color) {
+        this.firstLight.setFill(color);
     }
 
     public void setColorSecondLamp(StatusTyp info) {

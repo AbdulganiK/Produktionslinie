@@ -154,7 +154,8 @@ public class CentralPlatformComponent extends Component {
 
         entity.getViewComponent().addChild(root);
 
-        root.setOnMouseClicked(this::handleCentralClick);
+        // uncomment if needed
+        //root.setOnMouseClicked(this::handleCentralClick);
     }
 
     public void handleCentralClick(MouseEvent e) {
