@@ -12,8 +12,8 @@ public class WarehouseClerkAnimComponent extends Component {
     private static final int FRAME_W = 64;
     private static final int FRAME_H = 64;
 
-    private static final Duration FRONT_BACK_DURATION = Duration.seconds(0.7); // 6 frames
-    private static final Duration SIDE_DURATION       = Duration.seconds(0.8); // 8 frames
+    private static final Duration FRONT_BACK_DURATION = Duration.seconds(1); // 6 frames
+    private static final Duration SIDE_DURATION       = Duration.seconds(1); // 8 frames
 
     private static final double IDLE_EPS = 0.05;
 
@@ -61,6 +61,8 @@ public class WarehouseClerkAnimComponent extends Component {
 
     @Override
     public void onAdded() {
+        texture.setTranslateX(-20);
+        texture.setTranslateY(-40);
         entity.getViewComponent().addChild(texture);
         lastPos = entity.getPosition();
 
