@@ -51,7 +51,7 @@ public class Supplier extends Thread implements Personnel {
         this.cargoStorage = new HashMap<>();
     }
 
-    private void supplyRoutine() {
+    private void supplyRoutine() throws InterruptedException {
         // Initialize Supplier cargo storage
         int cargoCapacityPerMaterial = maxCapacity / Material.values().length;
         for (Material material : Material.values()) {
@@ -65,23 +65,19 @@ public class Supplier extends Thread implements Personnel {
         destinationStationId = mainDepotId;
         idOfCurrentDestinationStation = mainDepotId;
         logger.info("Supplier starting supply routine to Main Depot");
-        try {
-            Thread.sleep(travelTimer_ms);
-            //awaitReady(); TODO: Implement ready check if needed
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        awaitReady();
+        // TODO: Implement ready check if needed
+
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
         originStationId = mainDepotId;
         destinationStationId = -1;
         idOfCurrentDestinationStation = -1;
-        try {
-            Thread.sleep(travelTimer_ms);
-            //awaitReady(); TODO: Implement ready check if needed
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        awaitReady();
+        //TODO: Implement ready check if needed
+
         logger.info("Supplier finishing supply routine to Main Depot");
     }
 
@@ -113,6 +109,7 @@ public class Supplier extends Thread implements Personnel {
     }
 
     private synchronized void awaitReady() throws InterruptedException {
+        ready = false;
         while (!ready) {
             wait();
         }
@@ -222,7 +219,11 @@ public class Supplier extends Thread implements Personnel {
     public void run() {
         status = StatusInfo.OPERATIONAL;
         while (true) {
-            supplyRoutine();
+            try {
+                supplyRoutine();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             try {
                 Thread.sleep(supplyInterval_ms);
             } catch (InterruptedException e) {

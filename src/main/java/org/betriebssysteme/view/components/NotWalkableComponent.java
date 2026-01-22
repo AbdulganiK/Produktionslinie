@@ -43,14 +43,10 @@ public class NotWalkableComponent extends Component {
     private void blockCells() {
         int cx = (int) Math.floor(entity.getX() / cellSize) + offsetX;
         int cy = (int) Math.floor(entity.getY() / cellSize) + offsetY;
-        System.out.println(cx + "," + cy);
 
-        // Blockiere nach rechts (x erhöht sich) und nach unten (y erhöht sich)
         for (int y = cy; y <= cy + rangeY; y++) {
             for (int x = cx; x <= cx + rangeX; x++) {
-                // Sicherheitsprüfung hinzufügen, um ArrayIndexOutOfBounds zu vermeiden
                 if (x >= 0 && x < grid.getWidth() && y >= 0 && y < grid.getHeight()) {
-                    System.out.println(x + "," + y);
                     grid.get(x, y).setState(CellState.NOT_WALKABLE);
                 } else {
                     System.err.println("Index out of bounds: (" + x + "," + y + ")");

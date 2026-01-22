@@ -14,6 +14,9 @@ import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.view.ProductionLineApp;
@@ -27,12 +30,14 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.MACHINE)
     public Entity newMachine(SpawnData data) {
         Station station = data.get("station");
+
         return FXGL.entityBuilder(data)
                 .with(new StationComponent(station))
                 .with(new MenuComponent(30, 0))
                 .type(EntityType.MACHINE)
                 .with(new MachineComponent())
                 .with(new StatusComponent())
+                .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
                 .with(new CollidableComponent(true))
                 .bbox(new HitBox(BoundingShape.box(64, 64)))
                 .build();
@@ -49,6 +54,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .bbox(hitBox)
                 .with(new StationComponent(station))
                 .with(new CollidableComponent(true))
+                .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
                 .with(new MenuComponent(350, 0))
                 .with(new StatusComponent())
                 .with(new NotWalkableComponent(app.getGrid(), 6, 0, 0, 0))
@@ -97,7 +103,7 @@ public class EntityProductionLineFactory implements EntityFactory {
         return FXGL.entityBuilder(data)
                 .type(EntityType.CENTRAL)
                 .with(new CentralPlatformComponent())
-                .with(new StatusComponent(50, -90))
+                .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
                 .with(new NotWalkableComponent(app.getGrid(), 7,0, 0, -2))
                 .with(new MenuComponent(300, -100))
                 .build();
@@ -107,13 +113,14 @@ public class EntityProductionLineFactory implements EntityFactory {
     @Spawns(EntityNames.WAREHOUSE_CLERK)
     public Entity newWarehouseClerk(SpawnData data) {
         ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
-
+        WarehouseClerk personnel = data.get("personnel");
         return FXGL.entityBuilder(data)
                 .type(EntityType.WAREHOUSE_CLERK)
-                .viewWithBBox(new Rectangle(50, 50, Color.BLUE))
+                //.viewWithBBox(new Rectangle(50, 50, Color.BLUE))
+                .with(new WarehouseClerkAnimComponent())
                 .with(new CellMoveComponent(50, 50, 150))
                 .with(new AStarMoveComponent(app.getGrid()))
-                .with(new WarehouseClerkComponent())
+                .with(new WarehouseClerkComponent(personnel))
                 .zIndex(10000)
                 .anchorFromCenter()
                 .buildAndAttach();
@@ -121,11 +128,15 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.SUPPLIER)
     public Entity newSupplier(SpawnData data) {
+        ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
+        Supplier supplier = data.get("supplier");
         HitBox hitBox = new HitBox(new Point2D(55, 25), BoundingShape.box(30, 60));
         return FXGL.entityBuilder(data)
                 .type(EntityType.SUPPLIER)
                 .with(new CollidableComponent(true))
-                .with(new SupplierComponent())
+                .with(new CellMoveComponent(50, 50, 150))
+                .with(new AStarMoveComponent(app.getGrid()))
+                .with(new SupplierComponent(supplier))
                 .bbox(hitBox)
                 .with(new MenuComponent(0, -120))
                 .zIndex(1000)

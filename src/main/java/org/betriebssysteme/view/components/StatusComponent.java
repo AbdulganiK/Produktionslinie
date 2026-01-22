@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+import org.betriebssysteme.model.status.StatusTyp;
 
 public class StatusComponent extends Component {
 
@@ -15,7 +16,6 @@ public class StatusComponent extends Component {
 
     private Rectangle rectangle;
     private Circle firstLight;
-    private Circle secondLight;
     private Circle thirdLight;
 
     public StatusComponent(double offSetX, double offSetY) {
@@ -47,56 +47,44 @@ public class StatusComponent extends Component {
         double centerY = panelHeight / 2.0;
 
         firstLight = new Circle(r, Color.BLACK);
-        secondLight = new Circle(r, Color.BLACK);
         thirdLight = new Circle(r, Color.BLACK);
 
         // Positionen innerhalb des Panels
         firstLight.setTranslateX(8);
         firstLight.setTranslateY(centerY);
 
-        secondLight.setTranslateX(panelWidth / 2.0);
-        secondLight.setTranslateY(centerY);
 
         thirdLight.setTranslateX(panelWidth - 8);
         thirdLight.setTranslateY(centerY);
 
-        Group panel = new Group(rectangle, firstLight, secondLight, thirdLight);
+        Group panel = new Group(rectangle, firstLight, thirdLight);
 
         double machineWidth = entity.getBoundingBoxComponent().getWidth();
         panel.setTranslateX((machineWidth - panelWidth) + offSetX);
         panel.setTranslateY(-18 + offSetY);   // etwas über der Maschine
 
-        this.running();
         entity.getViewComponent().addChild(panel);
     }
 
 
-    private void allOff() {
-        firstLight.setFill(Color.BLACK);
-        secondLight.setFill(Color.BLACK);
-        thirdLight.setFill(Color.BLACK);
+    public void setColorFirstLamp(boolean isRunning) {
+        if (isRunning) {
+            this.firstLight.setFill(Color.GREEN);
+        } else {
+            this.firstLight.setFill(Color.RED);
+        }
     }
 
-    // ERROR: nur Rot leuchtet
-    public void error() {
-        allOff();
-        thirdLight.setFill(Color.RED);
+    public void setColorSecondLamp(StatusTyp info) {
+       if (info == StatusTyp.INFO) {
+           this.thirdLight.setFill(Color.GREEN);
+       } else if(info == StatusTyp.CRITICAL) {
+           this.thirdLight.setFill(Color.ORANGE);
+       } else {
+           this.thirdLight.setFill(Color.RED);
+       }
     }
 
-    // RUNNING: nur Grün leuchtet
-    public void running() {
-        allOff();
-        firstLight.setFill(Color.GREEN);
-    }
 
-    // WARNING: nur Orange leuchtet
-    public void warning() {
-        allOff();
-        secondLight.setFill(Color.ORANGE);
-    }
-
-    public void turnAllOff() {
-        allOff();
-    }
 
 }

@@ -30,24 +30,7 @@ public class EntityCollisionHandler {
         });
     }
 
-    public static void addCollisionBetweenSupplierAndStorage(PhysicsWorld physicsWorld) {
-        physicsWorld.addCollisionHandler(new CollisionHandler(EntityType.STORAGE, EntityType.SUPPLIER) {
-            @Override
-            protected void onCollisionBegin(Entity storage, Entity supplier) {
-                System.out.println("KOLLISIONN");
-               supplier.setVisible(false);
-               supplier.getComponent(SupplierComponent.class).driveAwayFromStorage();
-            }
 
-            @Override
-            protected void onCollisionEnd(Entity storage, Entity supplier) {
-                FXGL.getGameTimer().runOnceAfter(() -> {
-                    supplier.setVisible(true);
-                }, Duration.seconds(1));
-            }
-        });
-
-    }
 
     public static void addCollisionBetweenItems(PhysicsWorld physicsWorld) {
         physicsWorld.addCollisionHandler(new CollisionHandler(EntityType.ITEM, EntityType.ITEM) {

@@ -4,8 +4,15 @@ import java.util.ArrayList;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
 import com.almasb.fxgl.entity.SpawnData;
+import javafx.scene.Group;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import org.betriebssysteme.control.ProductionController;
 import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.personnel.Personnel;
+import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.utility.EntityPlacer;
 
@@ -17,6 +24,8 @@ import org.betriebssysteme.view.factory.EntityNames;
 import org.betriebssysteme.view.factory.EntityProductionLineFactory;
 
 import java.util.*;
+
+import static com.almasb.fxgl.dsl.FXGL.entityBuilder;
 
 public class Scenario {
 
@@ -32,6 +41,7 @@ public class Scenario {
         // All stations and personnel are created and initialized here
         ProductionController.createProductionLine();
         Map<Integer, Station> stations = ProductionHeadquarters.getInstance().getStations();
+        Map<Integer, Personnel> personnels = ProductionHeadquarters.getInstance().getPersonnel();
 
         // Verschiebung Richtung Mitte
         final int OFFSET_X = 690;
@@ -40,13 +50,36 @@ public class Scenario {
         // Lager Spawnen
         SpawnData storageData = new SpawnData(100 + OFFSET_X, 100 + OFFSET_Y);
         storageData.put("station", stations.get(1));
+        storageData.put("cellX", 23);
+        storageData.put("cellY", 9);
         FXGL.spawn(EntityNames.STORAGE, storageData);
 
         // Lieferant Spawnen
-        FXGL.spawn(EntityNames.SUPPLIER, 100 + OFFSET_X, 400 + OFFSET_Y);
+        for (Personnel personnel : personnels.values()) {
+            if (personnel instanceof Supplier) {
+                SpawnData supplierData = new SpawnData(800, 1750);
+                supplierData.put("supplier",  personnel);
+                FXGL.spawn(EntityNames.SUPPLIER, supplierData);
+            }
+        }
+
+
 
         // Zentrale Spawnen
-        FXGL.spawn(EntityNames.CENTRAL, 1150 + OFFSET_X, 1050 + OFFSET_Y);
+        SpawnData centralData = new SpawnData(1150 + OFFSET_X, 1050 + OFFSET_Y);
+        centralData.put("station", ProductionHeadquarters.getInstance());
+        centralData.put("cellX", 41);
+        centralData.put("cellY", 26);
+        FXGL.spawn(EntityNames.CENTRAL, centralData);
+
+        // Lagerist Spawnen
+        for (Personnel personnel : personnels.values()) {
+            if (personnel instanceof WarehouseClerk) {
+                SpawnData wareHouseSpawnData = new SpawnData(1150 + OFFSET_X, 1100 + OFFSET_Y);
+                wareHouseSpawnData.put("personnel",  personnel);
+                FXGL.spawn(EntityNames.WAREHOUSE_CLERK, wareHouseSpawnData);
+            }
+        }
 
 
         // Erste Reihe
@@ -54,6 +87,8 @@ public class Scenario {
         // Erste Produktionsmaschine in der ersten Reihe
         SpawnData data = new SpawnData(500 + OFFSET_X, 700 + OFFSET_Y, 100);
         data.put("station", stations.get(21));
+        data.put("cellX", 24);
+        data.put("cellY", 21);
         Entity firstRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, data);
 
         firstRowProdmachine1.setZIndex(100);
@@ -69,6 +104,8 @@ public class Scenario {
         // zweite Produktionsmaschine in der ersten Reihe
         SpawnData machineData2 = new SpawnData(750 + OFFSET_X, 700 + OFFSET_Y, 100);
         machineData2.put("station", stations.get(22));
+        machineData2.put("cellX", 29);
+        machineData2.put("cellY", 21);
         Entity firstRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData2);
 
         firstRowProdmachine2.setZIndex(100);
@@ -88,6 +125,8 @@ public class Scenario {
         // dritte Produktionsmaschine in der ersten Reihe
         SpawnData machineData3 = new SpawnData(1200 + OFFSET_X, 700 + OFFSET_Y, 100);
         machineData3.put("station", stations.get(24));
+        machineData3.put("cellX", 38);
+        machineData3.put("cellY", 21);
         Entity firstRowProdmachine3 = FXGL.spawn(EntityNames.MACHINE, machineData3);
 
         firstRowProdmachine3.setZIndex(100);
@@ -100,6 +139,8 @@ public class Scenario {
 
         // vierte Produktionsmaschine in der ersten Reihe
         SpawnData machineData4 = new SpawnData(1450 + OFFSET_X, 700 + OFFSET_Y, 100);
+        machineData4.put("cellX", 43);
+        machineData4.put("cellY", 21);
         machineData4.put("station", stations.get(25));
         Entity firstRowProdmachine4 = FXGL.spawn(EntityNames.MACHINE, machineData4);
 
@@ -117,6 +158,8 @@ public class Scenario {
         // -----------------------------------------
         // Erste Produktionsmaschine in der zweiten Reihe
         SpawnData machineData5 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
+        machineData5.put("cellX", 28);
+        machineData5.put("cellY", 15);
         machineData5.put("station", stations.get(23));
         Entity seccondRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData5);
 
@@ -134,6 +177,8 @@ public class Scenario {
 
         // Zweite Produktionsmaschine in der zweiten Reihe
         SpawnData machineData6 = new SpawnData(1400 + OFFSET_X, 400 + OFFSET_Y, 100);
+        machineData6.put("cellX", 42);
+        machineData6.put("cellY", 15);
         machineData6.put("station", stations.get(26));
         Entity seccondRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData6);
 
@@ -153,6 +198,8 @@ public class Scenario {
 
         // Erste KontrollMascine dritte Reihe
         SpawnData machineData7 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
+        machineData7.put("cellX", 31);
+        machineData7.put("cellY", 14);
         machineData7.put("station", stations.get(31));
         Entity thirdRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData7);
 
@@ -173,6 +220,8 @@ public class Scenario {
 
         // Zweite KotnrollMaschine dritte Reihe
         SpawnData machineData8 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
+        machineData8.put("cellX", 45);
+        machineData8.put("cellY", 14);
         machineData8.put("station", stations.get(32));
         Entity thirdRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData8);
 
@@ -190,6 +239,8 @@ public class Scenario {
         // -----------------------------------------
         // Erste KontrollMascine dritte Reihe
         SpawnData machineData9 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
+        machineData9.put("cellX", 42);
+        machineData9.put("cellY", 8);
         machineData9.put("station", stations.get(41));
         Entity fourthRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData9);
 
@@ -198,7 +249,7 @@ public class Scenario {
 
         EntityPlacer.placeMachineAfterBelt(fourthRowProdmachine1, productBelt.getLast());
 
-        BeltFactory.spawnBeltsAfterMachine(fourthRowProdmachine1, 1);
+
     }
 
 
