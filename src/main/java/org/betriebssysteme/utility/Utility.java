@@ -13,7 +13,7 @@ public class Utility {
         }
 
         menu.setNameLabels(nameLabels);
-        menu.setValueLabels(nameLabels);
+        menu.setValueLabels(valueLabels);
 
 
     }
