@@ -5,6 +5,7 @@ import com.almasb.fxgl.entity.component.Component;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
+import org.betriebssysteme.utility.Utility;
 
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class WarehouseClerkComponent extends Component {
 
     @Override
     public void onUpdate(double tpf) {
+
+        Utility.setInfo(entity.getComponent(MenuComponent.class), warehouseClerk.getInfoArray());
         int destinationId = warehouseClerk.getIdOfDestinationStation();
 
         if (destinationId < 0) {

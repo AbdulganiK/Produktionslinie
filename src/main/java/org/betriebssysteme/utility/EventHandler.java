@@ -9,7 +9,7 @@ import java.util.List;
 public class EventHandler {
 
     public static void handleMenuCLick(javafx.scene.input.MouseEvent e, Entity clickedEntity) {
-        List<Entity> entities = clickedEntity.getWorld().getEntitiesByComponent(StatusComponent.class);
+        List<Entity> entities = clickedEntity.getWorld().getEntitiesByComponent(MenuComponent.class);
 
         MenuComponent clickedMenu = clickedEntity.getComponent(MenuComponent.class);
 
