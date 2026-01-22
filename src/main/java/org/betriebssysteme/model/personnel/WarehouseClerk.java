@@ -189,7 +189,7 @@ public class WarehouseClerk extends Thread implements Personnel {
 
     @Override
     public String[][] getInfoArray() {
-        String[][] infoArray = new String[10][2];
+        String[][] infoArray = new String[9][2];
         infoArray[0][0] = "Identification Number";
         infoArray[0][1] = String.valueOf(identificationNumber);
 
@@ -219,11 +219,11 @@ public class WarehouseClerk extends Thread implements Personnel {
             infoArray[6][1] = "N/A";
         }
 
-        infoArray[8][0] = "Time for Task (ms)";
-        infoArray[8][1] = String.valueOf(timeForTask_ms);
+        infoArray[7][0] = "Time for Task (ms)";
+        infoArray[7][1] = String.valueOf(timeForTask_ms);
 
-        infoArray[9][0] = "Time for Sleep (ms)";
-        infoArray[9][1] = String.valueOf(timeForSleep_ms);
+        infoArray[8][0] = "Time for Sleep (ms)";
+        infoArray[8][1] = String.valueOf(timeForSleep_ms);
         return infoArray;
     }
 
