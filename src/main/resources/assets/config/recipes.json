@@ -46,7 +46,8 @@
       "productionTime": 2000,
         "components": {
             "CONTROL_UNIT": 1,
-            "DRIVE_UNIT": 1
+            "DRIVE_UNIT": 1,
+            "WRAPPING": 3
         }
     }
   }

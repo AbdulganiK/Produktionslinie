@@ -51,7 +51,7 @@
     },
 
     "controlUnitQualityControlMachine": {
-      "identificationNumber": 31,
+      "identificationNumber": 32,
       "timeToSleep": 500,
       "maxStorageCapacity": 10,
       "initialQuantityOfProduct": 5,
@@ -60,7 +60,7 @@
       "maschinePriority": 3
     },
     "driveUnitQualityControlMachine": {
-      "identificationNumber": 32,
+      "identificationNumber": 31,
       "timeToSleep": 500,
       "maxStorageCapacity": 10,
       "initialQuantityOfProduct": 5,
