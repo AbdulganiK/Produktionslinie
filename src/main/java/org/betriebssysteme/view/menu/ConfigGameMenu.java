@@ -45,11 +45,11 @@ public class ConfigGameMenu extends FXGLMenu {
     public ConfigGameMenu() {
         super(MenuType.GAME_MENU);
 
-        // 1) dunkler Overlay-Hintergrund (wie FXGL-Standard)
+
         Rectangle bg = new Rectangle(getAppWidth(), getAppHeight(), Color.color(0, 0, 0, 0.55));
         getContentRoot().getChildren().add(bg);
 
-        // 2) Panel in der Mitte
+
         BorderPane panel = new BorderPane();
         panel.setMaxWidth(900);
         panel.setMaxHeight(650);
@@ -57,7 +57,7 @@ public class ConfigGameMenu extends FXGLMenu {
         panel.setBackground(new Background(new BackgroundFill(Color.rgb(245, 245, 245, 0.98), new CornerRadii(10), Insets.EMPTY)));
         panel.setPadding(new Insets(12));
 
-        // 3) Top: Label + Dropdown
+
         Label lbl = new Label("Config auswählen:");
         configSelector.getItems().addAll(ConfigEntry.values());
         configSelector.setValue(ConfigEntry.PRODUCTION);
@@ -67,12 +67,12 @@ public class ConfigGameMenu extends FXGLMenu {
         top.setPadding(new Insets(0, 0, 10, 0));
         panel.setTop(top);
 
-        // 4) Center: TextArea (WICHTIG: Größe setzen!)
+
         configArea.setWrapText(false);
         configArea.setPrefSize(880, 520);
         panel.setCenter(configArea);
 
-        // 5) Bottom: Buttons
+
         Button btnApply = new Button("Apply");
         Button btnRestart = new Button("Restart");
         Button btnResume = new Button("Resume");
@@ -80,7 +80,7 @@ public class ConfigGameMenu extends FXGLMenu {
         btnApply.setOnAction(e -> applyConfig());
         btnRestart.setOnAction(e -> {
             getGameController().startNewGame();
-            fireResume(); // Menü schließen
+            fireResume();
         });
         btnResume.setOnAction(e -> fireResume());
 
@@ -89,17 +89,17 @@ public class ConfigGameMenu extends FXGLMenu {
         buttons.setPadding(new Insets(10, 0, 0, 0));
         panel.setBottom(buttons);
 
-        // 6) Panel zentrieren
+
         StackPane root = new StackPane(panel);
         root.setPrefSize(getAppWidth(), getAppHeight());
         StackPane.setAlignment(panel, Pos.CENTER);
 
         getContentRoot().getChildren().add(root);
 
-        // beim Öffnen direkt laden
+
         openConfig();
 
-        // optional: beim Wechsel im Dropdown automatisch laden
+
         configSelector.setOnAction(e -> openConfig());
     }
 
