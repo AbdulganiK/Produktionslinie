@@ -76,8 +76,12 @@ public class WarehouseClerk extends Thread implements Personnel {
                 // Travel to origin station
                 idOfCurrentDestinationStation = originStationId;
                 status = StatusInfo.TRAVEL_TO_STATION;
-                //awaitReady(); TODO: Implement ready check if needed
-                Thread.sleep(timeForTravel_ms);
+                awaitReady();
+                System.out.println("[BACKEND] WC " + identificationNumber
+                        + " -> awaitReady START (to ORIGIN) dest=" + idOfCurrentDestinationStation
+                        + " status=" + status);
+                // TODO: Implement ready check if needed
+                //Thread.sleep(timeForTravel_ms);
 
                 // Collect cargo from origin station
                 status = StatusInfo.COLLECT_CARGO;
@@ -93,8 +97,12 @@ public class WarehouseClerk extends Thread implements Personnel {
                 // Travel to destination station
                 status = StatusInfo.TRANSPORT_CARGO;
                 idOfCurrentDestinationStation = destinationStationId;
-                //awaitReady(); TODO: Implement ready check if needed
-                Thread.sleep(timeForTravel_ms);
+                awaitReady();
+                System.out.println("[BACKEND] WC " + identificationNumber
+                        + " -> awaitReady START (to ORIGIN) dest=" + idOfCurrentDestinationStation
+                        + " status=" + status);
+                // TODO: Implement ready check if needed
+                //Thread.sleep(timeForTravel_ms);
 
                 // Deliver cargo to destination station
                 status = StatusInfo.DELIVER_CARGO;
@@ -110,8 +118,9 @@ public class WarehouseClerk extends Thread implements Personnel {
                 // Travel back to headquarters
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
                 idOfCurrentDestinationStation = headquartersId; // Headquarters station ID
-                //awaitReady(); TODO: Implement ready check if needed
-                Thread.sleep(timeForTravel_ms);
+                awaitReady();
+                // TODO: Implement ready check if needed
+                //Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
                 status = StatusWarning.STOPPED;
                 throw new RuntimeException(e);
@@ -141,6 +150,7 @@ public class WarehouseClerk extends Thread implements Personnel {
     }
 
     private synchronized void awaitReady() throws InterruptedException {
+        ready = false;
         while (!ready) {
             wait();
         }

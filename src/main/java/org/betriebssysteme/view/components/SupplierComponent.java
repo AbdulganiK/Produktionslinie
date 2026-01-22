@@ -2,57 +2,103 @@ package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.component.Component;
+import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
-import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import org.betriebssysteme.model.personnel.Supplier;
 
 public class SupplierComponent extends Component {
 
+    private static final int STORAGE_X = 16;
+    private static final int STORAGE_Y = 9;
 
-    private AnimatedTexture texture;
-    private AnimationChannel driveToStorageAnim, driveAwayFromStorageAnim;
-    private Point2D direction = new Point2D(0, -1);
-    private int speed = 60;
+    private static final int AWAY_X = 16;
+    private static final int AWAY_Y = 35;
 
+    private final Supplier supplier;
 
-    public SupplierComponent() {
-        this.driveToStorageAnim = new AnimationChannel(FXGL.image("Supplier_Back.png"),
+    private final AnimatedTexture texture;
+    private final AnimationChannel driveToStorageAnim;
+    private final AnimationChannel driveAwayFromStorageAnim;
+
+    // Backend Ziel
+    private int lastBackendDest = Integer.MIN_VALUE;
+
+    private boolean readySentForLeg = true;
+
+    public SupplierComponent(Supplier supplier) {
+        this.supplier = supplier;
+
+        this.driveToStorageAnim = new AnimationChannel(
+                FXGL.image("Supplier_Back.png"),
                 4, 140, 125,
                 Duration.seconds(2),
-                0, 0);
-        this.driveAwayFromStorageAnim = new AnimationChannel(FXGL.image("Supplier_Front.png"),
+                0, 0
+        );
+
+        this.driveAwayFromStorageAnim = new AnimationChannel(
+                FXGL.image("Supplier_Front.png"),
                 4, 140, 125,
                 Duration.seconds(2),
-                0, 0);
+                0, 0
+        );
 
         this.texture = new AnimatedTexture(driveToStorageAnim);
     }
 
     @Override
-    public void onUpdate(double tpf) {
-        entity.translate(direction.multiply(speed * tpf));
-        if (entity.getY() > 1500) {
-            this.driveToStorage();
-        }
-    }
+    public void onAdded() {
+        entity.getViewComponent().addChild(texture);
 
-    public void driveToStorage() {
-        texture.playAnimationChannel(driveToStorageAnim);
-        direction = new Point2D(0, -1);
-    }
+        AStarMoveComponent<?> move = entity.getComponent(AStarMoveComponent.class);
 
-    public void driveAwayFromStorage() {
-        texture.playAnimationChannel(driveAwayFromStorageAnim);
-        direction = new Point2D(0, 1);
-    }
+        // Nur bei echter Ankunft ready melden
+        move.atDestinationProperty().addListener((obs, oldV, atDest) -> {
+            if (!atDest) return;
 
+            if (!readySentForLeg) {
+                readySentForLeg = true;
+                supplier.setReady();
+            }
+        });
+    }
 
     @Override
-    public void onAdded() {
-        entity.getViewComponent().addChild(this.texture);
+    public void onUpdate(double tpf) {
+        int backendDest = supplier.getIdOfDestinationStation();
+
+        // Falls sich Backend-Ziel nicht geändert hat
+        if (backendDest == lastBackendDest) {
+            return;
+        }
+
+        lastBackendDest = backendDest;
+        readySentForLeg = false;
+
+        AStarMoveComponent<?> move = entity.getComponent(AStarMoveComponent.class);
+
+        // Bei -1  zurückfahren
+        if (backendDest == -1) {
+            driveAwayFromStorage();
+            move.moveToCell(AWAY_X, AWAY_Y);
+            return;
+        }
+
+        // zum Lager fahren
+        driveToStorage();
+        move.moveToCell(STORAGE_X, STORAGE_Y);
     }
 
+    private void driveToStorage() {
+        texture.loopAnimationChannel(driveToStorageAnim);
+    }
 
+    private void driveAwayFromStorage() {
+        texture.loopAnimationChannel(driveAwayFromStorageAnim);
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
 }

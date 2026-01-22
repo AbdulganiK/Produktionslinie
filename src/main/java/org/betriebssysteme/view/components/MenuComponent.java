@@ -81,7 +81,6 @@ public class MenuComponent extends Component {
 
         for (int i = 0; i < ROWS; i++) {
 
-            // individuelle Y-Position pro Zeile
             h = h + 20;
 
             Text nameText = new Text("");
@@ -95,7 +94,6 @@ public class MenuComponent extends Component {
             valueText.setFill(Color.LIMEGREEN);
             valueText.setStrokeWidth(2);
             valueText.setFont(font);
-            // HIER: nicht mehr 500, sondern Basis-X benutzen
             valueText.setTranslateX(baseValueX);
             valueText.setTranslateY(h);
 
@@ -165,17 +163,6 @@ public class MenuComponent extends Component {
     }
 
 
-    public void setLagerBestand(String value) {
-        setProperty(3, "Bestand", value);
-    }
-
-    public void setGeschwindigkeit(String value) {
-        setProperty(4, "Speed", value);
-    }
-
-    public void setKapazitaet(String value) {
-        setProperty(5, "Kapazität", value);
-    }
 
 
 }

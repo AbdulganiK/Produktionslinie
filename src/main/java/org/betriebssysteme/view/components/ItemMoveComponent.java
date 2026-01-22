@@ -11,7 +11,6 @@ public class ItemMoveComponent extends Component {
     private double speed = 40;
     private boolean blocked = false;
 
-    // alle Belts, mit denen das Item gerade kollidiert
     private final java.util.List<Entity> belts = new java.util.ArrayList<>();
 
     public void addBeltContact(Entity belt) {
@@ -19,7 +18,6 @@ public class ItemMoveComponent extends Component {
             belts.add(belt);
         }
 
-        // Wenn das der erste Belt ist, übernimmt er die Kontrolle
         if (belts.size() == 1) {
             BeltComponent bc = belt.getComponent(BeltComponent.class);
             direction = bc.getDirection();
