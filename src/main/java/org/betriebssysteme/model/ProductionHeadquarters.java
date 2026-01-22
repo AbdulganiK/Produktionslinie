@@ -18,6 +18,9 @@ public class ProductionHeadquarters{
     private int identificationNumber;
 
 
+    /**
+     * Private constructor for singleton pattern
+     */
     private ProductionHeadquarters (){
         requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
         this.stations = new HashMap();
@@ -26,6 +29,10 @@ public class ProductionHeadquarters{
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
     }
 
+    /**
+     * Get the singleton instance of ProductionHeadquarters
+     * @return ProductionHeadquarters instance
+     */
     public static ProductionHeadquarters getInstance(){
         if (singletonInstance == null){
             singletonInstance = new ProductionHeadquarters();
@@ -34,6 +41,9 @@ public class ProductionHeadquarters{
         return singletonInstance;
     }
 
+    /**
+     * Start all personnel threads
+     */
     public void startAllPersonnel(){
         for (Object personObj : personnel.values()) {
             Personnel person = (Personnel) personObj;
@@ -42,6 +52,9 @@ public class ProductionHeadquarters{
         }
     }
 
+    /**
+     * Start all station threads
+     */
     public void startAllStations(){
         for (Object stationObj : stations.values()) {
             Station station = (Station) stationObj;
@@ -50,12 +63,22 @@ public class ProductionHeadquarters{
         }
     }
 
+    /**
+     * Add a request to the request queue
+     * This method is thread-safe, as it uses a semaphore to control access to the request queue.
+     * @param request Request to be added
+     */
     public void addRequest(Request request){
         requestQueueSemaphore.acquireUninterruptibly();
         requestQueue.add(request);
         requestQueueSemaphore.release();
     }
 
+    /**
+     * Poll a request from the request queue
+     * This method is thread-safe, as it uses a semaphore to control access to the request queue.
+     * @return Polled Request
+     */
     public Request pollRequest(){
         Request request;
         requestQueueSemaphore.acquireUninterruptibly();
@@ -63,6 +86,7 @@ public class ProductionHeadquarters{
         requestQueueSemaphore.release();
         return request;
     }
+
 
     public Map getStations(){
         return stations;

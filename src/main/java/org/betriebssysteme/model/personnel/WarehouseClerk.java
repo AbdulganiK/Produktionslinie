@@ -22,7 +22,6 @@ public class WarehouseClerk extends Thread implements Personnel {
     private int originStationId;
     private int destinationStationId;
     private Task task;
-    private int timeForTravel_ms;
     private int timeForTask_ms;
     private int timeForSleep_ms;
     private Request currentRequest;
@@ -36,18 +35,15 @@ public class WarehouseClerk extends Thread implements Personnel {
     /**
      * Constructor for WarehouseClerk.
      * @param identificationNumber ID of the WarehouseClerk
-     * @param timeForTravel_ms time taken to travel between stations in milliseconds
      * @param timeForTask_ms time taken to perform tasks (collecting/delivering cargo) in milliseconds
      * @param timeForSleep_ms time taken to sleep between task cycles in milliseconds
      */
     public WarehouseClerk(int identificationNumber,
-                          int timeForTravel_ms,
                           int timeForTask_ms,
                           int timeForSleep_ms,
                           int maxCargoCapacity,
                           int mainDepotId) {
         this.identificationNumber = identificationNumber;
-        this.timeForTravel_ms = timeForTravel_ms;
         this.timeForTask_ms = timeForTask_ms;
         this.timeForSleep_ms = timeForSleep_ms;
         this.status = StatusWarning.STOPPED;
@@ -77,11 +73,6 @@ public class WarehouseClerk extends Thread implements Personnel {
                 idOfCurrentDestinationStation = originStationId;
                 status = StatusInfo.TRAVEL_TO_STATION;
                 awaitReady();
-                System.out.println("[BACKEND] WC " + identificationNumber
-                        + " -> awaitReady START (to ORIGIN) dest=" + idOfCurrentDestinationStation
-                        + " status=" + status);
-                // TODO: Implement ready check if needed
-                //Thread.sleep(timeForTravel_ms);
 
                 // Collect cargo from origin station
                 status = StatusInfo.COLLECT_CARGO;
@@ -98,11 +89,6 @@ public class WarehouseClerk extends Thread implements Personnel {
                 status = StatusInfo.TRANSPORT_CARGO;
                 idOfCurrentDestinationStation = destinationStationId;
                 awaitReady();
-                System.out.println("[BACKEND] WC " + identificationNumber
-                        + " -> awaitReady START (to ORIGIN) dest=" + idOfCurrentDestinationStation
-                        + " status=" + status);
-                // TODO: Implement ready check if needed
-                //Thread.sleep(timeForTravel_ms);
 
                 // Deliver cargo to destination station
                 status = StatusInfo.DELIVER_CARGO;
@@ -113,14 +99,11 @@ public class WarehouseClerk extends Thread implements Personnel {
                 Maschine requestedMachine = (Maschine) ProductionHeadquarters.getInstance().getStations().get(currentRequest.stationId());
                 requestedMachine.markRequestAsCompleted(cargo);
                 logger.info("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
-                System.out.println("WarehouseClerk " + identificationNumber + " completed request for " + cargo + " at Station " + currentRequest.stationId());
 
                 // Travel back to headquarters
                 status = StatusInfo.TRAVEL_TO_HEADQUARTERS;
                 idOfCurrentDestinationStation = headquartersId; // Headquarters station ID
                 awaitReady();
-                // TODO: Implement ready check if needed
-                //Thread.sleep(timeForTravel_ms);
             } catch (InterruptedException e) {
                 status = StatusWarning.STOPPED;
                 throw new RuntimeException(e);
@@ -195,26 +178,6 @@ public class WarehouseClerk extends Thread implements Personnel {
     }
 
     @Override
-    public Map getInformationMap() {
-        return null;
-    }
-
-    @Override
-    public int getDestinationStationId() {
-        return destinationStationId;
-    }
-
-    @Override
-    public int getOriginStationId() {
-        return originStationId;
-    }
-
-    @Override
-    public Task getCurrentTask() {
-        return task;
-    }
-
-    @Override
     public int getIdentificationNumber() {
         return identificationNumber;
     }
@@ -255,9 +218,6 @@ public class WarehouseClerk extends Thread implements Personnel {
         } else {
             infoArray[6][1] = "N/A";
         }
-
-        infoArray[7][0] = "Time for Travel (ms)";
-        infoArray[7][1] = String.valueOf(timeForTravel_ms);
 
         infoArray[8][0] = "Time for Task (ms)";
         infoArray[8][1] = String.valueOf(timeForTask_ms);

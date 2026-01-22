@@ -110,43 +110,6 @@ public abstract class Maschine extends Thread implements Station{
         requestedCargoTypes.put(cargo, false);
     }
 
-    /*
-    protected void deliverToNextMachine(Cargo cargo) {
-        if (nextMaschine != null) {
-            boolean cargoDelivered = false;
-            while (!cargoDelivered) {
-                try {
-                    int deliveredQuantity = nextMaschine.resiveCargo(cargo, 1);
-                    if (deliveredQuantity == 0) {
-                        if (running){
-                            System.out.println("Machine " + identificationNumber + " stopping due to next machine " + nextMaschine.getIdentificationNumber() + " storage full.");
-                            stopMachine();
-                        }
-                        logger.info("Next machine storage full, retrying in 500ms");
-                        Thread.sleep(500);
-                    }
-                    else {
-                        if (!running){
-                            System.out.println("Machine " + identificationNumber + " restarting as next machine " + nextMaschine.getIdentificationNumber() + " accepted cargo.");
-                            startMachine();
-                        }
-                        cargoHandoverToNextMaschineInProgress = true;
-                        cargoDelivered = true;
-                        logger.info("Product delivered to next machine: " + nextMaschine.getIdentificationNumber());
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException("Machine " + identificationNumber + " interrupted while delivering cargo", e);
-                }
-            }
-            logger.info("Delivering product to next machine: " + nextMaschine.getIdentificationNumber());
-            nextMaschine.resiveCargo(cargo, 1);
-        } else {
-            logger.warn("Next machine is null, cannot deliver product");
-        }
-    }*/
-
-    //TODO: Alternative implementation with notification
-
     protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
             boolean cargoNotified = false;
@@ -354,10 +317,6 @@ public abstract class Maschine extends Thread implements Station{
         return status;
     }
 
-    @Override
-    public Map getInformationMap() {
-        return storage;
-    }
 
     @Override
     public int getIdentificationNumber() {
