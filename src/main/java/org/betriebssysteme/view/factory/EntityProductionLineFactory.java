@@ -55,7 +55,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .with(new StationComponent(station))
                 .with(new CollidableComponent(true))
                 .with(new DestinationCellComponent(data.get("cellX"), data.get("cellY")))
-                .with(new MenuComponent(350, 0))
+                .with(new MenuComponent(400, 0))
                 .with(new StatusComponent())
                 .with(new NotWalkableComponent(app.getGrid(), 6, 0, 0, 0))
                 .with(new StorageComponent())

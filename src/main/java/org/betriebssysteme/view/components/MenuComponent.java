@@ -14,7 +14,7 @@ public class MenuComponent extends Component {
     private final Texture background;
     private boolean visibility;
 
-    private static final int ROWS = 9;
+    private static final int ROWS = 15;
 
     private Group menuRoot;
     private Text[] nameLabels = new Text[ROWS];
