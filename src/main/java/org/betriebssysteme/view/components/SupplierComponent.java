@@ -7,6 +7,7 @@ import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import javafx.util.Duration;
 import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.utility.EventHandler;
 import org.betriebssysteme.utility.Utility;
 
 import java.util.Arrays;
@@ -53,6 +54,7 @@ public class SupplierComponent extends Component {
     @Override
     public void onAdded() {
         entity.getViewComponent().addChild(texture);
+        this.texture.setOnMouseClicked(this::handleSupplierClick);
 
         AStarMoveComponent<?> move = entity.getComponent(AStarMoveComponent.class);
 
@@ -67,8 +69,13 @@ public class SupplierComponent extends Component {
         });
     }
 
+    public void handleSupplierClick(javafx.scene.input.MouseEvent e) {
+        EventHandler.handleMenuCLick(e, entity);
+    }
+
     @Override
     public void onUpdate(double tpf) {
+        Utility.setInfo(entity.getComponent(MenuComponent.class), supplier.getInfoArray());
         int backendDest = supplier.getIdOfDestinationStation();
 
         // Falls sich Backend-Ziel nicht geändert hat
