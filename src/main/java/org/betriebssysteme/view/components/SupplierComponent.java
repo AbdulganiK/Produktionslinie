@@ -7,6 +7,9 @@ import com.almasb.fxgl.texture.AnimatedTexture;
 import com.almasb.fxgl.texture.AnimationChannel;
 import javafx.util.Duration;
 import org.betriebssysteme.model.personnel.Supplier;
+import org.betriebssysteme.utility.Utility;
+
+import java.util.Arrays;
 
 public class SupplierComponent extends Component {
 

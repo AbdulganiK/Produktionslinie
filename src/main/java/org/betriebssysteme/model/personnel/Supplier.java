@@ -144,7 +144,7 @@ public class Supplier extends Thread implements Personnel {
 
     @Override
     public String[][] getInfoArray() {
-        String[][] infoArray = new String[8][2];
+        String[][] infoArray = new String[9 + cargoStorage.size()][2];
 
         infoArray[0][0] = "Supplier ID";
         infoArray[0][1] = String.valueOf(identificationNumber);
@@ -173,6 +173,16 @@ public class Supplier extends Thread implements Personnel {
 
         infoArray[6][0] = "Supply Timer (ms)";
         infoArray[6][1] = String.valueOf(supplyTimer_ms);
+
+        infoArray[7][0] = "Cargo Storage";
+        infoArray[7][1] = "Quantity";
+
+        int index = 8;
+        for (Cargo cargo : cargoStorage.keySet()){
+            infoArray[index][0] = cargo.toString();
+            infoArray[index][1] = Integer.toString(cargoStorage.get(cargo));
+            index++;
+        }
         return infoArray;
     }
 

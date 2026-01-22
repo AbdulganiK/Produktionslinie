@@ -1,0 +1,175 @@
+{
+  "stations": {
+    "mainDepot": {
+      "identificationNumber": 1,
+      "maxStorageCapacity": 100,
+      "initialStorageCapacity": 50
+    },
+
+    "driveUnitHouseProductionMaschine": {
+      "identificationNumber": 21,
+      "timeToSleep": 500,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "driveUnitCircuitBoardProductionMaschine": {
+      "identificationNumber": 22,
+      "timeToSleep": 700,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "driveUnitProductionMaschine": {
+      "identificationNumber": 23,
+      "timeToSleep": 1000,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 2
+    },
+
+    "controlUnitHouseProductionMaschine": {
+      "identificationNumber": 24,
+      "timeToSleep": 500,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "controlUnitCircuitBoardProductionMaschine": {
+      "identificationNumber": 25,
+      "timeToSleep": 700,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "controlUnitProductionMaschine": {
+      "identificationNumber": 26,
+      "timeToSleep": 1000,
+      "maxStorageCapacity": 25,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 2
+    },
+
+    "controlUnitQualityControlMachine": {
+      "identificationNumber": 32,
+      "timeToSleep": 500,
+      "maxStorageCapacity": 10,
+      "initialQuantityOfProduct": 5,
+      "productionTime": 80,
+      "probilityOfDefectPercent": 30,
+      "maschinePriority": 3
+    },
+    "driveUnitQualityControlMachine": {
+      "identificationNumber": 31,
+      "timeToSleep": 500,
+      "maxStorageCapacity": 10,
+      "initialQuantityOfProduct": 5,
+      "productionTime": 80,
+      "probilityOfDefectPercent": 30,
+      "maschinePriority": 3
+    },
+
+    "packagingMaschine": {
+      "identificationNumber": 41,
+      "timeToSleep": 15,
+      "maxStorageCapacity": 15,
+      "initialQuantityOfProduct": 10,
+      "productionTime": 10,
+      "maschinePriority": 4
+    }
+  },
+
+  "personnel": {
+    "suppliers": [
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 50,
+        "maxCapacity": 100
+      },
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 40,
+        "maxCapacity": 100
+      },
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 30,
+        "maxCapacity": 100
+      },
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 20,
+        "maxCapacity": 100
+      },
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 20,
+        "maxCapacity": 100
+      }
+    ],
+    "warehouseClerks": [
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 12, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 13, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 14, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 },
+      { "identificationNumber": 15, "timeForTask_ms": 1, "timeForSleep_ms": 1, "maxCapacity": 50 }
+    ]
+  }
+
+}

@@ -358,7 +358,7 @@ public abstract class Maschine extends Thread implements Station{
         infoArray[5][0] = "Product Cargo";
         infoArray[5][1] = productCargo.toString();
 
-        infoArray [5][0] = "Next Maschine ID";
+        infoArray [6][0] = "Next Maschine ID";
         if (nextMaschine != null){
             infoArray[6][1] = Integer.toString(nextMaschine.getIdentificationNumber());
         }
