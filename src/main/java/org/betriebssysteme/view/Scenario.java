@@ -50,7 +50,7 @@ public class Scenario {
         // Lager Spawnen
         SpawnData storageData = new SpawnData(100 + OFFSET_X, 100 + OFFSET_Y);
         storageData.put("station", stations.get(1));
-        storageData.put("cellX", 23);
+        storageData.put("cellX", 22);
         storageData.put("cellY", 9);
         FXGL.spawn(EntityNames.STORAGE, storageData);
 
@@ -95,7 +95,6 @@ public class Scenario {
         firstRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
         // 3 Belts vor der Maschine und nach der Maschine
-        BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine1, 3);
         var b = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine1, 7);
         firstRowProdmachine1.getComponent(MachineComponent.class).setBelt(b.get(1));
         entityFactory.spawnItemOnBelt(b.get(1));
@@ -112,7 +111,6 @@ public class Scenario {
         firstRowProdmachine2.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
         // 3 Belts vor der Maschine und nach der Maschine
-        BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine2, 3);
         ArrayList<Entity> b1R1 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine2, 3);
         firstRowProdmachine2.getComponent(MachineComponent.class).setBelt(b1R1.get(1));
         entityFactory.spawnItemOnBelt(b1R1.get(1));
@@ -133,7 +131,6 @@ public class Scenario {
         firstRowProdmachine3.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
         // 3 Belts vor der Maschine und nach der Maschine
-        BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine3, 3);
         var b3 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine3, 7);
         firstRowProdmachine3.getComponent(MachineComponent.class).setBelt(b3.get(1));
 
@@ -148,7 +145,6 @@ public class Scenario {
         firstRowProdmachine4.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
 
         // 3 Belts vor der Maschine und nach der Maschine
-        BeltFactory.spawnBeltsBeforeMachine(firstRowProdmachine4, 3);
         ArrayList<Entity> r1M4 = BeltFactory.spawnBeltsAfterMachine(firstRowProdmachine4, 3);
         firstRowProdmachine4.getComponent(MachineComponent.class).setBelt(r1M4.get(1));
         BeltFactory.spawnBeltOnBelt(r1M4.getLast(), 10, BeltDirection.HORIZONTAL);
@@ -199,7 +195,7 @@ public class Scenario {
         // Erste KontrollMascine dritte Reihe
         SpawnData machineData7 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
         machineData7.put("cellX", 31);
-        machineData7.put("cellY", 14);
+        machineData7.put("cellY", 13);
         machineData7.put("station", stations.get(31));
         Entity thirdRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData7);
 
@@ -221,7 +217,7 @@ public class Scenario {
         // Zweite KotnrollMaschine dritte Reihe
         SpawnData machineData8 = new SpawnData(700 + OFFSET_X, 400 + OFFSET_Y, 100);
         machineData8.put("cellX", 45);
-        machineData8.put("cellY", 14);
+        machineData8.put("cellY", 13);
         machineData8.put("station", stations.get(32));
         Entity thirdRowProdmachine2 = FXGL.spawn(EntityNames.MACHINE, machineData8);
 

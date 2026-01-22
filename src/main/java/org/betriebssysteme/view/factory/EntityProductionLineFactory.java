@@ -118,7 +118,7 @@ public class EntityProductionLineFactory implements EntityFactory {
                 .type(EntityType.WAREHOUSE_CLERK)
                 //.viewWithBBox(new Rectangle(50, 50, Color.BLUE))
                 .with(new WarehouseClerkAnimComponent())
-                .with(new CellMoveComponent(50, 50, 150))
+                .with(new CellMoveComponent(50, 50, 200))
                 .with(new AStarMoveComponent(app.getGrid()))
                 .with(new WarehouseClerkComponent(personnel))
                 .zIndex(10000)
