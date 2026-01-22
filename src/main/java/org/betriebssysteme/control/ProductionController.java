@@ -58,6 +58,7 @@ public class ProductionController {
                 md.get("maxStorageCapacity").asInt(),
                 md.get("initialStorageCapacity").asInt()
         );
+        logger.info("MainDepot created with ID: " + mainDepot.getIdentificationNumber());
 
         JsonNode duHouse = stations.get("driveUnitHouseProductionMaschine");
         driveUnitHouseProductionMaschine = new ProductionMaschine(
@@ -69,6 +70,7 @@ public class ProductionController {
                 duHouse.get("initialQuantityOfProduct").asInt(),
                 duHouse.get("maschinePriority").asInt()
         );
+        logger.info("DriveUnitHouseProductionMaschine created with ID: " + driveUnitHouseProductionMaschine.getIdentificationNumber());
 
         JsonNode duPcb = stations.get("driveUnitCircuitBoardProductionMaschine");
         driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
@@ -80,6 +82,7 @@ public class ProductionController {
                 duPcb.get("initialQuantityOfProduct").asInt(),
                 duPcb.get("maschinePriority").asInt()
         );
+        logger.info("DriveUnitCircuitBoardProductionMaschine created with ID: " + driveUnitCircuitBoardProductionMaschine.getIdentificationNumber());
 
         JsonNode duUnit = stations.get("driveUnitProductionMaschine");
         driveUnitProductionMaschine = new ProductionMaschine(
@@ -91,6 +94,7 @@ public class ProductionController {
                 duUnit.get("initialQuantityOfProduct").asInt(),
                 duUnit.get("maschinePriority").asInt()
         );
+        logger.info("DriveUnitProductionMaschine created with ID: " + driveUnitProductionMaschine.getIdentificationNumber());
 
         JsonNode cuHouse = stations.get("controlUnitHouseProductionMaschine");
         controlUnitHouseProductionMaschine = new ProductionMaschine(
@@ -102,6 +106,7 @@ public class ProductionController {
                 cuHouse.get("initialQuantityOfProduct").asInt(),
                 cuHouse.get("maschinePriority").asInt()
         );
+        logger.info("ControlUnitHouseProductionMaschine created with ID: " + controlUnitHouseProductionMaschine.getIdentificationNumber());
 
         JsonNode cuPcb = stations.get("controlUnitCircuitBoardProductionMaschine");
         controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
@@ -113,6 +118,7 @@ public class ProductionController {
                 cuPcb.get("initialQuantityOfProduct").asInt(),
                 cuPcb.get("maschinePriority").asInt()
         );
+        logger.info("ControlUnitCircuitBoardProductionMaschine created with ID: " + controlUnitCircuitBoardProductionMaschine.getIdentificationNumber());
 
         JsonNode cuUnit = stations.get("controlUnitProductionMaschine");
         controlUnitProductionMaschine = new ProductionMaschine(
@@ -124,6 +130,7 @@ public class ProductionController {
                 cuUnit.get("initialQuantityOfProduct").asInt(),
                 cuUnit.get("maschinePriority").asInt()
         );
+        logger.info("ControlUnitProductionMaschine created with ID: " + controlUnitProductionMaschine.getIdentificationNumber());
 
         JsonNode cuQc = stations.get("controlUnitQualityControlMachine");
         controlUnitQualityControlMachine = new ControlMachine(
@@ -137,6 +144,7 @@ public class ProductionController {
                 cuQc.get("probilityOfDefectPercent").asInt(),
                 cuQc.get("maschinePriority").asInt()
         );
+        logger.info("ControlUnitQualityControlMachine created with ID: " + controlUnitQualityControlMachine.getIdentificationNumber());
 
         JsonNode duQc = stations.get("driveUnitQualityControlMachine");
         driveUnitQualityControlMachine = new ControlMachine(
@@ -150,6 +158,7 @@ public class ProductionController {
                 duQc.get("probilityOfDefectPercent").asInt(),
                 duQc.get("maschinePriority").asInt()
         );
+        logger.info("DriveUnitQualityControlMachine created with ID: " + driveUnitQualityControlMachine.getIdentificationNumber());
 
         JsonNode pack = stations.get("packagingMaschine");
         packagingMaschine = new PackagingMaschine(
@@ -162,7 +171,7 @@ public class ProductionController {
                 productRecipes.getShippingPackageRecipe(),
                 pack.get("maschinePriority").asInt()
         );
-
+        logger.info("PackagingMaschine created with ID: " + packagingMaschine.getIdentificationNumber());
         setNextMachines();
     }
 
@@ -175,6 +184,7 @@ public class ProductionController {
         driveUnitProductionMaschine.setNextMaschine(driveUnitQualityControlMachine);
         controlUnitQualityControlMachine.setNextMaschine(packagingMaschine);
         driveUnitQualityControlMachine.setNextMaschine(packagingMaschine);
+        logger.info("Next machines set for all production machines");
     }
 
     public void createAllPersonnel() {
@@ -194,10 +204,10 @@ public class ProductionController {
                         supNode.get("identificationNumber").asInt(),
                         supNode.get("supplyInterval_ms").asInt(),
                         supNode.get("supplyTimer_ms").asInt(),
-                        supNode.get("travelTimer_ms").asInt(),
                         mainDepotId,
                         supNode.get("maxCapacity").asInt()
                 ));
+                logger.info("Supplier created with ID: " + supNode.get("identificationNumber").asInt());
             }
         }
 
@@ -207,12 +217,12 @@ public class ProductionController {
             for (JsonNode clerkNode : clerksNode) {
                 warehouseClerks.add(new WarehouseClerk(
                         clerkNode.get("identificationNumber").asInt(),
-                        clerkNode.get("timeForTravel_ms").asInt(),
                         clerkNode.get("timeForTask_ms").asInt(),
                         clerkNode.get("timeForSleep_ms").asInt(),
                         clerkNode.get("maxCapacity").asInt(),
                         mainDepotId
                 ));
+                logger.info("WarehouseClerk created with ID: " + clerkNode.get("identificationNumber").asInt());
             }
         }
     }
@@ -236,6 +246,7 @@ public class ProductionController {
         for (WarehouseClerk w : warehouseClerks) {
             productionHeadquarters.addPersonnel(w);
         }
+        logger.info("All stations and personnel added to ProductionHeadquarters");
 
     }
 
@@ -243,6 +254,7 @@ public class ProductionController {
         ProductionHeadquarters productionHeadquarters = ProductionHeadquarters.getInstance();
         productionHeadquarters.startAllStations();
         productionHeadquarters.startAllPersonnel();
+        logger.info("Send start signal to all stations and personnel in ProductionHeadquarters");
     }
 
     public static void createProductionLine(){
@@ -252,6 +264,6 @@ public class ProductionController {
         productionController.createAllPersonnel();
         productionController.addAllToProductionHeadquarters();
         productionController.startProductionHeadquarters();
-        logger.info("Application stopped");
+        logger.info("Production line created and started");
     }
 }

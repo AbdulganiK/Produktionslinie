@@ -131,11 +131,6 @@ public class MainDepot implements Station {
     }
 
 
-    public Map getInformationMap() {
-        return cargoStorage;
-    }
-
-
     public int getIdentificationNumber() {
         return identificationNumber;
     }

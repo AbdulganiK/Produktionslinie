@@ -18,7 +18,7 @@ public class ControlMachine extends Maschine{
                           Cargo productCargo,
                           Maschine nextMaschine,
                           int productionTime,
-                          int probilityOfDefectPercent,
+                          int probabilityOfDefectPercent,
                           int maschinePriority) {
         super(identificationNumber,
                 productionTime,
@@ -31,7 +31,7 @@ public class ControlMachine extends Maschine{
                 }},
                 productCargo,
                 maschinePriority);
-        this.probilityOfDefectPercent = probilityOfDefectPercent;
+        this.probilityOfDefectPercent = probabilityOfDefectPercent;
     }
 
 

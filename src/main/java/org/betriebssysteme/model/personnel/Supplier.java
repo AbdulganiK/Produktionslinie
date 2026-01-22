@@ -12,7 +12,6 @@ import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class Supplier extends Thread implements Personnel {
     private int identificationNumber;
@@ -23,7 +22,6 @@ public class Supplier extends Thread implements Personnel {
     private int destinationStationId;
     private int supplyInterval_ms;
     private int supplyTimer_ms;
-    private int travelTimer_ms;
     private Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
@@ -33,14 +31,12 @@ public class Supplier extends Thread implements Personnel {
     public Supplier(int identificationNumber,
                     int supplyInterval_ms,
                     int supplyTimer_ms,
-                    int travelTimer_ms,
                     int mainDepotId,
                     int maxCapacity) {
         this.identificationNumber = identificationNumber;
         this.mainDepotId = mainDepotId;
         this.supplyInterval_ms = supplyInterval_ms;
         this.supplyTimer_ms = supplyTimer_ms;
-        this.travelTimer_ms = travelTimer_ms;
         this.originStationId = -1;
         this.destinationStationId = -1;
         this.status = StatusWarning.STOPPED;
@@ -65,19 +61,13 @@ public class Supplier extends Thread implements Personnel {
         destinationStationId = mainDepotId;
         idOfCurrentDestinationStation = mainDepotId;
         logger.info("Supplier starting supply routine to Main Depot");
-
         awaitReady();
-        // TODO: Implement ready check if needed
-
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
         originStationId = mainDepotId;
         destinationStationId = -1;
         idOfCurrentDestinationStation = -1;
-
         awaitReady();
-        //TODO: Implement ready check if needed
-
         logger.info("Supplier finishing supply routine to Main Depot");
     }
 
@@ -87,7 +77,6 @@ public class Supplier extends Thread implements Personnel {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        // TODO Implement the depot refilling logic
         for (Material material : Material.values()) {
             int currentQuantity = cargoStorage.get(material);
             int resizedQuantity = refillCargo(material, currentQuantity);
@@ -141,27 +130,6 @@ public class Supplier extends Thread implements Personnel {
     @Override
     public Status getStatus() {
         return status;
-    }
-
-    @Override
-    public Map getInformationMap() {
-        // TODO Implement the information map logic
-        return Map.of();
-    }
-
-    @Override
-    public int getDestinationStationId() {
-        return destinationStationId;
-    }
-
-    @Override
-    public int getOriginStationId() {
-        return originStationId;
-    }
-
-    @Override
-    public Task getCurrentTask() {
-        return task;
     }
 
     @Override

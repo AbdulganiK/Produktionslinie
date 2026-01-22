@@ -29,11 +29,6 @@ public interface Station{
      */
     Status getStatus();
 
-    /**
-     * Get a map containing information about the station.
-     * @return A map with station information.
-     */
-    Map getInformationMap();
 
     /**
      * Get the identification number of the station.
