@@ -375,7 +375,16 @@ public abstract class Maschine extends Thread implements Station{
         infoArray[0][0] = "Maschine ID";
         infoArray[0][1] = Integer.toString(identificationNumber);
 
-        infoArray[1][0] = "Product Type";
+
+        if (ProductionHeadquarters.getInstance().getStations().get(identificationNumber) instanceof ProductionMaschine){
+            infoArray[1][0] = "Produced Cargo";
+        }
+        else if (ProductionHeadquarters.getInstance().getStations().get(identificationNumber) instanceof PackagingMaschine){
+            infoArray[1][0] = "Packaged Cargo";
+        }
+        else {
+            infoArray[1][0] = "Controlled Cargo";
+        }
         infoArray[1][1] = productCargo.toString();
 
         infoArray[2][0] = "Status";
