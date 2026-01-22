@@ -2,17 +2,14 @@ package org.betriebssysteme.view;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.app.scene.FXGLMenu;
+import com.almasb.fxgl.app.scene.SceneFactory;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.entity.Entity;
-import com.almasb.fxgl.entity.SpawnData;
-import com.almasb.fxgl.pathfinding.CellMoveComponent;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
 import javafx.geometry.Point2D;
 
 
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Group;
-import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
@@ -21,8 +18,8 @@ import org.betriebssysteme.view.extras.Camera;
 import org.betriebssysteme.view.extras.Zoom;
 import org.betriebssysteme.view.factory.EntityNames;
 import org.betriebssysteme.view.factory.EntityProductionLineFactory;
-import org.betriebssysteme.view.factory.EntityType;
 import org.betriebssysteme.view.factory.GridFactory;
+import org.betriebssysteme.view.menu.ConfigGameMenu;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameWorld;
 import static com.almasb.fxgl.dsl.FXGL.*;
@@ -51,6 +48,14 @@ public class ProductionLineApp extends GameApplication {
         gameSettings.setWidth(1600);
         gameSettings.setHeight(900);
 
+        gameSettings.setGameMenuEnabled(true);
+
+        gameSettings.setSceneFactory(new SceneFactory() {
+            @Override
+            public FXGLMenu newGameMenu() {
+                return new ConfigGameMenu();
+            }
+        });
     }
 
     @Override
