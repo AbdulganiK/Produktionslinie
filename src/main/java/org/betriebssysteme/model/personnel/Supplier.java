@@ -53,9 +53,8 @@ public class Supplier extends Thread implements Personnel {
         for (Material material : Material.values()) {
             cargoStorage.put(material, cargoCapacityPerMaterial);
         }
-        for (Product product : Product.values()) {
-            cargoStorage.put(product, 0);
-        }
+        cargoStorage.put(Product.SCRAP, 0);
+        cargoStorage.put(Product.PACKAGE, 0);
 
         task = Task.DELIVERING;
         destinationStationId = mainDepotId;
