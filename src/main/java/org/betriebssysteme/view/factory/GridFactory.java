@@ -26,11 +26,11 @@ public class GridFactory {
             for (int x = 0; x < width / cellWidth; x++) {
 
                 Rectangle rect = new Rectangle(cellWidth, cellHeight, Color.TRANSPARENT);
-                rect.setStroke(Color.TRANSPARENT);
+                rect.setStroke(Color.BLACK);
                 rect.setStrokeType(StrokeType.INSIDE);
 
                 Text label = new Text(x + "," + y);
-                label.setFill(Color.TRANSPARENT);
+                label.setFill(Color.RED);
                 label.setStyle("-fx-font-size: 10px;");
                 label.setMouseTransparent(true);
 
