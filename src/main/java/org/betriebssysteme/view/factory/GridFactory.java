@@ -12,7 +12,6 @@ public class GridFactory {
         int cellHeight = 50;
         int cellWidth = 50;
 
-        // Keine visuellen Zellen mehr anlegen — Grid bleibt unsichtbar
         AStarGrid grid = new AStarGrid(width / cellWidth, height / cellHeight);
         staticallyBlockCells(grid);
         return grid;
