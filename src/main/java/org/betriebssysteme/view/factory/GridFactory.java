@@ -1,18 +1,8 @@
 package org.betriebssysteme.view.factory;
 
-import com.almasb.fxgl.pathfinding.CellMoveComponent;
 import com.almasb.fxgl.pathfinding.CellState;
 import com.almasb.fxgl.pathfinding.astar.AStarGrid;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Text;
-
-import static com.almasb.fxgl.dsl.FXGL.entityBuilder;
 
 public class GridFactory {
 
@@ -22,35 +12,9 @@ public class GridFactory {
         int cellHeight = 50;
         int cellWidth = 50;
 
-        for (int y = 0; y < height / cellHeight; y++) {
-            for (int x = 0; x < width / cellWidth; x++) {
-
-                Rectangle rect = new Rectangle(cellWidth, cellHeight, Color.TRANSPARENT);
-                rect.setStroke(Color.TRANSPARENT);
-                rect.setStrokeType(StrokeType.INSIDE);
-
-                Text label = new Text(x + "," + y);
-                label.setFill(Color.TRANSPARENT);
-                label.setStyle("-fx-font-size: 10px;");
-                label.setMouseTransparent(true);
-
-                label.setTranslateX(4);
-                label.setTranslateY(12);
-
-                Group view = new Group(rect, label);
-                view.setMouseTransparent(true);
-
-                entityBuilder()
-                        .at(x * cellWidth, y * cellHeight)
-                        .view(view)
-                        .buildAndAttach();
-            }
-        }
-
         AStarGrid grid = new AStarGrid(width / cellWidth, height / cellHeight);
         staticallyBlockCells(grid);
         return grid;
-
     }
 
     private static void staticallyBlockCells(AStarGrid grid) {
