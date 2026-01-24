@@ -77,6 +77,7 @@ public class ProductionLineApp extends GameApplication {
 
         // hinzufuegen der Entity Fabrik
         getGameWorld().addEntityFactory(entityFactory);
+        getGameScene().setBackgroundColor(Color.rgb(98, 132, 68));
 
         // Laden des Grids
         grid = GridFactory.build();
