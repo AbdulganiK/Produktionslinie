@@ -1,54 +1,54 @@
 {
   "recipes": {
     "driveHousingRecipe": {
-      "productionTime": 7,
-        "components": {
-            "GLUE": 1,
-            "PLASTIC": 2
-        }
+      "productionTime": 70,
+      "components": {
+        "GLUE": 1,
+        "PLASTIC": 2
+      }
     },
     "controlHousingRecipe": {
-      "productionTime": 6,
-        "components": {
-            "GLUE": 1,
-            "PLASTIC": 2
-        }
+      "productionTime": 60,
+      "components": {
+        "GLUE": 1,
+        "PLASTIC": 2
+      }
     },
     "drivePcbRecipe": {
-      "productionTime": 8,
-        "components": {
-            "PCBS": 2,
-            "MOTORS": 2
-        }
+      "productionTime": 80,
+      "components": {
+        "PCBS": 2,
+        "MOTORS": 2
+      }
     },
     "controlPcbRecipe": {
-      "productionTime": 9,
-        "components": {
-            "PCBS": 2,
-            "DISPLAYS": 1
-        }
+      "productionTime": 75,
+      "components": {
+        "PCBS": 2,
+        "DISPLAYS": 1
+      }
     },
     "driveUnitRecipe": {
       "productionTime": 10,
-        "components": {
-            "DRIVE_CASE": 1,
-            "DRIVE_PCB": 1
-        }
+      "components": {
+        "DRIVE_CASE": 1,
+        "DRIVE_PCB": 1
+      }
     },
     "controlUnitRecipe": {
-      "productionTime": 9,
-        "components": {
-            "CONTROL_CASE": 1,
-            "CONTROL_PCB": 1
-        }
+      "productionTime": 95,
+      "components": {
+        "CONTROL_CASE": 1,
+        "CONTROL_PCB": 1
+      }
     },
     "shippingPackageRecipe": {
-      "productionTime": 2,
-        "components": {
-            "CONTROL_UNIT": 1,
-            "DRIVE_UNIT": 1,
-            "WRAPPING": 3
-        }
+      "productionTime": 20,
+      "components": {
+        "CONTROL_UNIT": 1,
+        "DRIVE_UNIT": 1,
+        "WRAPPING": 3
+      }
     }
   }
 }
