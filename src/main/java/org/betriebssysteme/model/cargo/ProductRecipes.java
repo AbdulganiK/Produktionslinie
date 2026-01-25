@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class ProductRecipes {
 
     JsonNode recipeConfig =
-            JSONConfig.loadConfig("assets/config/recipes.json")
+            JSONConfig.loadConfig("assets/config/recipesConfigs/recipes.json")
                     .get("recipes");
 
     private Recipe driveHousingRecipe = new Recipe(

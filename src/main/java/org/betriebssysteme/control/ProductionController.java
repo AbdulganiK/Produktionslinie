@@ -45,7 +45,7 @@ public class ProductionController {
 
 
     public ProductionController() {
-        this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfig.json");
+        this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfigs/productionConfig.json");
         logger.info("ProductionController initialized");
     }
 
