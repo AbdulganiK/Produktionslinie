@@ -84,7 +84,19 @@
       {
         "identificationNumber": 11,
         "supplyInterval_ms": 10,
-        "supplyTimer_ms": 50,
+        "supplyTimer_ms": 200,
+        "maxCapacity": 100000000
+      },
+      {
+        "identificationNumber": 32,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 500,
+        "maxCapacity": 100000000
+      },
+      {
+        "identificationNumber": 33,
+        "supplyInterval_ms": 10,
+        "supplyTimer_ms": 100,
         "maxCapacity": 100000000
       }
     ],

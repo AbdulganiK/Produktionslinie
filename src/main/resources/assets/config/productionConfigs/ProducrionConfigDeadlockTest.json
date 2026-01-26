@@ -1,0 +1,98 @@
+{
+  "stations": {
+    "mainDepot": {
+      "identificationNumber": 1,
+      "maxStorageCapacity": 20,
+      "initialStorageCapacity": 20
+    },
+
+    "driveUnitHouseProductionMaschine": {
+      "identificationNumber": 21,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "driveUnitCircuitBoardProductionMaschine": {
+      "identificationNumber": 22,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "driveUnitProductionMaschine": {
+      "identificationNumber": 23,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 2
+    },
+
+    "controlUnitHouseProductionMaschine": {
+      "identificationNumber": 24,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "controlUnitCircuitBoardProductionMaschine": {
+      "identificationNumber": 25,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 1
+    },
+    "controlUnitProductionMaschine": {
+      "identificationNumber": 26,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 5,
+      "initialQuantityOfProduct": 5,
+      "maschinePriority": 2
+    },
+
+    "controlUnitQualityControlMachine": {
+      "identificationNumber": 32,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 2,
+      "initialQuantityOfProduct": 2,
+      "productionTime": 3000,
+      "probilityOfDefectPercent": 0,
+      "maschinePriority": 3
+    },
+    "driveUnitQualityControlMachine": {
+      "identificationNumber": 31,
+      "timeToSleep": 50,
+      "maxStorageCapacity": 2,
+      "initialQuantityOfProduct": 2,
+      "productionTime": 3000,
+      "probilityOfDefectPercent": 0,
+      "maschinePriority": 3
+    },
+
+    "packagingMaschine": {
+      "identificationNumber": 41,
+      "timeToSleep": 5000,
+      "maxStorageCapacity": 1,
+      "initialQuantityOfProduct": 1,
+      "productionTime": 5000,
+      "maschinePriority": 4
+    }
+  },
+
+  "personnel": {
+    "suppliers": [
+      {
+        "identificationNumber": 11,
+        "supplyInterval_ms": 5000,
+        "supplyTimer_ms": 10000,
+        "maxCapacity": 10
+      }
+    ],
+    "warehouseClerks": [
+      { "identificationNumber": 12, "timeForTask_ms": 10000, "timeForSleep_ms": 0, "maxCapacity": 5 },
+      { "identificationNumber": 13, "timeForTask_ms": 10000, "timeForSleep_ms": 0, "maxCapacity": 5 },
+      { "identificationNumber": 14, "timeForTask_ms": 10000, "timeForSleep_ms": 0, "maxCapacity": 5 },
+      { "identificationNumber": 15, "timeForTask_ms": 10000, "timeForSleep_ms": 0, "maxCapacity": 5 }
+    ]
+  }
+}
