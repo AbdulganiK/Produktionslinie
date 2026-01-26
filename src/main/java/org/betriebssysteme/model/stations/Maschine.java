@@ -330,7 +330,7 @@ public abstract class Maschine extends Thread implements Station{
 
     @Override
     public String [][] getInfoArray(){
-        String [][] infoArray = new String[storage.size()+9][2];
+        String [][] infoArray = new String[storage.size()+8][2];
         infoArray[0][0] = "Maschine ID";
         infoArray[0][1] = Integer.toString(identificationNumber);
 
@@ -355,24 +355,21 @@ public abstract class Maschine extends Thread implements Station{
         infoArray[4][0] = "Max Storage Capacity";
         infoArray[4][1] = Integer.toString(maxStorageCapacity);
 
-        infoArray[5][0] = "Product Cargo";
-        infoArray[5][1] = productCargo.toString();
-
-        infoArray [6][0] = "Next Maschine ID";
+        infoArray [5][0] = "Next Maschine ID";
         if (nextMaschine != null){
-            infoArray[6][1] = Integer.toString(nextMaschine.getIdentificationNumber());
+            infoArray[5][1] = Integer.toString(nextMaschine.getIdentificationNumber());
         }
         else{
-            infoArray[6][1] = "None";
+            infoArray[5][1] = "None";
         }
 
-        infoArray [7][0] = "Time To Process (ms)";
-        infoArray[7][1] = Integer.toString(timeToProcess);
+        infoArray [6][0] = "Time To Process (ms)";
+        infoArray[6][1] = Integer.toString(timeToProcess);
 
-        infoArray [8][0] = "Storage";
-        infoArray[8][1] = "Quantity";
+        infoArray [7][0] = "Storage";
+        infoArray[7][1] = "Quantity";
 
-        int index = 9;
+        int index = 8;
         for (Map.Entry<Cargo, Integer> entry : storage.entrySet()) {
             infoArray[index][0] = entry.getKey().toString();
             infoArray[index][1] = Integer.toString(entry.getValue());
