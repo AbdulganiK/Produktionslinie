@@ -13,9 +13,4 @@ public enum SupplierSkin {
         this.right = right;
         this.left = left;
     }
-
-    public static SupplierSkin random() {
-        var all = values();
-        return all[ThreadLocalRandom.current().nextInt(all.length)];
-    }
 }

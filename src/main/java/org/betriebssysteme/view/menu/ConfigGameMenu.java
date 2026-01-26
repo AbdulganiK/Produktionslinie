@@ -81,7 +81,6 @@ public class ConfigGameMenu extends FXGLMenu {
 
         btnApply.setOnAction(e -> {
             if (applyConfig()) {
-                // nach erfolgreichem Anwenden die Config neu laden
                 reloadCurrentOrAll();
             }
         });
@@ -111,7 +110,6 @@ public class ConfigGameMenu extends FXGLMenu {
 
         openConfig();
 
-        // Wenn eine neue Config ausgewählt wird: öffnen, anwenden, neu laden und Spiel neu starten, damit alle Systeme die neue Config nutzen.
         configSelector.setOnAction(e -> {
             openConfig();
             boolean ok = applyConfigSilent();
@@ -125,7 +123,6 @@ public class ConfigGameMenu extends FXGLMenu {
 
     private void openConfig() {
         try {
-            // Wenn keine Auswahl vorhanden ist (z.B. externe Datei aktiv), nichts tun
             ConfigEntry selected = configSelector.getValue();
             if (selected == null) {
                 return;
@@ -153,8 +150,6 @@ public class ConfigGameMenu extends FXGLMenu {
             configArea.setText(text);
             externalFile = path;
             sourceLabel.setText("Geladen: " + path.getFileName().toString());
-            // Auswahl nicht löschen, damit kein Fehler durch openConfig() entsteht
-            // (externalFile steuert, ob beim Apply in die externe Datei geschrieben wird)
         } catch (Exception ex) {
             showAlert(Alert.AlertType.ERROR, "Load failed", ex.getMessage());
         }
@@ -163,28 +158,34 @@ public class ConfigGameMenu extends FXGLMenu {
     private boolean applyConfig() {
         try {
             String edited = configArea.getText();
-            MAPPER.readTree(edited); // JSON validieren
+            MAPPER.readTree(edited);
 
             Path target;
+            ConfigEntry selected = configSelector.getValue();
+
             if (externalFile != null) {
                 target = externalFile;
+                Files.createDirectories(Objects.requireNonNull(target.getParent()));
+                Files.writeString(target, edited, StandardCharsets.UTF_8);
+
+                if (selected == null) {
+                    throw new IllegalStateException("Bitte oben auswählen, ob das Production oder Recipes ersetzen soll.");
+                }
+                Path active = JSONConfig.getUserConfigPath(selected.resourcePath);
+                Files.createDirectories(Objects.requireNonNull(active.getParent()));
+                Files.writeString(active, edited, StandardCharsets.UTF_8);
+
+                sourceLabel.setText("Aktiv: " + active.getFileName() + " (aus " + externalFile.getFileName() + ")");
             } else {
-                ConfigEntry selected = configSelector.getValue();
                 if (selected == null) throw new IllegalStateException("Keine Config ausgewählt");
                 target = JSONConfig.getUserConfigPath(selected.resourcePath);
+
+                Files.createDirectories(Objects.requireNonNull(target.getParent()));
+                Files.writeString(target, edited, StandardCharsets.UTF_8);
+
+                sourceLabel.setText("Aktiv: " + target.getFileName().toString());
             }
 
-            Files.createDirectories(Objects.requireNonNull(target.getParent()));
-            Files.writeString(target, edited, StandardCharsets.UTF_8);
-
-            showAlert(Alert.AlertType.INFORMATION, "Saved", "Config gespeichert: " + target);
-            if (externalFile == null) {
-                sourceLabel.setText("Gespeichert: " + target.getFileName().toString());
-            } else {
-                sourceLabel.setText("Gespeichert: " + target.toAbsolutePath().toString());
-            }
-
-            // Config neu laden, damit die Anwendung die neue Datei verwendet
             return reloadCurrentOrAll();
         } catch (Exception ex) {
             showAlert(Alert.AlertType.ERROR, "Ungültiges JSON / Speichern fehlgeschlagen", ex.getMessage());
@@ -192,11 +193,10 @@ public class ConfigGameMenu extends FXGLMenu {
         }
     }
 
-    // Stille Variante von applyConfig: validiert und speichert, zeigt nur im Fehlerfall Alerts zurück.
     private boolean applyConfigSilent() {
         try {
             String edited = configArea.getText();
-            MAPPER.readTree(edited); // JSON validieren
+            MAPPER.readTree(edited);
 
             Path target;
             if (externalFile != null) {
@@ -216,7 +216,6 @@ public class ConfigGameMenu extends FXGLMenu {
                 sourceLabel.setText("Gespeichert: " + target.toAbsolutePath().toString());
             }
 
-            // Config neu laden
             return reloadCurrentOrAll();
         } catch (Exception ex) {
             showAlert(Alert.AlertType.ERROR, "Ungültiges JSON / Speichern fehlgeschlagen", ex.getMessage());
@@ -234,17 +233,15 @@ public class ConfigGameMenu extends FXGLMenu {
 
             Path path = file.toPath();
             String edited = configArea.getText();
-            MAPPER.readTree(edited); // validieren bevor speichern
+            MAPPER.readTree(edited);
 
             Files.createDirectories(Objects.requireNonNull(path.getParent()));
             Files.writeString(path, edited, StandardCharsets.UTF_8);
 
             externalFile = path;
             sourceLabel.setText("Gespeichert als: " + path.toAbsolutePath().toString());
-            configSelector.getSelectionModel().clearSelection();
             showAlert(Alert.AlertType.INFORMATION, "Saved", "Config gespeichert: " + path);
 
-            // Wenn bewusst in den user-config-Ordner gespeichert wurde, reload versuchen.
             reloadCurrentOrAll();
         } catch (IOException ex) {
             showAlert(Alert.AlertType.ERROR, "Save As failed", ex.getMessage());
@@ -253,12 +250,6 @@ public class ConfigGameMenu extends FXGLMenu {
         }
     }
 
-    /**
-     * Lädt entweder die aktuell ausgewählte Resource neu (wenn in-user-config gespeichert)
-     * oder alle bekannten Configs (fallback).
-     *
-     * @return true bei Erfolg, false bei Fehler (Alert wird angezeigt)
-     */
     private boolean reloadCurrentOrAll() {
         try {
             ConfigEntry sel = configSelector.getValue();
