@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import org.betriebssysteme.control.JSONConfig;
+import org.betriebssysteme.model.ProductionHeadquarters;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -86,6 +87,7 @@ public class ConfigGameMenu extends FXGLMenu {
         });
 
         btnRestart.setOnAction(e -> {
+            ProductionHeadquarters.getInstance().deliteAllData();
             boolean ok = reloadCurrentOrAll();
             if (!ok) return;
             getGameController().startNewGame();

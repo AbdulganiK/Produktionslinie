@@ -112,4 +112,18 @@ public class ProductionHeadquarters{
         return identificationNumber;
     }
 
+    public void deliteAllData() {
+        stations.clear();
+        personnel.clear();
+        try {
+            requestQueueSemaphore.acquire();
+            requestQueue.clear();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } finally {
+            requestQueueSemaphore.release();
+        }
+        logger.info("All stations and personnel have been deleted from Production Headquarters");
+    }
+
 }
