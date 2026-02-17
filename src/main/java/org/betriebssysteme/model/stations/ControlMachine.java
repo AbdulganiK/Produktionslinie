@@ -85,7 +85,7 @@ public class ControlMachine extends Maschine{
     }
 
     @Override
-    protected void checkIfCargoPrductionIsPossible() {
+    protected void checkIfCargoProductionIsPossible() {
         try {
             boolean productionPossible = true;
             storageSemaphore.acquire();
@@ -127,7 +127,7 @@ public class ControlMachine extends Maschine{
     }
 
     @Override
-    protected void storePrductOrDeliverToNextMachine(Cargo cargo) {
+    protected void storeProductOrDeliverToNextMachine(Cargo cargo) {
         if (cargo == Product.SCRAP) {
             storeProduct(cargo);
             logger.info("ControlMachine " + identificationNumber + " storing DEFECT product: " + cargo);

@@ -11,9 +11,7 @@ import org.betriebssysteme.model.status.Status;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.slf4j.LoggerFactory;
 
 public class WarehouseClerk extends Thread implements Personnel {
     private Cargo cargo;
@@ -53,7 +51,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.mainDepotId = mainDepotId;
         this.headquartersId = 0;
         this.maxCargoCapacity = maxCargoCapacity;
-        this.logger = org.slf4j.LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
+        this.logger = LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
         logger.info("WarehouseClerk " + identificationNumber +" ms, task time: " + timeForTask_ms + " ms, sleep time: " + timeForSleep_ms + " ms.");
     }
 

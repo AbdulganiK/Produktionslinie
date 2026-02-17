@@ -60,10 +60,10 @@ public abstract class Maschine extends Thread implements Station{
     private void runProductionCycle() {
         logger.info("Starting production cycle");
         checkStorageStatus();
-        checkIfCargoPrductionIsPossible();
+        checkIfCargoProductionIsPossible();
         if (running){
             Cargo producedCargo = produceProduct();
-            storePrductOrDeliverToNextMachine(producedCargo);
+            storeProductOrDeliverToNextMachine(producedCargo);
         }
         else{
             try {
@@ -77,11 +77,11 @@ public abstract class Maschine extends Thread implements Station{
 
     protected abstract void checkStorageStatus();
 
-    protected abstract void checkIfCargoPrductionIsPossible();
+    protected abstract void checkIfCargoProductionIsPossible();
 
     protected abstract Cargo produceProduct();
 
-    protected abstract void storePrductOrDeliverToNextMachine(Cargo cargo);
+    protected abstract void storeProductOrDeliverToNextMachine(Cargo cargo);
 
     protected void sendCargoRequest(Cargo cargo, int quantity) {
         boolean requestedBefore = requestedCargoTypes.getOrDefault(cargo, false);

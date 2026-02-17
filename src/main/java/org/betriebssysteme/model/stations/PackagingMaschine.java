@@ -11,6 +11,7 @@ import org.betriebssysteme.model.status.StatusWarning;
 
 public class PackagingMaschine extends Maschine {
     private final Recipe recipe;
+
     public PackagingMaschine(int identificationNumber,
                               int timeToSleep,
                               int maxStorageCapacity,
@@ -18,8 +19,7 @@ public class PackagingMaschine extends Maschine {
                               int initialQuantityOfProduct,
                               int productionTime,
                               Recipe recipe,
-                             int maschinePriority
-                             ) {
+                              int maschinePriority) {
         super(identificationNumber,
                 productionTime,
                 timeToSleep,
@@ -91,16 +91,16 @@ public class PackagingMaschine extends Maschine {
     }
 
     @Override
-    protected void checkIfCargoPrductionIsPossible() {
-        boolean cargoPrductionIsPossible = true;
+    protected void checkIfCargoProductionIsPossible() {
+        boolean cargoProductionIsPossible = true;
         try {
             storageSemaphore.acquire();
-            logger.info("Checking if cargo prduction is possible");
+            logger.info("Checking if cargo production is possible");
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 if (storedQuantity < ingredientQuantity) {
-                    cargoPrductionIsPossible = false;
+                    cargoProductionIsPossible = false;
                     if (running) {
                         logger.info("Packaging Machine " + identificationNumber + " lacks ingredient " + cargo + " for production");
                     }
@@ -109,16 +109,16 @@ public class PackagingMaschine extends Maschine {
             int currentProductQuantity = storage.getOrDefault(productCargo, 0);
             if (currentProductQuantity >= maxStorageCapacity) {
                 logger.info("Storage full, cannot produce more product of " + identificationNumber);
-                cargoPrductionIsPossible = false;
+                cargoProductionIsPossible = false;
                 if (running) {
                     logger.info("Packaging Machine " + identificationNumber + " storage full for product " + productCargo);
                 }
             }
-            if (!cargoPrductionIsPossible && running) {
+            if (!cargoProductionIsPossible && running) {
                 stopMachine();
                 System.out.println("Packaging Machine " + identificationNumber + " stopped due to insufficient ingredients or full storage");
             }
-            if (cargoPrductionIsPossible && !running) {
+            if (cargoProductionIsPossible && !running) {
                 startMachine();
                 System.out.println("Packaging Machine " + identificationNumber + " started production");
             }
@@ -161,7 +161,7 @@ public class PackagingMaschine extends Maschine {
     }
 
     @Override
-    protected void storePrductOrDeliverToNextMachine(Cargo cargo) {
+    protected void storeProductOrDeliverToNextMachine(Cargo cargo) {
         storeProduct(cargo);
     }
 }

@@ -104,11 +104,4 @@ public class JSONConfig {
         String fileName = Path.of(resourceName).getFileName().toString();
         return Path.of(System.getProperty("user.home"), ".betriebssysteme", fileName);
     }
-
-    /**
-     * Optional: Cache leeren.
-     */
-    public static void clearCache() {
-        CACHE.clear();
-    }
 }

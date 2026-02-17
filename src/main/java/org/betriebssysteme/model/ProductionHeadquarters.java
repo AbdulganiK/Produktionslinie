@@ -1,7 +1,6 @@
 package org.betriebssysteme.model;
 
 import org.betriebssysteme.model.personnel.Personnel;
-import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.slf4j.Logger;
 
@@ -11,8 +10,8 @@ import java.util.concurrent.Semaphore;
 public class ProductionHeadquarters{
     private final PriorityQueue<Request> requestQueue;
     private final Semaphore requestQueueSemaphore = new Semaphore(1);
-    private final Map stations;
-    private final Map personnel;
+    private final HashMap stations;
+    private final HashMap personnel;
     private static Logger logger;
     private static ProductionHeadquarters singletonInstance;
     private final int identificationNumber;
@@ -23,7 +22,7 @@ public class ProductionHeadquarters{
      * Private constructor for singleton pattern
      */
     private ProductionHeadquarters (){
-        requestQueue = new PriorityQueue<Request>(Comparator.comparingInt(Request::priority).reversed());
+        requestQueue = new PriorityQueue<>(Comparator.comparingInt(Request::priority).reversed());
         this.stations = new HashMap();
         this.personnel = new HashMap();
         this.identificationNumber = 0;
@@ -97,9 +96,6 @@ public class ProductionHeadquarters{
         return personnel;
     }
 
-    public PriorityQueue<Request> getRequestQueue(){
-        return requestQueue;
-    }
 
     public void addStation(Station station) {
         stations.put(station.getIdentificationNumber(), station);

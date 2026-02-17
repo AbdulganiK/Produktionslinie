@@ -70,24 +70,24 @@ public class ProductionMaschine extends Maschine {
 
 
     @Override
-    protected void checkIfCargoPrductionIsPossible() {
-        boolean cargoPrductionIsPossible = true;
+    protected void checkIfCargoProductionIsPossible() {
+        boolean cargoProductionIsPossible = true;
         try {
             storageSemaphore.acquire();
-            logger.info("Checking if cargo prduction is possible");
+            logger.info("Checking if cargo production is possible");
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 if (storedQuantity < ingredientQuantity) {
-                    cargoPrductionIsPossible = false;
+                    cargoProductionIsPossible = false;
                     break;
                 }
             }
-            if (!cargoPrductionIsPossible && running) {
+            if (!cargoProductionIsPossible && running) {
                 stopMachine();
                 System.out.println("ProductionMaschine " + identificationNumber + " stopped due to insufficient ingredients");
             }
-            if (cargoPrductionIsPossible && !running) {
+            if (cargoProductionIsPossible && !running) {
                 startMachine();
                 System.out.println("ProductionMaschine " + identificationNumber + " started as all ingredients are available");
             }
@@ -130,7 +130,7 @@ public class ProductionMaschine extends Maschine {
     }
 
     @Override
-    protected void storePrductOrDeliverToNextMachine(Cargo cargo) {
+    protected void storeProductOrDeliverToNextMachine(Cargo cargo) {
         deliverToNextMachine(cargo);
     }
 }
