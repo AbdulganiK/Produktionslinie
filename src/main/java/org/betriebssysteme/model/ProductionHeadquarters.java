@@ -16,6 +16,7 @@ public class ProductionHeadquarters{
     private static Logger logger;
     private static ProductionHeadquarters singletonInstance;
     private int identificationNumber;
+    private boolean consoleOutputEnabled = false;
 
 
     /**
@@ -110,6 +111,14 @@ public class ProductionHeadquarters{
 
     public int getIdentificationNumber() {
         return identificationNumber;
+    }
+
+    public boolean isConsoleOutputEnabled() {
+        return consoleOutputEnabled;
+    }
+
+    public void setConsoleOutputEnabled(boolean consoleOutputEnabled) {
+        this.consoleOutputEnabled = consoleOutputEnabled;
     }
 
     public void deliteAllData() {
