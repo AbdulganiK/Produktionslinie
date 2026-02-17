@@ -31,6 +31,6 @@ public interface Status {
                 return statusWarning;
             }
         }
-        return null;
+        throw new IllegalArgumentException("No matching status found for: " + status);
     }
 }

@@ -56,7 +56,7 @@
       "maxStorageCapacity": 10000,
       "initialQuantityOfProduct": 5,
       "productionTime": 80,
-      "probilityOfDefectPercent": 30,
+      "probabilityOfDefectPercent": 30,
       "maschinePriority": 3
     },
     "driveUnitQualityControlMachine": {
@@ -65,7 +65,7 @@
       "maxStorageCapacity": 100000,
       "initialQuantityOfProduct": 5,
       "productionTime": 80,
-      "probilityOfDefectPercent": 30,
+      "probabilityOfDefectPercent": 30,
       "maschinePriority": 3
     },
 
