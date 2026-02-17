@@ -12,44 +12,44 @@ public class ProductRecipes {
             JSONConfig.loadConfig("assets/config/recipesConfigs/RecipesConfigDefault.json")
                     .get("recipes");
 
-    private Recipe driveHousingRecipe = new Recipe(
+    private final Recipe driveHousingRecipe = new Recipe(
             recipeConfig.get("driveHousingRecipe").get("productionTime").asInt(),
             Product.DRIVE_CASE,
             loadCargoMap(recipeConfig.get("driveHousingRecipe").get("components"))
     );
 
 
-    private Recipe controlHousingRecipe = new Recipe(
+    private final Recipe controlHousingRecipe = new Recipe(
             recipeConfig.get("controlHousingRecipe").get("productionTime").asInt(),
             Product.CONTROL_CASE,
             loadCargoMap(recipeConfig.get("controlHousingRecipe").get("components"))
     );
 
-    private Recipe drivePcbRecipe = new Recipe(
+    private final Recipe drivePcbRecipe = new Recipe(
             recipeConfig.get("drivePcbRecipe").get("productionTime").asInt(),
             Product.DRIVE_PCB,
             loadCargoMap(recipeConfig.get("drivePcbRecipe").get("components"))
     );
 
-    private Recipe controlPcbRecipe = new Recipe(
+    private final Recipe controlPcbRecipe = new Recipe(
             recipeConfig.get("controlPcbRecipe").get("productionTime").asInt(),
             Product.CONTROL_PCB,
             loadCargoMap(recipeConfig.get("controlPcbRecipe").get("components"))
     );
 
-    private Recipe driveUnitRecipe = new Recipe(
+    private final Recipe driveUnitRecipe = new Recipe(
             recipeConfig.get("driveUnitRecipe").get("productionTime").asInt(),
             Product.DRIVE_UNIT,
             loadCargoMap(recipeConfig.get("driveUnitRecipe").get("components"))
     );
 
-    private Recipe controlUnitRecipe = new Recipe(
+    private final Recipe controlUnitRecipe = new Recipe(
             recipeConfig.get("controlUnitRecipe").get("productionTime").asInt(),
             Product.CONTROL_UNIT,
             loadCargoMap(recipeConfig.get("controlUnitRecipe").get("components"))
     );
 
-    private Recipe shippingPackageRecipe = new Recipe(
+    private final Recipe shippingPackageRecipe = new Recipe(
             recipeConfig.get("shippingPackageRecipe").get("productionTime").asInt(),
             Product.PACKAGE,
             loadCargoMap(recipeConfig.get("shippingPackageRecipe").get("components"))

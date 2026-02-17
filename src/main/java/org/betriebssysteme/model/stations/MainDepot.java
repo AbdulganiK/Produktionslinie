@@ -15,13 +15,13 @@ import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 public class MainDepot implements Station {
-    private Map <Cargo, Integer> cargoStorage;
-    private Semaphore cargoStorageSemaphore;
-    private int identificationNumber;
-    private int maxStorageCapacity;
+    private final Map <Cargo, Integer> cargoStorage;
+    private final Semaphore cargoStorageSemaphore;
+    private final int identificationNumber;
+    private final int maxStorageCapacity;
     private Status status;
-    private Logger logger;
-    private int initialStorageCapacity;
+    private final Logger logger;
+    private final int initialStorageCapacity;
 
     public MainDepot (int identificationNumber, int maxStorageCapacity, int initialStorageCapacity) {
         this.cargoStorage = new HashMap<Cargo, Integer>();

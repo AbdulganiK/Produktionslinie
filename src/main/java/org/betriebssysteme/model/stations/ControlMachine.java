@@ -8,7 +8,7 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 public class ControlMachine extends Maschine{
-    private int probilityOfDefectPercent;
+    private final int probilityOfDefectPercent;
 
 
     public ControlMachine(int identificationNumber,
@@ -94,10 +94,10 @@ public class ControlMachine extends Maschine{
             if (currentStorage < 1 || capacityLeftForScrap < 1) {
                 productionPossible = false;
             }
-            if (productionPossible && running == false){
+            if (productionPossible && !running){
                 startMachine();
                 System.out.println("ControlMachine " + identificationNumber + " started as all conditions are met");
-            } else if (!productionPossible && running == true) {
+            } else if (!productionPossible && running) {
                 stopMachine();
                 System.out.println("ControlMachine " + identificationNumber + " stopped due to insufficient storage conditions");
             }

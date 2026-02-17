@@ -14,19 +14,19 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 
 public class Supplier extends Thread implements Personnel {
-    private int identificationNumber;
+    private final int identificationNumber;
     private Status status;
     private Task task;
-    private int mainDepotId;
+    private final int mainDepotId;
     private int originStationId;
     private int destinationStationId;
-    private int supplyInterval_ms;
-    private int supplyTimer_ms;
-    private Logger logger;
+    private final int supplyInterval_ms;
+    private final int supplyTimer_ms;
+    private final Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
     private HashMap<Cargo, Integer> cargoStorage = new HashMap<>();
-    private int maxCapacity;
+    private final int maxCapacity;
 
     public Supplier(int identificationNumber,
                     int supplyInterval_ms,

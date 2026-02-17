@@ -61,7 +61,7 @@ public abstract class Maschine extends Thread implements Station{
         logger.info("Starting production cycle");
         checkStorageStatus();
         checkIfCargoPrductionIsPossible();
-        if (running == true){
+        if (running){
             Cargo producedCargo = produceProduct();
             storePrductOrDeliverToNextMachine(producedCargo);
         }
@@ -85,7 +85,7 @@ public abstract class Maschine extends Thread implements Station{
 
     protected void sendCargoRequest(Cargo cargo, int quantity) {
         boolean requestedBefore = requestedCargoTypes.getOrDefault(cargo, false);
-        if (requestedBefore == false){
+        if (!requestedBefore){
             Request request = new Request(quantity,this.maschinePriority, cargo, this.identificationNumber);
             System.out.println("Machine " + identificationNumber + " sending request for cargo: " + cargo + " quantity: " + quantity);
             ProductionHeadquarters.getInstance().addRequest(request);
@@ -180,7 +180,7 @@ public abstract class Maschine extends Thread implements Station{
 
     public boolean getCargoHandoverToNextMaschineInProgress(){
         boolean cargoHandoverToNextMaschineInProgressCopy = cargoHandoverToNextMaschineInProgress;
-        if (cargoHandoverToNextMaschineInProgressCopy == true){
+        if (cargoHandoverToNextMaschineInProgressCopy){
             cargoHandoverToNextMaschineInProgress = false;
         }
         return cargoHandoverToNextMaschineInProgressCopy;

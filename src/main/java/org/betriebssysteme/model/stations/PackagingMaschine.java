@@ -10,7 +10,7 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 public class PackagingMaschine extends Maschine {
-    private Recipe recipe;
+    private final Recipe recipe;
     public PackagingMaschine(int identificationNumber,
                               int timeToSleep,
                               int maxStorageCapacity,

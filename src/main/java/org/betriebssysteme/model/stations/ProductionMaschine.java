@@ -9,7 +9,7 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 public class ProductionMaschine extends Maschine {
-    private Recipe recipe;
+    private final Recipe recipe;
 
     public ProductionMaschine(int identificationNumber,
                               int timeToSleep,

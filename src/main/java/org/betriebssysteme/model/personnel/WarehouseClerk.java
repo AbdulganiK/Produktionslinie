@@ -18,19 +18,19 @@ import java.util.Map;
 public class WarehouseClerk extends Thread implements Personnel {
     private Cargo cargo;
     private Status status;
-    private int identificationNumber;
+    private final int identificationNumber;
     private int originStationId;
     private int destinationStationId;
     private Task task;
-    private int timeForTask_ms;
-    private int timeForSleep_ms;
+    private final int timeForTask_ms;
+    private final int timeForSleep_ms;
     private Request currentRequest;
-    private Logger logger;
+    private final Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
-    private int maxCargoCapacity;
-    private int mainDepotId;
-    private int headquartersId;
+    private final int maxCargoCapacity;
+    private final int mainDepotId;
+    private final int headquartersId;
 
     /**
      * Constructor for WarehouseClerk.
@@ -65,7 +65,6 @@ public class WarehouseClerk extends Thread implements Personnel {
         if (!hasRequest) {
             status = StatusWarning.STOPPED;
             task = Task.JOBLESS;
-            return;
         }
         else {
             try {

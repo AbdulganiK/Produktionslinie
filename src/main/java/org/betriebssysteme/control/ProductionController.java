@@ -19,7 +19,7 @@ import org.slf4j.LoggerFactory;
 
 public class ProductionController {
     private MainDepot mainDepot;
-    private ProductRecipes productRecipes = new ProductRecipes();
+    private final ProductRecipes productRecipes = new ProductRecipes();
     private final List<Supplier> suppliers = new ArrayList<>();
     private final List<WarehouseClerk> warehouseClerks = new ArrayList<>();
     private final JsonNode productionConfigData;

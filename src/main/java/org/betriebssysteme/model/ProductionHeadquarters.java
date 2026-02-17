@@ -9,13 +9,13 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class ProductionHeadquarters{
-    private PriorityQueue<Request> requestQueue;
-    private Semaphore requestQueueSemaphore = new Semaphore(1);
-    private Map stations;
-    private Map personnel;
+    private final PriorityQueue<Request> requestQueue;
+    private final Semaphore requestQueueSemaphore = new Semaphore(1);
+    private final Map stations;
+    private final Map personnel;
     private static Logger logger;
     private static ProductionHeadquarters singletonInstance;
-    private int identificationNumber;
+    private final int identificationNumber;
     private boolean consoleOutputEnabled = false;
 
 
