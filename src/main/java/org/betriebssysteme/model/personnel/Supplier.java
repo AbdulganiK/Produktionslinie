@@ -19,14 +19,12 @@ public class Supplier extends Thread implements Personnel {
     private Status status;
     private Task task;
     private final int mainDepotId;
-    private int originStationId;
-    private int destinationStationId;
     private final int supplyInterval_ms;
     private final int supplyTimer_ms;
     private final Logger logger;
     private int idOfCurrentDestinationStation;
     private boolean ready = false;
-    private HashMap<Cargo, Integer> cargoStorage = new HashMap<>();
+    private final HashMap<Cargo, Integer> cargoStorage;
     private final int maxCapacity;
 
     public Supplier(int identificationNumber,
@@ -38,14 +36,13 @@ public class Supplier extends Thread implements Personnel {
         this.mainDepotId = mainDepotId;
         this.supplyInterval_ms = supplyInterval_ms;
         this.supplyTimer_ms = supplyTimer_ms;
-        this.originStationId = -1;
-        this.destinationStationId = -1;
         this.status = StatusWarning.STOPPED;
         this.task = Task.JOBLESS;
         this.maxCapacity = maxCapacity;
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
-        logger.info("Supplier " + identificationNumber + " created with supply interval: " + supplyInterval_ms + " ms, supply timer: " + supplyTimer_ms + " ms.");
+        logger.info("Supplier {} created with supply interval: {} ms, supply timer: {} ms.", identificationNumber, supplyInterval_ms, supplyTimer_ms);
         this.cargoStorage = new HashMap<>();
+        setDaemon(true);
     }
 
     private void supplyRoutine() throws InterruptedException {
@@ -58,17 +55,17 @@ public class Supplier extends Thread implements Personnel {
         cargoStorage.put(Product.PACKAGE, 0);
 
         task = Task.DELIVERING;
-        destinationStationId = mainDepotId;
         idOfCurrentDestinationStation = mainDepotId;
         logger.info("Supplier starting supply routine to Main Depot");
         awaitReady();
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
-        originStationId = mainDepotId;
-        destinationStationId = -1;
         idOfCurrentDestinationStation = -1;
         awaitReady();
         logger.info("Supplier finishing supply routine to Main Depot");
+        if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+            System.out.println("Supplier " + identificationNumber + " finished supply routine to Main Depot");
+        }
     }
 
     private void refillDepotAndCollectCargo() {
@@ -88,12 +85,16 @@ public class Supplier extends Thread implements Personnel {
         collectedQuantity = collectCargo(Product.SCRAP, freeCapacity);
         freeCapacity -= collectedQuantity;
         if (freeCapacity > 0) {
-            logger.info("Supplier has free capacity left after collecting cargo: " + freeCapacity);
-            System.out.println("Supplier has free capacity left after collecting cargo");
+            logger.info("Supplier has free capacity left after collecting cargo: {}", freeCapacity);
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.out.println("Supplier has free capacity left after collecting cargo");
+            }
         }
         else {
             logger.info("Supplier cargo storage is full after collecting cargo.");
-            System.out.println("Supplier cargo storage is full after collecting cargo");
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.out.println("Supplier cargo storage is full after collecting cargo");
+            }
         }
     }
 
@@ -144,17 +145,12 @@ public class Supplier extends Thread implements Personnel {
 
     @Override
     public String[][] getInfoArray() {
-        String[][] infoArray = new String[9 + cargoStorage.size()][2];
-
-        String originText = originStationId == -1 ? "N/A" : String.valueOf(originStationId);
-        String destinationText = destinationStationId == -1 ? "N/A" : String.valueOf(destinationStationId);
+        String[][] infoArray = new String[7 + cargoStorage.size()][2];
 
         int index = 0;
         infoArray[index++] = new String[]{"Supplier ID", String.valueOf(identificationNumber)};
         infoArray[index++] = new String[]{"Status", String.valueOf(status)};
         infoArray[index++] = new String[]{"Current Task", String.valueOf(task)};
-        infoArray[index++] = new String[]{"Origin ID", originText};
-        infoArray[index++] = new String[]{"Destination ID", destinationText};
         infoArray[index++] = new String[]{"Supply Interval (ms)", String.valueOf(supplyInterval_ms)};
         infoArray[index++] = new String[]{"Supply Timer (ms)", String.valueOf(supplyTimer_ms)};
         infoArray[index++] = new String[]{"Cargo Storage", "Quantity"};
@@ -167,7 +163,7 @@ public class Supplier extends Thread implements Personnel {
 
     @Override
     public int getIdOfDestinationStation() {
-        return destinationStationId;
+        return idOfCurrentDestinationStation;
     }
 
     // ============================================================================
@@ -178,13 +174,12 @@ public class Supplier extends Thread implements Personnel {
         while (true) {
             try {
                 supplyRoutine();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            try {
                 Thread.sleep(supplyInterval_ms);
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                logger.info("Supplier {} interrupted, shutting down", identificationNumber);
+                status = StatusWarning.STOPPED;
+                Thread.currentThread().interrupt();
+                break;
             }
         }
     }

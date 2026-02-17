@@ -1,6 +1,7 @@
 package org.betriebssysteme.control;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.betriebssysteme.model.ProductionHeadquarters;
+import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.cargo.ProductRecipes;
 import org.betriebssysteme.model.personnel.Supplier;
@@ -18,7 +19,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ProductionController {
-    private MainDepot mainDepot;
+    private static final Logger logger = LoggerFactory.getLogger("ProductionController");
+
+    // JSON Config Keys
+    private static final String STATIONS = "stations";
+    private static final String PERSONNEL = "personnel";
+    private static final String ID_NUMBER = "identificationNumber";
+    private static final String TIME_TO_SLEEP = "timeToSleep";
+    private static final String MAX_STORAGE = "maxStorageCapacity";
+    private static final String INITIAL_STORAGE = "initialStorageCapacity";
+    private static final String INITIAL_QUANTITY = "initialQuantityOfProduct";
+    private static final String PRODUCTION_TIME = "productionTime";
+    private static final String MACHINE_PRIORITY = "maschinePriority";
+    private static final String DEFECT_PROBABILITY = "probabilityOfDefectPercent";
+
     private final ProductRecipes productRecipes = new ProductRecipes();
     private final List<Supplier> suppliers = new ArrayList<>();
     private final List<WarehouseClerk> warehouseClerks = new ArrayList<>();
@@ -30,9 +44,8 @@ public class ProductionController {
         System.setProperty("log.filename", timestamp + ".log");
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductionController.class);
-
-    // Production Maschinen
+    // Production Stations
+    private MainDepot mainDepot;
     private ProductionMaschine driveUnitHouseProductionMaschine;
     private ProductionMaschine driveUnitCircuitBoardProductionMaschine;
     private ProductionMaschine driveUnitProductionMaschine;
@@ -45,134 +58,154 @@ public class ProductionController {
 
 
     public ProductionController() {
-        this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfigs/ProducrionConfigDefault.json");
-        logger.info("ProductionController initialized");
+        try {
+            this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfigs/ProductionConfigDefault.json");
+            logger.info("ProductionController initialized");
+        } catch (RuntimeException e) {
+            logger.error("Failed to load production configuration", e);
+            throw new IllegalStateException("Production configuration could not be loaded. Application cannot start.", e);
+        }
     }
 
     public void createAllStations() {
-        JsonNode stations = productionConfigData.get("stations");
+        try {
+            JsonNode stations = productionConfigData.get(STATIONS);
+            if (stations == null) {
+                throw new IllegalStateException("Stations configuration section is missing");
+            }
 
+            createMainDepot(stations);
+            createProductionMachines(stations);
+            createQualityControlMachines(stations);
+            createPackagingMachine(stations);
+            setNextMachines();
+            logger.info("All stations created and next machines set");
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.out.println("All stations created and next machines set");
+            }
+        } catch (Exception e) {
+            logger.error("Failed to create stations", e);
+            throw new IllegalStateException("Station creation failed. Check configuration file.", e);
+        }
+    }
+
+    private void createMainDepot(JsonNode stations) {
         JsonNode md = stations.get("mainDepot");
+        if (md == null) {
+            throw new IllegalArgumentException("MainDepot configuration is missing");
+        }
         mainDepot = new MainDepot(
-                md.get("identificationNumber").asInt(),
-                md.get("maxStorageCapacity").asInt(),
-                md.get("initialStorageCapacity").asInt()
+                md.get(ID_NUMBER).asInt(),
+                md.get(MAX_STORAGE).asInt(),
+                md.get(INITIAL_STORAGE).asInt()
         );
-        logger.info("MainDepot created with ID: " + mainDepot.getIdentificationNumber());
+        logger.info("MainDepot created with ID: {}", mainDepot.getIdentificationNumber());
+    }
 
-        JsonNode duHouse = stations.get("driveUnitHouseProductionMaschine");
-        driveUnitHouseProductionMaschine = new ProductionMaschine(
-                duHouse.get("identificationNumber").asInt(),
-                duHouse.get("timeToSleep").asInt(),
-                duHouse.get("maxStorageCapacity").asInt(),
-                null,
+    private void createProductionMachines(JsonNode stations) {
+        driveUnitHouseProductionMaschine = createProductionMaschine(
+                stations.get("driveUnitHouseProductionMaschine"),
                 productRecipes.getDriveHousingRecipe(),
-                duHouse.get("initialQuantityOfProduct").asInt(),
-                duHouse.get("maschinePriority").asInt()
+                "DriveUnitHouseProductionMaschine"
         );
-        logger.info("DriveUnitHouseProductionMaschine created with ID: " + driveUnitHouseProductionMaschine.getIdentificationNumber());
 
-        JsonNode duPcb = stations.get("driveUnitCircuitBoardProductionMaschine");
-        driveUnitCircuitBoardProductionMaschine = new ProductionMaschine(
-                duPcb.get("identificationNumber").asInt(),
-                duPcb.get("timeToSleep").asInt(),
-                duPcb.get("maxStorageCapacity").asInt(),
-                null,
+        driveUnitCircuitBoardProductionMaschine = createProductionMaschine(
+                stations.get("driveUnitCircuitBoardProductionMaschine"),
                 productRecipes.getDrivePcbRecipe(),
-                duPcb.get("initialQuantityOfProduct").asInt(),
-                duPcb.get("maschinePriority").asInt()
+                "DriveUnitCircuitBoardProductionMaschine"
         );
-        logger.info("DriveUnitCircuitBoardProductionMaschine created with ID: " + driveUnitCircuitBoardProductionMaschine.getIdentificationNumber());
 
-        JsonNode duUnit = stations.get("driveUnitProductionMaschine");
-        driveUnitProductionMaschine = new ProductionMaschine(
-                duUnit.get("identificationNumber").asInt(),
-                duUnit.get("timeToSleep").asInt(),
-                duUnit.get("maxStorageCapacity").asInt(),
-                null,
+        driveUnitProductionMaschine = createProductionMaschine(
+                stations.get("driveUnitProductionMaschine"),
                 productRecipes.getDriveUnitRecipe(),
-                duUnit.get("initialQuantityOfProduct").asInt(),
-                duUnit.get("maschinePriority").asInt()
+                "DriveUnitProductionMaschine"
         );
-        logger.info("DriveUnitProductionMaschine created with ID: " + driveUnitProductionMaschine.getIdentificationNumber());
 
-        JsonNode cuHouse = stations.get("controlUnitHouseProductionMaschine");
-        controlUnitHouseProductionMaschine = new ProductionMaschine(
-                cuHouse.get("identificationNumber").asInt(),
-                cuHouse.get("timeToSleep").asInt(),
-                cuHouse.get("maxStorageCapacity").asInt(),
-                null,
+        controlUnitHouseProductionMaschine = createProductionMaschine(
+                stations.get("controlUnitHouseProductionMaschine"),
                 productRecipes.getControlHousingRecipe(),
-                cuHouse.get("initialQuantityOfProduct").asInt(),
-                cuHouse.get("maschinePriority").asInt()
+                "ControlUnitHouseProductionMaschine"
         );
-        logger.info("ControlUnitHouseProductionMaschine created with ID: " + controlUnitHouseProductionMaschine.getIdentificationNumber());
 
-        JsonNode cuPcb = stations.get("controlUnitCircuitBoardProductionMaschine");
-        controlUnitCircuitBoardProductionMaschine = new ProductionMaschine(
-                cuPcb.get("identificationNumber").asInt(),
-                cuPcb.get("timeToSleep").asInt(),
-                cuPcb.get("maxStorageCapacity").asInt(),
-                null,
+        controlUnitCircuitBoardProductionMaschine = createProductionMaschine(
+                stations.get("controlUnitCircuitBoardProductionMaschine"),
                 productRecipes.getControlPcbRecipe(),
-                cuPcb.get("initialQuantityOfProduct").asInt(),
-                cuPcb.get("maschinePriority").asInt()
+                "ControlUnitCircuitBoardProductionMaschine"
         );
-        logger.info("ControlUnitCircuitBoardProductionMaschine created with ID: " + controlUnitCircuitBoardProductionMaschine.getIdentificationNumber());
 
-        JsonNode cuUnit = stations.get("controlUnitProductionMaschine");
-        controlUnitProductionMaschine = new ProductionMaschine(
-                cuUnit.get("identificationNumber").asInt(),
-                cuUnit.get("timeToSleep").asInt(),
-                cuUnit.get("maxStorageCapacity").asInt(),
-                null,
+        controlUnitProductionMaschine = createProductionMaschine(
+                stations.get("controlUnitProductionMaschine"),
                 productRecipes.getControlUnitRecipe(),
-                cuUnit.get("initialQuantityOfProduct").asInt(),
-                cuUnit.get("maschinePriority").asInt()
+                "ControlUnitProductionMaschine"
         );
-        logger.info("ControlUnitProductionMaschine created with ID: " + controlUnitProductionMaschine.getIdentificationNumber());
+    }
 
-        JsonNode cuQc = stations.get("controlUnitQualityControlMachine");
-        controlUnitQualityControlMachine = new ControlMachine(
-                cuQc.get("identificationNumber").asInt(),
-                cuQc.get("timeToSleep").asInt(),
-                cuQc.get("maxStorageCapacity").asInt(),
-                cuQc.get("initialQuantityOfProduct").asInt(),
+    private void createQualityControlMachines(JsonNode stations) {
+        controlUnitQualityControlMachine = createControlMachine(
+                stations.get("controlUnitQualityControlMachine"),
                 Product.CONTROL_UNIT,
-                null,
-                cuQc.get("productionTime").asInt(),
-                cuQc.get("probilityOfDefectPercent").asInt(),
-                cuQc.get("maschinePriority").asInt()
+                "ControlUnitQualityControlMachine"
         );
-        logger.info("ControlUnitQualityControlMachine created with ID: " + controlUnitQualityControlMachine.getIdentificationNumber());
 
-        JsonNode duQc = stations.get("driveUnitQualityControlMachine");
-        driveUnitQualityControlMachine = new ControlMachine(
-                duQc.get("identificationNumber").asInt(),
-                duQc.get("timeToSleep").asInt(),
-                duQc.get("maxStorageCapacity").asInt(),
-                duQc.get("initialQuantityOfProduct").asInt(),
+        driveUnitQualityControlMachine = createControlMachine(
+                stations.get("driveUnitQualityControlMachine"),
                 Product.DRIVE_UNIT,
-                null,
-                duQc.get("productionTime").asInt(),
-                duQc.get("probilityOfDefectPercent").asInt(),
-                duQc.get("maschinePriority").asInt()
+                "DriveUnitQualityControlMachine"
         );
-        logger.info("DriveUnitQualityControlMachine created with ID: " + driveUnitQualityControlMachine.getIdentificationNumber());
+    }
 
+    private void createPackagingMachine(JsonNode stations) {
         JsonNode pack = stations.get("packagingMaschine");
+        if (pack == null) {
+            throw new IllegalArgumentException("PackagingMaschine configuration is missing");
+        }
         packagingMaschine = new PackagingMaschine(
-                pack.get("identificationNumber").asInt(),
-                pack.get("timeToSleep").asInt(),
-                pack.get("maxStorageCapacity").asInt(),
+                pack.get(ID_NUMBER).asInt(),
+                pack.get(TIME_TO_SLEEP).asInt(),
+                pack.get(MAX_STORAGE).asInt(),
                 null,
-                pack.get("initialQuantityOfProduct").asInt(),
-                pack.get("productionTime").asInt(),
+                pack.get(INITIAL_QUANTITY).asInt(),
+                pack.get(PRODUCTION_TIME).asInt(),
                 productRecipes.getShippingPackageRecipe(),
-                pack.get("maschinePriority").asInt()
+                pack.get(MACHINE_PRIORITY).asInt()
         );
-        logger.info("PackagingMaschine created with ID: " + packagingMaschine.getIdentificationNumber());
-        setNextMachines();
+        logger.info("PackagingMaschine created with ID: {}", packagingMaschine.getIdentificationNumber());
+    }
+
+    private ProductionMaschine createProductionMaschine(JsonNode config, Recipe recipe, String machineName) {
+        if (config == null) {
+            throw new IllegalArgumentException("Configuration for " + machineName + " is missing");
+        }
+        ProductionMaschine machine = new ProductionMaschine(
+                config.get(ID_NUMBER).asInt(),
+                config.get(TIME_TO_SLEEP).asInt(),
+                config.get(MAX_STORAGE).asInt(),
+                null,
+                recipe,
+                config.get(INITIAL_QUANTITY).asInt(),
+                config.get(MACHINE_PRIORITY).asInt()
+        );
+        logger.info("{} created with ID: {}", machineName, machine.getIdentificationNumber());
+        return machine;
+    }
+
+    private ControlMachine createControlMachine(JsonNode config, Product product, String machineName) {
+        if (config == null) {
+            throw new IllegalArgumentException("Configuration for " + machineName + " is missing");
+        }
+        ControlMachine machine = new ControlMachine(
+                config.get(ID_NUMBER).asInt(),
+                config.get(TIME_TO_SLEEP).asInt(),
+                config.get(MAX_STORAGE).asInt(),
+                config.get(INITIAL_QUANTITY).asInt(),
+                product,
+                null,
+                config.get(PRODUCTION_TIME).asInt(),
+                config.get(DEFECT_PROBABILITY).asInt(),
+                config.get(MACHINE_PRIORITY).asInt()
+        );
+        logger.info("{} created with ID: {}", machineName, machine.getIdentificationNumber());
+        return machine;
     }
 
     public void setNextMachines() {
@@ -188,82 +221,115 @@ public class ProductionController {
     }
 
     public void createAllPersonnel() {
-        JsonNode personnelNode = productionConfigData.get("personnel");
+        try {
+            JsonNode personnelNode = productionConfigData.get(PERSONNEL);
+            if (personnelNode == null) {
+                throw new IllegalStateException("Personnel configuration section is missing");
+            }
 
-        int mainDepotId = productionConfigData
-                .get("stations")
-                .get("mainDepot")
-                .get("identificationNumber")
-                .asInt();
+            JsonNode mainDepotNode = productionConfigData.get(STATIONS).get("mainDepot");
+            if (mainDepotNode == null || mainDepotNode.get(ID_NUMBER) == null) {
+                throw new IllegalStateException("MainDepot ID is missing in configuration");
+            }
+            int mainDepotId = mainDepotNode.get(ID_NUMBER).asInt();
 
+            createSuppliers(personnelNode, mainDepotId);
+            createWarehouseClerks(personnelNode, mainDepotId);
+            logger.info("All personnel created");
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.out.println("All personnel created");
+            }
+        } catch (Exception e) {
+            logger.error("Failed to create personnel", e);
+            throw new IllegalStateException("Personnel creation failed. Check configuration file.", e);
+        }
+    }
+
+    private void createSuppliers(JsonNode personnelNode, int mainDepotId) {
         suppliers.clear();
         JsonNode suppliersNode = personnelNode.get("suppliers");
         if (suppliersNode != null && suppliersNode.isArray()) {
             for (JsonNode supNode : suppliersNode) {
                 suppliers.add(new Supplier(
-                        supNode.get("identificationNumber").asInt(),
+                        supNode.get(ID_NUMBER).asInt(),
                         supNode.get("supplyInterval_ms").asInt(),
                         supNode.get("supplyTimer_ms").asInt(),
                         mainDepotId,
                         supNode.get("maxCapacity").asInt()
                 ));
-                logger.info("Supplier created with ID: " + supNode.get("identificationNumber").asInt());
+                logger.info("Supplier created with ID: {}", supNode.get(ID_NUMBER).asInt());
             }
         }
+    }
 
+    private void createWarehouseClerks(JsonNode personnelNode, int mainDepotId) {
         warehouseClerks.clear();
         JsonNode clerksNode = personnelNode.get("warehouseClerks");
         if (clerksNode != null && clerksNode.isArray()) {
             for (JsonNode clerkNode : clerksNode) {
                 warehouseClerks.add(new WarehouseClerk(
-                        clerkNode.get("identificationNumber").asInt(),
+                        clerkNode.get(ID_NUMBER).asInt(),
                         clerkNode.get("timeForTask_ms").asInt(),
                         clerkNode.get("timeForSleep_ms").asInt(),
                         clerkNode.get("maxCapacity").asInt(),
                         mainDepotId
                 ));
-                logger.info("WarehouseClerk created with ID: " + clerkNode.get("identificationNumber").asInt());
+                logger.info("WarehouseClerk created with ID: {}", clerkNode.get(ID_NUMBER).asInt());
             }
         }
     }
 
 
     public void addAllToProductionHeadquarters() {
-        ProductionHeadquarters productionHeadquarters = ProductionHeadquarters.getInstance();
-        productionHeadquarters.addStation(mainDepot);
-        productionHeadquarters.addStation(driveUnitHouseProductionMaschine);
-        productionHeadquarters.addStation(driveUnitCircuitBoardProductionMaschine);
-        productionHeadquarters.addStation(driveUnitProductionMaschine);
-        productionHeadquarters.addStation(controlUnitHouseProductionMaschine);
-        productionHeadquarters.addStation(controlUnitCircuitBoardProductionMaschine);
-        productionHeadquarters.addStation(controlUnitProductionMaschine);
-        productionHeadquarters.addStation(controlUnitQualityControlMachine);
-        productionHeadquarters.addStation(driveUnitQualityControlMachine);
-        productionHeadquarters.addStation(packagingMaschine);
-        for (Supplier s : suppliers) {
-            productionHeadquarters.addPersonnel(s);
-        }
-        for (WarehouseClerk w : warehouseClerks) {
-            productionHeadquarters.addPersonnel(w);
-        }
+        ProductionHeadquarters hq = ProductionHeadquarters.getInstance();
+        addAllStationsToHeadquarters(hq);
+        addAllPersonnelToHeadquarters(hq);
         logger.info("All stations and personnel added to ProductionHeadquarters");
+    }
 
+    private void addAllStationsToHeadquarters(ProductionHeadquarters hq) {
+        hq.addStation(mainDepot);
+        hq.addStation(driveUnitHouseProductionMaschine);
+        hq.addStation(driveUnitCircuitBoardProductionMaschine);
+        hq.addStation(driveUnitProductionMaschine);
+        hq.addStation(controlUnitHouseProductionMaschine);
+        hq.addStation(controlUnitCircuitBoardProductionMaschine);
+        hq.addStation(controlUnitProductionMaschine);
+        hq.addStation(controlUnitQualityControlMachine);
+        hq.addStation(driveUnitQualityControlMachine);
+        hq.addStation(packagingMaschine);
+    }
+
+    private void addAllPersonnelToHeadquarters(ProductionHeadquarters hq) {
+        suppliers.forEach(hq::addPersonnel);
+        warehouseClerks.forEach(hq::addPersonnel);
     }
 
     public void startProductionHeadquarters() {
-        ProductionHeadquarters productionHeadquarters = ProductionHeadquarters.getInstance();
-        productionHeadquarters.startAllStations();
-        productionHeadquarters.startAllPersonnel();
+        ProductionHeadquarters hq = ProductionHeadquarters.getInstance();
+        hq.startAllStations();
+        hq.startAllPersonnel();
         logger.info("Send start signal to all stations and personnel in ProductionHeadquarters");
     }
 
-    public static void createProductionLine(){
+    public static void createProductionLine() {
         logger.info("Application starting");
-        ProductionController productionController = new ProductionController();
-        productionController.createAllStations();
-        productionController.createAllPersonnel();
-        productionController.addAllToProductionHeadquarters();
-        productionController.startProductionHeadquarters();
-        logger.info("Production line created and started");
+        try {
+            ProductionController controller = new ProductionController();
+            controller.createAllStations();
+            controller.createAllPersonnel();
+            controller.addAllToProductionHeadquarters();
+            controller.startProductionHeadquarters();
+            logger.info("Production line created and started");
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.out.println("Production line created and started");
+            }
+        } catch (Exception e) {
+            logger.error("Critical error during production line creation", e);
+            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                System.err.println("Failed to create production line: " + e.getMessage());
+            }
+            throw new RuntimeException("Production line initialization failed", e);
+        }
     }
 }

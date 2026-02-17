@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class JSONConfig {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    public static final String DEFAULT_CONFIG_RESOURCE = "assets/config/productionConfigs/ProducrionConfigDefault.json";
+    public static final String DEFAULT_CONFIG_RESOURCE = "assets/config/productionConfigs/ProductionConfigDefault.json";
     public static final String RECIPES_CONFIG_RESOURCE = "assets/config/recipesConfigs/RecipesConfigDefault.json";
 
     // Cache für bereits geladene Configs (key = resource path)
