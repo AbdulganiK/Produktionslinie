@@ -142,25 +142,16 @@ public class MainDepot implements Station {
 
     @Override
     public String [][] getInfoArray(){
-        String [][] infoArray = new String[cargoStorage.size()+4][2];
+        String [][] infoArray = new String[cargoStorage.size() + 4][2];
 
-        infoArray[0][0] = "ID";
-        infoArray[0][1] = Integer.toString(identificationNumber);
+        int index = 0;
+        infoArray[index++] = new String[]{"ID", String.valueOf(identificationNumber)};
+        infoArray[index++] = new String[]{"Max Capacity", String.valueOf(maxStorageCapacity)};
+        infoArray[index++] = new String[]{"Current Status", String.valueOf(status)};
+        infoArray[index++] = new String[]{"Cargo", "Quantity"};
 
-        infoArray[1][0] = "Max Capacity";
-        infoArray[1][1] = Integer.toString(maxStorageCapacity);
-
-        infoArray[2][0] = "Current Status";
-        infoArray[2][1] = status.toString();
-
-        infoArray[3][0] = "Cargo";
-        infoArray[3][1] = "Quantity";
-
-        int index = 4;
-        for (Cargo cargo : cargoStorage.keySet()){
-            infoArray[index][0] = cargo.toString();
-            infoArray[index][1] = Integer.toString(cargoStorage.get(cargo));
-            index++;
+        for (Map.Entry<Cargo, Integer> entry : cargoStorage.entrySet()){
+            infoArray[index++] = new String[]{entry.getKey().toString(), String.valueOf(entry.getValue())};
         }
         return infoArray;
     }

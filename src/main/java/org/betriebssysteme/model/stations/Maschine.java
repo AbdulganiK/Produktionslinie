@@ -330,50 +330,31 @@ public abstract class Maschine extends Thread implements Station{
 
     @Override
     public String [][] getInfoArray(){
-        String [][] infoArray = new String[storage.size()+8][2];
-        infoArray[0][0] = "Maschine ID";
-        infoArray[0][1] = Integer.toString(identificationNumber);
+        String [][] infoArray = new String[storage.size() + 8][2];
 
-
+        String cargoLabel;
         if (ProductionHeadquarters.getInstance().getStations().get(identificationNumber) instanceof ProductionMaschine){
-            infoArray[1][0] = "Produced Cargo";
+            cargoLabel = "Produced Cargo";
         }
         else if (ProductionHeadquarters.getInstance().getStations().get(identificationNumber) instanceof PackagingMaschine){
-            infoArray[1][0] = "Packaged Cargo";
+            cargoLabel = "Packaged Cargo";
         }
         else {
-            infoArray[1][0] = "Controlled Cargo";
-        }
-        infoArray[1][1] = productCargo.toString();
-
-        infoArray[2][0] = "Status";
-        infoArray[2][1] = status.toString();
-
-        infoArray[3][0] = "Running";
-        infoArray[3][1] = Boolean.toString(running);
-
-        infoArray[4][0] = "Max Storage Capacity";
-        infoArray[4][1] = Integer.toString(maxStorageCapacity);
-
-        infoArray [5][0] = "Next Maschine ID";
-        if (nextMaschine != null){
-            infoArray[5][1] = Integer.toString(nextMaschine.getIdentificationNumber());
-        }
-        else{
-            infoArray[5][1] = "None";
+            cargoLabel = "Controlled Cargo";
         }
 
-        infoArray [6][0] = "Time To Process (ms)";
-        infoArray[6][1] = Integer.toString(timeToProcess);
+        int index = 0;
+        infoArray[index++] = new String[]{"Maschine ID", String.valueOf(identificationNumber)};
+        infoArray[index++] = new String[]{cargoLabel, String.valueOf(productCargo)};
+        infoArray[index++] = new String[]{"Status", String.valueOf(status)};
+        infoArray[index++] = new String[]{"Running", String.valueOf(running)};
+        infoArray[index++] = new String[]{"Max Storage Capacity", String.valueOf(maxStorageCapacity)};
+        infoArray[index++] = new String[]{"Next Maschine ID", nextMaschine != null ? String.valueOf(nextMaschine.getIdentificationNumber()) : "None"};
+        infoArray[index++] = new String[]{"Time To Process (ms)", String.valueOf(timeToProcess)};
+        infoArray[index++] = new String[]{"Storage", "Quantity"};
 
-        infoArray [7][0] = "Storage";
-        infoArray[7][1] = "Quantity";
-
-        int index = 8;
         for (Map.Entry<Cargo, Integer> entry : storage.entrySet()) {
-            infoArray[index][0] = entry.getKey().toString();
-            infoArray[index][1] = Integer.toString(entry.getValue());
-            index++;
+            infoArray[index++] = new String[]{entry.getKey().toString(), String.valueOf(entry.getValue())};
         }
         return infoArray;
     }

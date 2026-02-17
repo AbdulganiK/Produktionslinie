@@ -12,6 +12,7 @@ import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Supplier extends Thread implements Personnel {
     private final int identificationNumber;
@@ -145,42 +146,21 @@ public class Supplier extends Thread implements Personnel {
     public String[][] getInfoArray() {
         String[][] infoArray = new String[9 + cargoStorage.size()][2];
 
-        infoArray[0][0] = "Supplier ID";
-        infoArray[0][1] = String.valueOf(identificationNumber);
+        String originText = originStationId == -1 ? "N/A" : String.valueOf(originStationId);
+        String destinationText = destinationStationId == -1 ? "N/A" : String.valueOf(destinationStationId);
 
-        infoArray[1][0] = "Status";
-        infoArray[1][1] = status.toString();
+        int index = 0;
+        infoArray[index++] = new String[]{"Supplier ID", String.valueOf(identificationNumber)};
+        infoArray[index++] = new String[]{"Status", String.valueOf(status)};
+        infoArray[index++] = new String[]{"Current Task", String.valueOf(task)};
+        infoArray[index++] = new String[]{"Origin ID", originText};
+        infoArray[index++] = new String[]{"Destination ID", destinationText};
+        infoArray[index++] = new String[]{"Supply Interval (ms)", String.valueOf(supplyInterval_ms)};
+        infoArray[index++] = new String[]{"Supply Timer (ms)", String.valueOf(supplyTimer_ms)};
+        infoArray[index++] = new String[]{"Cargo Storage", "Quantity"};
 
-        infoArray[2][0] = "Current Task";
-        infoArray[2][1] = task.toString();
-
-        infoArray[3][0] = "Origin ID";
-        if (originStationId == -1) {
-            infoArray[3][1] = "N/A";
-        } else {
-            infoArray[3][1] = String.valueOf(originStationId);
-        }
-        infoArray[4][0] = "Destination ID";
-        if (destinationStationId == -1) {
-            infoArray[4][1] = "N/A";
-        } else {
-            infoArray[4][1] = String.valueOf(destinationStationId);
-        }
-
-        infoArray[5][0] = "Supply Interval (ms)";
-        infoArray[5][1] = String.valueOf(supplyInterval_ms);
-
-        infoArray[6][0] = "Supply Timer (ms)";
-        infoArray[6][1] = String.valueOf(supplyTimer_ms);
-
-        infoArray[7][0] = "Cargo Storage";
-        infoArray[7][1] = "Quantity";
-
-        int index = 8;
-        for (Cargo cargo : cargoStorage.keySet()){
-            infoArray[index][0] = cargo.toString();
-            infoArray[index][1] = Integer.toString(cargoStorage.get(cargo));
-            index++;
+        for (Map.Entry<Cargo, Integer> entry : cargoStorage.entrySet()){
+            infoArray[index++] = new String[]{entry.getKey().toString(), String.valueOf(entry.getValue())};
         }
         return infoArray;
     }

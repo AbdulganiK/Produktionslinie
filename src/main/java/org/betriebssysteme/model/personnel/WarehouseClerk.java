@@ -186,42 +186,17 @@ public class WarehouseClerk extends Thread implements Personnel {
 
     @Override
     public String[][] getInfoArray() {
-        String[][] infoArray = new String[9][2];
-        infoArray[0][0] = "Identification Number";
-        infoArray[0][1] = String.valueOf(identificationNumber);
-
-        infoArray[1][0] = "Status";
-        infoArray[1][1] = status.toString();
-
-        infoArray[2][0] = "Current Task";
-        infoArray[2][1] = task.toString();
-
-        infoArray[3][0] = "Origin Station ID";
-        infoArray[3][1] = String.valueOf(originStationId);
-
-        infoArray[4][0] = "Destination Station ID";
-        infoArray[4][1] = String.valueOf(destinationStationId);
-
-        infoArray[5][0] = "Cargo";
-        if (cargo != null) {
-            infoArray[5][1] = cargo.toString();
-        } else {
-            infoArray[5][1] = "N/A";
-        }
-
-        infoArray[6][0] = "Cargo Quantity";
-        if (currentRequest != null) {
-            infoArray[6][1] = String.valueOf(currentRequest.quantity());
-        } else {
-            infoArray[6][1] = "N/A";
-        }
-
-        infoArray[7][0] = "Time for Task (ms)";
-        infoArray[7][1] = String.valueOf(timeForTask_ms);
-
-        infoArray[8][0] = "Time for Sleep (ms)";
-        infoArray[8][1] = String.valueOf(timeForSleep_ms);
-        return infoArray;
+        return new String[][]{
+            {"Identification Number", String.valueOf(identificationNumber)},
+            {"Status", String.valueOf(status)},
+            {"Current Task", String.valueOf(task)},
+            {"Origin Station ID", String.valueOf(originStationId)},
+            {"Destination Station ID", String.valueOf(destinationStationId)},
+            {"Cargo", cargo != null ? cargo.toString() : "N/A"},
+            {"Cargo Quantity", currentRequest != null ? String.valueOf(currentRequest.quantity()) : "N/A"},
+            {"Time for Task (ms)", String.valueOf(timeForTask_ms)},
+            {"Time for Sleep (ms)", String.valueOf(timeForSleep_ms)}
+        };
     }
 
     @Override
