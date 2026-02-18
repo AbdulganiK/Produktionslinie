@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOG_FILE" value="${log.filename:-application.log}" />
+    <timestamp key="logTimestamp" datePattern="dd_MM_yyyy_HH_mm_ss"/>
+    <property name="LOG_FILE" value="logfile_${logTimestamp}" />
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/${LOG_FILE}</file>
+        <file>logs/${LOG_FILE}.log</file>
         <append>true</append>
 
         <encoder>
