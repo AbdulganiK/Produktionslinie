@@ -24,13 +24,13 @@ public class MainDepot implements Station {
     private final int initialStorageCapacity;
 
     public MainDepot (int identificationNumber, int maxStorageCapacity, int initialStorageCapacity) {
-        this.cargoStorage = new HashMap<Cargo, Integer>();
+        this.cargoStorage = new HashMap<>();
         this.identificationNumber = identificationNumber;
         this.maxStorageCapacity = maxStorageCapacity;
         this.cargoStorageSemaphore = new Semaphore(1);
         this.status = StatusWarning.STOPPED;
         this.logger = org.slf4j.LoggerFactory.getLogger("MainDepot-" + identificationNumber);
-        logger.info("Main Depot " + identificationNumber + " created with max storage capacity of " + maxStorageCapacity);
+        logger.info("Main Depot {} created with max storage capacity of {}", identificationNumber, maxStorageCapacity);
         this.initialStorageCapacity = initialStorageCapacity;
         createInitialStorage();
     }
@@ -49,31 +49,27 @@ public class MainDepot implements Station {
                 if (quantity == 0) {
                     if (status != StatusWarning.EMPTY){
                         status = StatusWarning.EMPTY;
-                        logger.info("Status set to EMPTY due to " + cargo);
+                        logger.info("Status set to EMPTY due to {}", cargo);
                     }
                 } else if (quantity < maxStorageCapacity * 0.25) {
                     if (status != StatusWarning.EMPTY && status != StatusCritical.LOW_CAPACITY){
                         status = StatusCritical.LOW_CAPACITY;
-                        logger.info("Status set to CRITICAL due to " + cargo);
+                        logger.info("Status set to CRITICAL due to {}", cargo);
                     }
                 }
             } else if (cargo.getCargoTyp() == CargoTyp.PRODUCT) {
                 if (quantity >= maxStorageCapacity) {
                     if (status != StatusWarning.FULL){
                         status = StatusWarning.FULL;
-                        logger.info("Status set to FULL due to " + cargo);
+                        logger.info("Status set to FULL due to {}", cargo);
                     }
                 } else if (quantity > maxStorageCapacity * 0.75) {
                     if (status != StatusWarning.FULL && status != StatusCritical.LOW_CAPACITY)
                         status = StatusCritical.LOW_CAPACITY;
-                        logger.info("Status set to CRITICAL due to " + cargo);
+                    logger.info("Status set to CRITICAL due to {}", cargo);
                 }
             }
         }
-    }
-
-    public int getMaxStorageCapacity() {
-        return maxStorageCapacity;
     }
 
     public int resiveCargo(Cargo cargo, int quantity) {
@@ -83,20 +79,20 @@ public class MainDepot implements Station {
             if (currentQuantity + quantity <= maxStorageCapacity) {
                 cargoStorage.put(cargo, currentQuantity + quantity);
                 checkAndUpdateStatus();
-                logger.info("MainDepot " + identificationNumber + " accepted " + quantity + " of " + cargo);
+                logger.info("MainDepot {} accepted {} of {}", identificationNumber, quantity, cargo);
                 return quantity;
             } else {
                 int acceptedQuantity = maxStorageCapacity - currentQuantity;
                 cargoStorage.put(cargo, maxStorageCapacity);
                 checkAndUpdateStatus();
-                logger.info("MainDepot " + identificationNumber + " accepted only " + acceptedQuantity + " of " + cargo + " requested: " + quantity);
+                logger.info("MainDepot {} accepted only {} of {} requested: {}", identificationNumber, acceptedQuantity, cargo, quantity);
                 return acceptedQuantity;
             }
         } catch (Exception e) {
             return 0;
         }
         finally {
-            logger.info("Received " + quantity + " of " + cargo);
+            logger.info("Received {} of {}", quantity, cargo);
             cargoStorageSemaphore.release();
         }
     }
@@ -108,24 +104,25 @@ public class MainDepot implements Station {
             if (currentQuantity >= quantity) {
                 cargoStorage.put(cargo, currentQuantity - quantity);
                 checkAndUpdateStatus();
-                logger.info("MainDepot " + identificationNumber + " handed over " + quantity + " of " + cargo);
+                logger.info("MainDepot {} handed over {} of {}", identificationNumber, quantity, cargo);
                 return quantity;
             } else {
                 cargoStorage.put(cargo, 0);
                 checkAndUpdateStatus();
-                logger.info("MainDepot " + identificationNumber + " handed over only " + currentQuantity + " of " + cargo + " requested: " + quantity);
+                logger.info("MainDepot {} handed over only {} of {} requested: {}", identificationNumber, currentQuantity, cargo, quantity);
                 return currentQuantity;
             }
         } catch (Exception e) {
             return 0;
         }
         finally {
-            logger.info("Handed over " + quantity + " of " + cargo);
+            logger.info("Handed over {} of {}", quantity, cargo);
             cargoStorageSemaphore.release();
         }
     }
 
-
+    //============================================================================
+    // Getters and Setters
     public Status getStatus() {
         return status;
     }
@@ -135,6 +132,7 @@ public class MainDepot implements Station {
         return identificationNumber;
     }
 
+    //============================================================================
     @Override
     public void start() {
         // MainDepot does not have a separate thread of execution

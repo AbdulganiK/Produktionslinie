@@ -7,10 +7,26 @@ import org.betriebssysteme.model.status.StatusCritical;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
+/**
+ * The ControlMachine class represents a machine that produces products and checks for defects.
+ * It extends the Maschine class
+ * and implements specific behavior for controlling production based on storage status and defect probability.
+ */
 public class ControlMachine extends Maschine{
-    private final int probilityOfDefectPercent;
+    private final int probabilityOfDefectPercent;
 
-
+    /**
+     * Constructor for the ControlMachine class.
+     * @param identificationNumber The unique identification number for the machine.
+     * @param timeToSleep The time in milliseconds that the machine will sleep between production cycles.
+     * @param maxStorageCapacity The maximum storage capacity for the machine.
+     * @param initialQuantityOfProduct The initial quantity of the product in storage.
+     * @param productCargo The type of product cargo that the machine produces.
+     * @param nextMaschine The next machine in the production line to which the produced cargo will be delivered.
+     * @param productionTime The time in milliseconds that the machine takes to produce one unit of product.
+     * @param probabilityOfDefectPercent The probability (in percentage) that a produced product is defective.
+     * @param maschinePriority The priority level of the machine for processing requests and deliveries.
+     */
     public ControlMachine(int identificationNumber,
                           int timeToSleep,
                           int maxStorageCapacity,
@@ -25,13 +41,13 @@ public class ControlMachine extends Maschine{
                 timeToSleep,
                 maxStorageCapacity,
                 nextMaschine,
-                new java.util.HashMap<Cargo, Integer>() {{
+                new java.util.HashMap<>() {{
                     put(productCargo, initialQuantityOfProduct);
                     put(Product.SCRAP, 0);
                 }},
                 productCargo,
                 maschinePriority);
-        this.probilityOfDefectPercent = probabilityOfDefectPercent;
+        this.probabilityOfDefectPercent = probabilityOfDefectPercent;
     }
 
 
@@ -39,40 +55,34 @@ public class ControlMachine extends Maschine{
     protected void checkStorageStatus() {
         try {
             Status newStatus = StatusInfo.OPERATIONAL;
-            logger.info("Checking storage status of ControlMachine " + identificationNumber);
+            logger.info("Checking storage status of ControlMachine {}", identificationNumber);
             storageSemaphore.acquire();
             // Check product storage
             int productStorage = storage.getOrDefault(productCargo, 0);
             if (productStorage >= maxStorageCapacity) {
-                if (newStatus != StatusWarning.EMPTY) {
-                    newStatus = StatusWarning.FULL;
-                    logger.info("Product storage is FULL in ControlMachine " + identificationNumber);
-                }
+                newStatus = StatusWarning.FULL;
+                logger.info("Product storage is FULL in ControlMachine {}", identificationNumber);
             } else if (productStorage >= maxStorageCapacity * 0.25 && productStorage != 0) {
-                if (newStatus != StatusWarning.EMPTY) {
-                    newStatus = StatusCritical.LOW_CAPACITY;
-                    logger.info("Product storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
-                }
+                newStatus = StatusCritical.LOW_CAPACITY;
+                logger.info("Product storage is LOW_CAPACITY in ControlMachine {}", identificationNumber);
             }
             else if (productStorage == 0) {
-                if (newStatus != StatusWarning.EMPTY) {
-                    newStatus = StatusWarning.EMPTY;
-                    logger.info("Product storage is EMPTY in ControlMachine " + identificationNumber);
-                }
+                newStatus = StatusWarning.EMPTY;
+                logger.info("Product storage is EMPTY in ControlMachine {}", identificationNumber);
             }
             // Check SCRAP storage
             int scrapStorage = storage.getOrDefault(Product.SCRAP, 0);
             if (scrapStorage >= maxStorageCapacity) {
                 if (newStatus != StatusWarning.FULL) {
                     newStatus = StatusWarning.FULL;
-                    logger.info("SCRAP storage is FULL in ControlMachine " + identificationNumber);
+                    logger.info("SCRAP storage is FULL in ControlMachine {}", identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
             }
             else if (scrapStorage >= maxStorageCapacity * 0.75) {
                 if (newStatus != StatusCritical.LOW_CAPACITY) {
                     newStatus = StatusCritical.LOW_CAPACITY;
-                    logger.info("SCRAP storage is LOW_CAPACITY in ControlMachine " + identificationNumber);
+                    logger.info("SCRAP storage is LOW_CAPACITY in ControlMachine {}", identificationNumber);
                 }
                 sendCargoRequest(Product.SCRAP, scrapStorage);
             }
@@ -113,11 +123,11 @@ public class ControlMachine extends Maschine{
     @Override
     protected Cargo produceProduct() {
         int randomValue = (int) (Math.random() * 100);
-        if (randomValue < probilityOfDefectPercent) {
-            logger.info("ControlMachine " + identificationNumber + " produced a DEFECT product.");
+        if (randomValue < probabilityOfDefectPercent) {
+            logger.info("ControlMachine {} produced a DEFECT product.", identificationNumber);
             return Product.SCRAP;
         }
-        logger.info("ControlMachine " + identificationNumber + " produced a GOOD product.");
+        logger.info("ControlMachine {} produced a GOOD product.", identificationNumber);
         try {
             Thread.sleep(timeToProcess);
         } catch (InterruptedException e) {
@@ -130,13 +140,13 @@ public class ControlMachine extends Maschine{
     protected void storeProductOrDeliverToNextMachine(Cargo cargo) {
         if (cargo == Product.SCRAP) {
             storeProduct(cargo);
-            logger.info("ControlMachine " + identificationNumber + " storing DEFECT product: " + cargo);
+            logger.info("ControlMachine {} storing DEFECT product: {}", identificationNumber, cargo);
         } else if (nextMaschine != null) {
-            logger.info("ControlMachine " + identificationNumber + " delivering product to next machine: " + cargo);
+            logger.info("ControlMachine {} delivering product to next machine: {}", identificationNumber, cargo);
             deliverToNextMachine(cargo);
         }
         else{
-            logger.info("ControlMachine " + identificationNumber + " not storing product: " + cargo);
+            logger.info("ControlMachine {} not storing product: {}", identificationNumber, cargo);
         }
     }
 }

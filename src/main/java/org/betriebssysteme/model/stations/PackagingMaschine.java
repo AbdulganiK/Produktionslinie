@@ -9,9 +9,26 @@ import org.betriebssysteme.model.status.StatusCritical;
 import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
+/**
+ * The PackagingMaschine class represents a machine responsible for packaging products based on a given recipe.
+ * It extends the Maschine class and implements specific behavior for checking storage status, determining if production is possible,
+ * producing products, and storing or delivering products to the next machine in the production line.
+ */
 public class PackagingMaschine extends Maschine {
     private final Recipe recipe;
 
+    /**
+     * Constructor for PackagingMaschine.
+     *
+     * @param identificationNumber   Unique identifier for the machine.
+     * @param timeToSleep           Time the machine sleeps between checks (in milliseconds).
+     * @param maxStorageCapacity    Maximum storage capacity of the machine.
+     * @param nextMaschine          The next machine in the production line.
+     * @param initialQuantityOfProduct Initial quantity of the product in storage.
+     * @param productionTime        Time taken to produce one unit of product (in milliseconds).
+     * @param recipe                The recipe that defines the ingredients and their quantities for production.
+     * @param maschinePriority      The priority of the machine in the production line.
+     */
     public PackagingMaschine(int identificationNumber,
                               int timeToSleep,
                               int maxStorageCapacity,
