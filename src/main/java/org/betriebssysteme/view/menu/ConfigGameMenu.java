@@ -29,6 +29,8 @@ public class ConfigGameMenu extends FXGLMenu {
     private final ComboBox<ConfigEntry> configSelector = new ComboBox<>();
     private final Label sourceLabel = new Label();
     private Path externalFile = null;
+    private boolean debugVisible = false;
+
 
     private enum ConfigEntry {
         PRODUCTION("Production Config", JSONConfig.DEFAULT_CONFIG_RESOURCE),
@@ -79,6 +81,19 @@ public class ConfigGameMenu extends FXGLMenu {
         Button btnResume = new Button("Resume");
         Button btnLoadFile = new Button("Load File...");
         Button btnSaveAs = new Button("Save As...");
+        ToggleButton btnDebugToggle = new ToggleButton("Debug off");
+
+        btnDebugToggle.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            debugVisible = newVal;
+
+            if (debugVisible) {
+                btnDebugToggle.setText("Debug ON");
+                enableDebug();
+            } else {
+                btnDebugToggle.setText("Debug OFF");
+                disableDebug();
+            }
+        });
 
         btnApply.setOnAction(e -> {
             if (applyConfig()) {
@@ -99,7 +114,7 @@ public class ConfigGameMenu extends FXGLMenu {
         btnLoadFile.setOnAction(e -> loadExternalFile());
         btnSaveAs.setOnAction(e -> saveAs());
 
-        HBox buttons = new HBox(10, btnApply, btnSaveAs, btnLoadFile, btnRestart, btnResume);
+        HBox buttons = new HBox(10, btnApply, btnSaveAs, btnLoadFile, btnRestart, btnResume, btnDebugToggle);
         buttons.setAlignment(Pos.CENTER_LEFT);
         buttons.setPadding(new Insets(10, 0, 0, 0));
         panel.setBottom(buttons);
@@ -121,6 +136,14 @@ public class ConfigGameMenu extends FXGLMenu {
                 fireResume();
             }
         });
+    }
+
+    private void enableDebug() {
+        debugVisible = true;
+    }
+
+    private void disableDebug() {
+        debugVisible = false;
     }
 
     private void openConfig() {
@@ -273,5 +296,13 @@ public class ConfigGameMenu extends FXGLMenu {
         a.setHeaderText(null);
         a.setContentText(msg);
         a.showAndWait();
+    }
+
+    public boolean isDebugVisible() {
+        return debugVisible;
+    }
+
+    public void setDebugVisible(boolean debugVisible) {
+        this.debugVisible = debugVisible;
     }
 }

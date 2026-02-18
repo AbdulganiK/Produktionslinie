@@ -13,12 +13,12 @@ public class BeltComponent extends Component {
     AnimatedTexture texture;
     AnimationChannel startBeltAnim, midBeltAnim, endBeltAnim;
     private BeltDirection beltDirection;
-
     private Point2D DIR = new Point2D(27, -13).normalize();
-
     public Point2D getDirection() {
         return DIR;
     }
+    private final Point2D VERTICAL_DIRECTION = new Point2D(27, -13);
+    private final Point2D HORIZONTAL_DIRECTION = new Point2D(-27, -13);
 
     public BeltComponent(BeltDirection direction) {
         if (direction == BeltDirection.VERTICAL) {
@@ -49,18 +49,16 @@ public class BeltComponent extends Component {
             this.startBeltAnim = new AnimationChannel(FXGL.image("belt-start-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.midBeltAnim = new AnimationChannel(FXGL.image("belt-mid-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.endBeltAnim = new AnimationChannel(FXGL.image("belt-end-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
-            this.texture = new AnimatedTexture(this.startBeltAnim);
-            this.DIR = new Point2D(27, -13).normalize();
+            this.DIR = VERTICAL_DIRECTION.normalize();
             this.beltDirection = BeltDirection.VERTICAL;
         } else {
             this.startBeltAnim = new AnimationChannel(FXGL.image("belt-start-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.midBeltAnim = new AnimationChannel(FXGL.image("belt-mid-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.endBeltAnim = new AnimationChannel(FXGL.image("belt-end-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
-            this.texture = new AnimatedTexture(this.startBeltAnim);
-            this.DIR = new Point2D(-27, -13).normalize();
-
+            this.DIR = HORIZONTAL_DIRECTION.normalize();
             this.beltDirection = BeltDirection.HORIZONTAL;
         }
+        this.texture = new AnimatedTexture(this.startBeltAnim);
         entity.getViewComponent().addChild(this.texture);
 
     }

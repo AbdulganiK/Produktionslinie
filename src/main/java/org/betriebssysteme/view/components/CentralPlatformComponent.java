@@ -13,51 +13,88 @@ import org.betriebssysteme.utility.EventHandler;
 public class CentralPlatformComponent extends Component {
 
     private static final double PAD_WIDTH   = 420;
-    private static final double PAD_HEIGHT  = 160;
-
     private static final double DECK_HEIGHT     = 40;
     private static final double BUILDING_WIDTH  = 280;
     private static final double BUILDING_HEIGHT = 90;
 
     @Override
     public void onAdded() {
-
         Group root = new Group();
 
+        Rectangle deck = createDeck();
+        Rectangle deckEdge = createDeckEdge(deck);
+
+        Rectangle building = createBuilding(deck);
+        Rectangle base = createBuildingBase(building);
+        Rectangle roof = createRoof(building);
+
+        DoorParts doorParts = createDoor(building);
+        Text title = createTitle(building);
+
+        RailParts railParts = createRails(deck);
+
+
+        root.getChildren().addAll(
+                deck, deckEdge,
+                building, base, roof,
+                doorParts.door, doorParts.doorStep, doorParts.doorLight, doorParts.doorLabel, doorParts.doorHandle,
+                title,
+                railParts.leftPost, railParts.rightPost, railParts.midPost, railParts.frontRail
+                // , binParts.bin1, binParts.bin2
+        );
+
+        entity.getViewComponent().addChild(root);
+    }
+
+
+    private Rectangle createDeck() {
         Rectangle deck = new Rectangle(PAD_WIDTH * 0.9, DECK_HEIGHT);
         deck.setFill(Color.rgb(55, 60, 75));
         deck.setStroke(Color.rgb(30, 35, 45));
         deck.setStrokeWidth(2);
         deck.setTranslateX((PAD_WIDTH - deck.getWidth()) / 2);
+        return deck;
+    }
 
+    private Rectangle createDeckEdge(Rectangle deck) {
         Rectangle deckEdge = new Rectangle(deck.getWidth(), 10);
         deckEdge.setFill(Color.rgb(45, 50, 65));
         deckEdge.setTranslateX(deck.getTranslateX());
         deckEdge.setTranslateY(deck.getTranslateY() + DECK_HEIGHT - 2);
+        return deckEdge;
+    }
 
-        // Gebäude auf dem Podest
+
+    private Rectangle createBuilding(Rectangle deck) {
         Rectangle building = new Rectangle(BUILDING_WIDTH, BUILDING_HEIGHT);
         building.setFill(Color.rgb(215, 215, 220));
         building.setStroke(Color.rgb(150, 150, 160));
         building.setStrokeWidth(2);
         building.setTranslateX(deck.getTranslateX() + (deck.getWidth() - BUILDING_WIDTH) / 2);
         building.setTranslateY(deck.getTranslateY() - BUILDING_HEIGHT + 8);
+        return building;
+    }
 
-        // dunkler Sockel am Gebäude
+    private Rectangle createBuildingBase(Rectangle building) {
         Rectangle base = new Rectangle(BUILDING_WIDTH, 24);
         base.setFill(Color.rgb(70, 75, 95));
         base.setTranslateX(building.getTranslateX());
         base.setTranslateY(building.getTranslateY() + BUILDING_HEIGHT - base.getHeight());
+        return base;
+    }
 
-        // Dach
+    private Rectangle createRoof(Rectangle building) {
         Rectangle roof = new Rectangle(BUILDING_WIDTH + 24, 16);
         roof.setFill(Color.rgb(50, 55, 70));
         roof.setStroke(Color.rgb(30, 35, 45));
         roof.setStrokeWidth(2);
         roof.setTranslateX(building.getTranslateX() - 12);
         roof.setTranslateY(building.getTranslateY() - 14);
+        return roof;
+    }
 
-        // Tür vorne
+
+    private DoorParts createDoor(Rectangle building) {
         double doorWidth = 44;
         double doorHeight = 70;
 
@@ -91,74 +128,67 @@ public class CentralPlatformComponent extends Component {
         doorHandle.setTranslateX(door.getTranslateX() + doorWidth - 12);
         doorHandle.setTranslateY(door.getTranslateY() + doorHeight / 2.0 - 5);
 
+        return new DoorParts(door, doorStep, doorLight, doorLabel, doorHandle);
+    }
 
+    private static class DoorParts {
+        final Rectangle door, doorStep, doorLight, doorLabel, doorHandle;
+
+        DoorParts(Rectangle door, Rectangle doorStep, Rectangle doorLight, Rectangle doorLabel, Rectangle doorHandle) {
+            this.door = door;
+            this.doorStep = doorStep;
+            this.doorLight = doorLight;
+            this.doorLabel = doorLabel;
+            this.doorHandle = doorHandle;
+        }
+    }
+
+
+    private Text createTitle(Rectangle building) {
         Text title = new Text("ZENTRALE");
         title.setFill(Color.rgb(245, 210, 40));
         title.setStrokeWidth(2);
         title.setFont(Font.font("Consolas", 26));
         title.setTranslateX(building.getTranslateX() + BUILDING_WIDTH * 0.28);
         title.setTranslateY(building.getTranslateY() - 18);
+        return title;
+    }
 
 
+    private RailParts createRails(Rectangle deck) {
         double railY = deck.getTranslateY() + 5;
 
         Line leftPost = new Line(deck.getTranslateX() + 20, railY, deck.getTranslateX() + 20, railY - 28);
         leftPost.setStroke(Color.rgb(245, 205, 70));
         leftPost.setStrokeWidth(4);
 
-        Line rightPost = new Line(deck.getTranslateX() + deck.getWidth() - 20, railY, deck.getTranslateX() + deck.getWidth() - 20, railY - 28);
+        Line rightPost = new Line(deck.getTranslateX() + deck.getWidth() - 20, railY,
+                deck.getTranslateX() + deck.getWidth() - 20, railY - 28);
         rightPost.setStroke(leftPost.getStroke());
         rightPost.setStrokeWidth(4);
 
-        Line frontRail = new Line(
-                leftPost.getStartX(),
-                leftPost.getEndY(),
-                rightPost.getStartX(),
-                rightPost.getEndY()
-        );
+        Line frontRail = new Line(leftPost.getStartX(), leftPost.getEndY(), rightPost.getStartX(), rightPost.getEndY());
         frontRail.setStroke(leftPost.getStroke());
         frontRail.setStrokeWidth(4);
 
-        Line midPost = new Line(
-                deck.getTranslateX() + deck.getWidth() / 2.0,
-                railY,
-                deck.getTranslateX() + deck.getWidth() / 2.0,
-                railY - 28
-        );
+        Line midPost = new Line(deck.getTranslateX() + deck.getWidth() / 2.0, railY,
+                deck.getTranslateX() + deck.getWidth() / 2.0, railY - 28);
         midPost.setStroke(leftPost.getStroke());
         midPost.setStrokeWidth(4);
 
-        Rectangle bin1 = new Rectangle(14, 26);
-        bin1.setArcWidth(6);
-        bin1.setArcHeight(6);
-        bin1.setFill(Color.rgb(245, 205, 70));
-        bin1.setStroke(Color.rgb(180, 150, 50));
-        bin1.setTranslateX(door.getTranslateX() + doorWidth + 16);
-        bin1.setTranslateY(door.getTranslateY() + doorHeight - 20);
-
-        Rectangle bin2 = new Rectangle(18, 22);
-        bin2.setArcWidth(8);
-        bin2.setArcHeight(8);
-        bin2.setFill(Color.rgb(245, 205, 70));
-        bin2.setStroke(Color.rgb(180, 150, 50));
-        bin2.setTranslateX(bin1.getTranslateX() + 18);
-        bin2.setTranslateY(bin1.getTranslateY() - 8);
-
-        root.getChildren().addAll(
-                deck, deckEdge,
-                building, base, roof,
-                door, doorStep, doorLight, doorLabel, doorHandle,
-                title,
-                leftPost, rightPost, midPost, frontRail
-        );
-
-        entity.getViewComponent().addChild(root);
-
-        // uncomment if needed
-        //root.setOnMouseClicked(this::handleCentralClick);
+        return new RailParts(leftPost, rightPost, midPost, frontRail);
     }
 
-    public void handleCentralClick(MouseEvent e) {
-        EventHandler.handleMenuCLick(e, entity);
+    private static class RailParts {
+        final Line leftPost, rightPost, midPost, frontRail;
+
+        RailParts(Line leftPost, Line rightPost, Line midPost, Line frontRail) {
+            this.leftPost = leftPost;
+            this.rightPost = rightPost;
+            this.midPost = midPost;
+            this.frontRail = frontRail;
+        }
     }
+
+
 }

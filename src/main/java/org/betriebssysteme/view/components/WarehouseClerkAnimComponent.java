@@ -13,25 +13,16 @@ public class WarehouseClerkAnimComponent extends Component {
     private static final int FRAME_W = 64;
     private static final int FRAME_H = 64;
 
-    // Walk (wie bisher)
     private static final Duration FRONT_BACK_DURATION = Duration.seconds(1); // 6 frames
     private static final Duration SIDE_DURATION       = Duration.seconds(1); // 8 frames
-
-    // Idle: 1 Reihe mit 7 Frames (0..6)
     private static final Duration IDLE_DURATION       = Duration.seconds(1);
-
     private static final double IDLE_EPS = 0.05;
-
     private enum Dir { FRONT, BACK, LEFT, RIGHT }
-
-    private AnimationChannel walkTopAnim, walkBotAnim, walkRightAnim, walkLeftAnim;
-    private AnimationChannel idleTopAnim, idleBotAnim, idleRightAnim, idleLeftAnim;
-
-    private AnimatedTexture texture;
+    private final AnimationChannel walkTopAnim, walkBotAnim, walkRightAnim, walkLeftAnim;
+    private final AnimationChannel idleTopAnim, idleBotAnim, idleRightAnim, idleLeftAnim;
+    private final AnimatedTexture texture;
     private Point2D lastPos;
-
     private AnimationChannel currentChannel;
-
     private boolean isWalking = false;
     private Dir lastDir = Dir.FRONT;
 
@@ -116,7 +107,6 @@ public class WarehouseClerkAnimComponent extends Component {
     }
 
     public void handleClerkClick(javafx.scene.input.MouseEvent e) {
-        System.out.println("CLERK CLICK");
         EventHandler.handleMenuCLick(e, entity);
     }
 
@@ -143,7 +133,6 @@ public class WarehouseClerkAnimComponent extends Component {
             return;
         }
 
-        // Bewegung -> Richtung bestimmen + lastDir updaten
         AnimationChannel walkCh;
         if (Math.abs(dx) >= Math.abs(dy)) {
             if (dx >= 0) {
