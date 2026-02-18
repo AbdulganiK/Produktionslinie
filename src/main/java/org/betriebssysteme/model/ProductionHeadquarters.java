@@ -8,19 +8,32 @@ import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class ProductionHeadquarters{
+    /**
+     * The PriorityQueue requestQueue is used to manage the requests in the productionline.
+     * Each request has a priority level, and the queue ensures that higher priority requests are processed before lower priority ones.
+     * The Comparator is used to sort the requests based on their priority in descending order
+     * (higher priority first).
+     * It is synchronized
+     * using a Semaphore to ensure thread safety when multiple personnel and stations access the queue concurrently.
+     * The Semaphore allows only one thread to access the requestQueue at a time,
+     * preventing multiple threads from modifying the queue simultaneously
+     * and causing data corruption or inconsistencies.
+     */
     private final PriorityQueue<Request> requestQueue;
     private final Semaphore requestQueueSemaphore = new Semaphore(1);
-
+    // The stations HashMap stores the stations in the production line, with the station's identification number as the key and the Station object as the value.
     private final HashMap stations;
+    // The personnel HashMap stores the personnel in the production line, with the personnel's identification number as the key and the Personnel object as the value.
     private final HashMap personnel;
     private static Logger logger;
+    // Singleton instance of ProductionHeadquarters
     private static ProductionHeadquarters singletonInstance;
     private final int identificationNumber;
     private boolean consoleOutputEnabled = false;
 
 
     /**
-     * Private constructor for singleton pattern
+     * Private constructor for a singleton pattern
      */
     private ProductionHeadquarters (){
         requestQueue = new PriorityQueue<>(Comparator.comparingInt(Request::priority).reversed());
@@ -49,7 +62,7 @@ public class ProductionHeadquarters{
         for (Object personObj : personnel.values()) {
             Personnel person = (Personnel) personObj;
             person.start();
-            logger.info("Started personnel with ID: " + person.getIdentificationNumber());
+            logger.info("Started personnel with ID: {}", person.getIdentificationNumber());
         }
     }
 
@@ -66,7 +79,7 @@ public class ProductionHeadquarters{
 
     /**
      * Add a request to the request queue
-     * This method is thread-safe, as it uses a semaphore to control access to the request queue.
+     * This method is thread-safe, as it uses semaphore to control access to the request queue.
      * @param request Request to be added
      */
     public void addRequest(Request request){
@@ -77,7 +90,7 @@ public class ProductionHeadquarters{
 
     /**
      * Poll a request from the request queue
-     * This method is thread-safe, as it uses a semaphore to control access to the request queue.
+     * This method is thread-safe, as it uses semaphore to control access to the request queue.
      * @return Polled Request
      */
     public Request pollRequest(){
@@ -88,7 +101,8 @@ public class ProductionHeadquarters{
         return request;
     }
 
-
+    //============================================================================
+    // Getters and Setters
     public Map getStations(){
         return stations;
     }
@@ -118,7 +132,14 @@ public class ProductionHeadquarters{
         this.consoleOutputEnabled = consoleOutputEnabled;
     }
 
-    public void deliteAllData() {
+    //============================================================================
+    /**
+     * The deliteAllData method is used to clear all stations, personnel, and requests from the Production Headquarters.
+     * It clears the stations and personnel HashMaps and also clears the request queue while ensuring thread safety using the semaphore.
+     * This method can be useful for resetting the state of the Production Headquarters or for loading new configurations without restarting the application.
+     * @throws RuntimeException if the thread is interrupted while acquiring the semaphore to clear the request queue.
+     */
+    public void deleteAllData() {
         stations.clear();
         personnel.clear();
         try {

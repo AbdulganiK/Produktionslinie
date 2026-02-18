@@ -6,7 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents a recipe for producing a product from ingredients.
+ * The Recipe record represents a production recipe for a product.
+ * It contains information about the time required to produce the product,
+ * the cargo representing the product, and a map of ingredients required for the recipe with their quantities.
  *
  * @param productionTime The time required to produce the product.
  * @param productCargo   The cargo representing the product.
@@ -24,7 +26,7 @@ public record Recipe(
      * @param initialQuantityPerIngredient The initial quantity for each ingredient.
      * @return A map containing the ingredients and their initial quantities.
      */
-    public Map<Cargo, Integer> getInitalStorage(int initialQuantityPerIngredient) {
+    public Map<Cargo, Integer> getInitialStorage(int initialQuantityPerIngredient) {
         Map<Cargo, Integer> initialStorage = new HashMap<>();
         for (Cargo ingredient : ingredients.keySet()) {
             initialStorage.put(ingredient, initialQuantityPerIngredient);

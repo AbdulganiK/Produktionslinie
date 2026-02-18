@@ -87,7 +87,7 @@ public class ConfigGameMenu extends FXGLMenu {
         });
 
         btnRestart.setOnAction(e -> {
-            ProductionHeadquarters.getInstance().deliteAllData();
+            ProductionHeadquarters.getInstance().deleteAllData();
             boolean ok = reloadCurrentOrAll();
             if (!ok) return;
             getGameController().startNewGame();

@@ -6,8 +6,7 @@ package org.betriebssysteme.model.status;
 public enum StatusWarning implements Status{
     STOPPED,
     FULL,
-    EMPTY,
-    ERROR;
+    EMPTY;
 
     @Override
     public StatusTyp getStatusTyp() {

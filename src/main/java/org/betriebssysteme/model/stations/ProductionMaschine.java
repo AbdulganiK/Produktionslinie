@@ -23,7 +23,7 @@ public class ProductionMaschine extends Maschine {
                 timeToSleep,
                 maxStorageCapacity,
                 nextMaschine,
-                recipe.getInitalStorage(initialQuantityOfProduct),
+                recipe.getInitialStorage(initialQuantityOfProduct),
                 recipe.productCargo(),
                 maschinePriority);
         this.recipe = recipe;
