@@ -53,6 +53,7 @@ public class WarehouseClerk extends Thread implements Personnel {
         this.maxCargoCapacity = maxCargoCapacity;
         this.logger = LoggerFactory.getLogger("WarehouseClerk-" + identificationNumber);
         logger.info("WarehouseClerk " + identificationNumber +" ms, task time: " + timeForTask_ms + " ms, sleep time: " + timeForSleep_ms + " ms.");
+        setDaemon(true); // Set the thread as a daemon so that it will automatically shut down when the main program exits
     }
 
     /**

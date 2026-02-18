@@ -14,6 +14,11 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The Supplier class represents a supplier personnel in the production system.
+ * It is responsible for refilling the main depot with materials and collecting finished products and scrap.
+ * The Supplier operates in a separate thread and periodically performs its supply routine based on the defined supply interval and timer.
+ */
 public class Supplier extends Thread implements Personnel {
     private final int identificationNumber;
     private Status status;
@@ -27,6 +32,15 @@ public class Supplier extends Thread implements Personnel {
     private final HashMap<Cargo, Integer> cargoStorage;
     private final int maxCapacity;
 
+    /**
+     * Constructor for the Supplier class.
+     * Initializes the supplier with the given parameters and sets up the cargo storage.
+      * @param identificationNumber The unique identification number for the supplier.
+     * @param supplyInterval_ms The interval in milliseconds between each supply routine.
+     * @param supplyTimer_ms The time in milliseconds that the supplier takes to perform the supply routine.
+     * @param mainDepotId The identification number of the main depot that the supplier will interact with.
+     * @param maxCapacity The maximum capacity of the supplier's cargo storage.
+     */
     public Supplier(int identificationNumber,
                     int supplyInterval_ms,
                     int supplyTimer_ms,
@@ -42,9 +56,13 @@ public class Supplier extends Thread implements Personnel {
         this.logger = org.slf4j.LoggerFactory.getLogger("Supplier-" + identificationNumber);
         logger.info("Supplier {} created with supply interval: {} ms, supply timer: {} ms.", identificationNumber, supplyInterval_ms, supplyTimer_ms);
         this.cargoStorage = new HashMap<>();
-        setDaemon(true);
+        setDaemon(true); // Set the thread as a daemon so that it will automatically shut down when the main program exits
     }
 
+    /**
+     * The supplyRoutine method defines the main routine for the supplier, which includes refilling the main depot with materials and collecting finished products and scrap.
+     * @throws InterruptedException if the thread is interrupted while waiting or sleeping during the supply routine.
+     */
     private void supplyRoutine() throws InterruptedException {
         // Initialize Supplier cargo storage
         int cargoCapacityPerMaterial = maxCapacity / Material.values().length;
@@ -57,23 +75,23 @@ public class Supplier extends Thread implements Personnel {
         task = Task.DELIVERING;
         idOfCurrentDestinationStation = mainDepotId;
         logger.info("Supplier starting supply routine to Main Depot");
-        awaitReady();
+        awaitReady(); // Wait until the frontend has updated his position
         refillDepotAndCollectCargo();
         task = Task.TRANSPORTING;
         idOfCurrentDestinationStation = -1;
-        awaitReady();
+        awaitReady(); // Wait until the frontend has updated his position
         logger.info("Supplier finishing supply routine to Main Depot");
         if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
             System.out.println("Supplier " + identificationNumber + " finished supply routine to Main Depot");
         }
     }
 
-    private void refillDepotAndCollectCargo() {
-        try {
-            Thread.sleep(supplyTimer_ms);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * The refillDepotAndCollectCargo method performs the actual refilling of the main depot with materials and collecting of finished products and scrap.
+     * @throws InterruptedException if the thread is interrupted while sleeping during the supply timer.
+     */
+    private void refillDepotAndCollectCargo() throws InterruptedException {
+        Thread.sleep(supplyTimer_ms);
         for (Material material : Material.values()) {
             int currentQuantity = cargoStorage.get(material);
             int resizedQuantity = refillCargo(material, currentQuantity);
@@ -98,6 +116,10 @@ public class Supplier extends Thread implements Personnel {
         }
     }
 
+    /**
+     * The awaitReady method is used to synchronize the supplier thread with the frontend updates.
+     * @throws InterruptedException if the thread is interrupted while waiting for the ready signal.
+     */
     private synchronized void awaitReady() throws InterruptedException {
         ready = false;
         while (!ready) {
@@ -173,6 +195,7 @@ public class Supplier extends Thread implements Personnel {
         status = StatusInfo.OPERATIONAL;
         while (true) {
             try {
+                // Perform the supply routine at defined intervals and sleep in between
                 supplyRoutine();
                 Thread.sleep(supplyInterval_ms);
             } catch (InterruptedException e) {

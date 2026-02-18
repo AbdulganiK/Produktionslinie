@@ -18,6 +18,10 @@ import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The ProductionController class is responsible for initializing and managing the production line based on a JSON configuration.
+ * It creates all stations and personnel, sets up the production flow, and starts the production process.
+ */
 public class ProductionController {
     private static final Logger logger = LoggerFactory.getLogger("ProductionController");
 
@@ -33,9 +37,13 @@ public class ProductionController {
     private static final String MACHINE_PRIORITY = "maschinePriority";
     private static final String DEFECT_PROBABILITY = "probabilityOfDefectPercent";
 
+    // Objects with loaded Product Recipes
     private final ProductRecipes productRecipes = new ProductRecipes();
+    // List with all suppliers, needed to add them to headquarters
     private final List<Supplier> suppliers = new ArrayList<>();
+    // List with all warehouse clerks, needed to add them to headquarters
     private final List<WarehouseClerk> warehouseClerks = new ArrayList<>();
+    // JSON data for production configuration
     private final JsonNode productionConfigData;
 
     static {
@@ -57,6 +65,7 @@ public class ProductionController {
     private PackagingMaschine packagingMaschine;
 
 
+    // Constructor loads the production configuration and initializes the logger
     public ProductionController() {
         try {
             this.productionConfigData = JSONConfig.loadConfig("assets/config/productionConfigs/ProductionConfigDefault.json");
@@ -67,6 +76,10 @@ public class ProductionController {
         }
     }
 
+    /**
+     * Creates all stations based on the loaded JSON configuration.
+     * @throws IllegalStateException if critical configuration sections are missing or if station creation fails.
+     */
     public void createAllStations() {
         try {
             JsonNode stations = productionConfigData.get(STATIONS);
@@ -89,6 +102,11 @@ public class ProductionController {
         }
     }
 
+    /**
+     * Creates the MainDepot station based on the JSON configuration. Validates the presence of required fields.
+     * @param stations JsonNode containing the station's configuration
+     * @throws IllegalArgumentException if the MainDepot configuration is missing or if required fields are not present
+     */
     private void createMainDepot(JsonNode stations) {
         JsonNode md = stations.get("mainDepot");
         if (md == null) {
@@ -102,6 +120,10 @@ public class ProductionController {
         logger.info("MainDepot created with ID: {}", mainDepot.getIdentificationNumber());
     }
 
+    /**
+     * Creates all production machines based on the JSON configuration and the loaded product recipes.
+     * @param stations JsonNode containing the station's configuration
+     */
     private void createProductionMachines(JsonNode stations) {
         driveUnitHouseProductionMaschine = createProductionMaschine(
                 stations.get("driveUnitHouseProductionMaschine"),
@@ -140,6 +162,10 @@ public class ProductionController {
         );
     }
 
+    /**
+     * Creates the quality control machines for both control units and drive units based on the JSON configuration.
+     * @param stations JsonNode containing the station's configuration
+     */
     private void createQualityControlMachines(JsonNode stations) {
         controlUnitQualityControlMachine = createControlMachine(
                 stations.get("controlUnitQualityControlMachine"),
@@ -154,6 +180,11 @@ public class ProductionController {
         );
     }
 
+    /**
+     * Creates the packaging machine based on the JSON configuration and the shipping package recipe.
+     * @param stations JsonNode containing the station's configuration
+     * @throws IllegalArgumentException if the packaging machine configuration is missing or if required fields are not present
+     */
     private void createPackagingMachine(JsonNode stations) {
         JsonNode pack = stations.get("packagingMaschine");
         if (pack == null) {
@@ -170,8 +201,19 @@ public class ProductionController {
                 pack.get(MACHINE_PRIORITY).asInt()
         );
         logger.info("PackagingMaschine created with ID: {}", packagingMaschine.getIdentificationNumber());
+        if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+            System.out.println("PackagingMaschine created with ID: " + packagingMaschine.getIdentificationNumber());
+        }
     }
 
+    /**
+     * Helper method to create a production machine based on the provided JSON configuration and recipe.
+     * @param config JsonNode containing the machine configuration
+     * @param recipe Recipe object required for the production machine
+     * @param machineName Name of the machine for logging purposes
+     * @return A new instance of ProductionMaschine configured according to the provided JSON data
+     * @throws IllegalArgumentException if the configuration is missing or if required fields are not present
+     */
     private ProductionMaschine createProductionMaschine(JsonNode config, Recipe recipe, String machineName) {
         if (config == null) {
             throw new IllegalArgumentException("Configuration for " + machineName + " is missing");
@@ -186,9 +228,20 @@ public class ProductionController {
                 config.get(MACHINE_PRIORITY).asInt()
         );
         logger.info("{} created with ID: {}", machineName, machine.getIdentificationNumber());
+        if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+            System.out.println(machineName + " created with ID: " + machine.getIdentificationNumber());
+        }
         return machine;
     }
 
+    /**
+     * Helper method to create a control machine based on the provided JSON configuration and product type.
+     * @param config JsonNode containing the machine configuration
+     * @param product Product type that this control machine will be responsible for
+     * @param machineName Name of the machine for logging purposes
+     * @return A new instance of ControlMachine configured according to the provided JSON data
+     * @throws IllegalArgumentException if the configuration is missing or if required fields are not present
+     */
     private ControlMachine createControlMachine(JsonNode config, Product product, String machineName) {
         if (config == null) {
             throw new IllegalArgumentException("Configuration for " + machineName + " is missing");
@@ -205,9 +258,15 @@ public class ProductionController {
                 config.get(MACHINE_PRIORITY).asInt()
         );
         logger.info("{} created with ID: {}", machineName, machine.getIdentificationNumber());
+        if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+            System.out.println(machineName + " created with ID: " + machine.getIdentificationNumber());
+        }
         return machine;
     }
 
+    /**
+     * Sets the next machines for all production and control machines according to the production flow.
+     */
     public void setNextMachines() {
         driveUnitHouseProductionMaschine.setNextMaschine(driveUnitProductionMaschine);
         driveUnitCircuitBoardProductionMaschine.setNextMaschine(driveUnitProductionMaschine);
@@ -220,6 +279,10 @@ public class ProductionController {
         logger.info("Next machines set for all production machines");
     }
 
+    /**
+     * Creates all personnel (suppliers and warehouse clerks) based on the loaded JSON configuration.
+     * @throws IllegalStateException if critical configuration sections are missing or if personnel creation fails
+     */
     public void createAllPersonnel() {
         try {
             JsonNode personnelNode = productionConfigData.get(PERSONNEL);
@@ -245,6 +308,12 @@ public class ProductionController {
         }
     }
 
+    /**
+     * Helper method to create supplier personnel based on the provided JSON configuration.
+     * @param personnelNode JsonNode containing the personnel configuration
+     * @param mainDepotId The identification number of the main depot
+     * @throws IllegalArgumentException if required, fields for suppliers are not present in the configuration
+     */
     private void createSuppliers(JsonNode personnelNode, int mainDepotId) {
         suppliers.clear();
         JsonNode suppliersNode = personnelNode.get("suppliers");
@@ -258,10 +327,19 @@ public class ProductionController {
                         supNode.get("maxCapacity").asInt()
                 ));
                 logger.info("Supplier created with ID: {}", supNode.get(ID_NUMBER).asInt());
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("Supplier created with ID: " + supNode.get(ID_NUMBER).asInt());
+                }
             }
         }
     }
 
+    /**
+     * Helper method to create warehouse clerk personnel based on the provided JSON configuration.
+     * @param personnelNode JsonNode containing the personnel configuration
+     * @param mainDepotId The identification number of the main depot to which warehouse clerks will be associated
+     * @throws IllegalArgumentException if required, fields for warehouse clerks are not present in the configuration
+     */
     private void createWarehouseClerks(JsonNode personnelNode, int mainDepotId) {
         warehouseClerks.clear();
         JsonNode clerksNode = personnelNode.get("warehouseClerks");
@@ -275,11 +353,17 @@ public class ProductionController {
                         mainDepotId
                 ));
                 logger.info("WarehouseClerk created with ID: {}", clerkNode.get(ID_NUMBER).asInt());
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("WarehouseClerk created with ID: " + clerkNode.get(ID_NUMBER).asInt());
+                }
             }
         }
     }
 
-
+    /**
+     * Adds all created stations and personnel to the ProductionHeadquarters singleton instance.
+     * This allows the headquarters to manage and coordinate all components of the production line.
+     */
     public void addAllToProductionHeadquarters() {
         ProductionHeadquarters hq = ProductionHeadquarters.getInstance();
         addAllStationsToHeadquarters(hq);
@@ -287,6 +371,11 @@ public class ProductionController {
         logger.info("All stations and personnel added to ProductionHeadquarters");
     }
 
+    /**
+     * Helper method to add all created stations to the ProductionHeadquarters instance.
+     * This includes the main depot, production machines, control machines, and packaging machine.
+     * @param hq The ProductionHeadquarters instance to which the stations will be added
+     */
     private void addAllStationsToHeadquarters(ProductionHeadquarters hq) {
         hq.addStation(mainDepot);
         hq.addStation(driveUnitHouseProductionMaschine);
@@ -300,18 +389,33 @@ public class ProductionController {
         hq.addStation(packagingMaschine);
     }
 
+    /**
+     * Helper method to add all created personnel (suppliers and warehouse clerks) to the ProductionHeadquarters instance.
+     * This allows the headquarters to manage and coordinate the activities of all personnel in the production line.
+     * @param hq The ProductionHeadquarters instance to which the personnel will be added
+     */
     private void addAllPersonnelToHeadquarters(ProductionHeadquarters hq) {
         suppliers.forEach(hq::addPersonnel);
         warehouseClerks.forEach(hq::addPersonnel);
     }
 
+    /**
+     * Starts all stations and personnel in the ProductionHeadquarters.
+     * This method sends the start signal to all components,
+     * allowing the production line to begin operation.
+     */
     public void startProductionHeadquarters() {
         ProductionHeadquarters hq = ProductionHeadquarters.getInstance();
         hq.startAllStations();
         hq.startAllPersonnel();
-        logger.info("Send start signal to all stations and personnel in ProductionHeadquarters");
     }
 
+    /**
+     * Static method to create and start the entire production line.
+     * This method serves as the main entry point for initializing the production system.
+     * It creates an instance of ProductionController, sets up all stations and personnel, adds them to the headquarters, and starts the production process.
+     * @throws RuntimeException if any critical error occurs during the initialization of the production line
+     */
     public static void createProductionLine() {
         logger.info("Application starting");
         try {

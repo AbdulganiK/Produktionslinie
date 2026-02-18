@@ -10,6 +10,7 @@ import java.util.concurrent.Semaphore;
 public class ProductionHeadquarters{
     private final PriorityQueue<Request> requestQueue;
     private final Semaphore requestQueueSemaphore = new Semaphore(1);
+
     private final HashMap stations;
     private final HashMap personnel;
     private static Logger logger;

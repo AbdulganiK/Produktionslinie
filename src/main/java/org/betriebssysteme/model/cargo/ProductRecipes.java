@@ -6,8 +6,16 @@ import org.betriebssysteme.model.Recipe;
 
 import java.util.HashMap;
 
+/**
+ * The ProductRecipes class is responsible for loading and providing access to the recipes for creating products.
+ * It reads the recipe configurations from a JSON file and initializes Recipe objects for each product.
+ */
 public class ProductRecipes {
 
+    /**
+     * The recipeConfig variable holds the JSON configuration for the recipes, loaded from a specified file path.
+     * It is used to initialize the Recipe objects for each product.
+     */
     JsonNode recipeConfig =
             JSONConfig.loadConfig("assets/config/recipesConfigs/RecipesConfigDefault.json")
                     .get("recipes");
@@ -55,6 +63,12 @@ public class ProductRecipes {
             loadCargoMap(recipeConfig.get("shippingPackageRecipe").get("components"))
     );
 
+    /**
+     * The loadCargoMap method takes a JsonNode representing the components of a recipe and converts it into a HashMap.
+     *
+     * @param node the JsonNode containing the components of a recipe
+     * @return a HashMap mapping Cargo to their required amounts for the recipe
+     */
     private HashMap<Cargo, Integer> loadCargoMap(JsonNode node) {
         HashMap<Cargo, Integer> map = new HashMap<>();
 
