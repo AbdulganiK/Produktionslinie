@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.stations;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
@@ -100,11 +101,15 @@ public class ProductionMaschine extends Maschine {
             }
             if (!cargoProductionIsPossible && running) {
                 stopMachine();
-                System.out.println("ProductionMaschine " + identificationNumber + " stopped due to insufficient ingredients");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("ProductionMaschine " + identificationNumber + " stopped due to insufficient ingredients");
+                }
             }
             if (cargoProductionIsPossible && !running) {
                 startMachine();
-                System.out.println("ProductionMaschine " + identificationNumber + " started as all ingredients are available");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("ProductionMaschine " + identificationNumber + " started as all ingredients are available");
+                }
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

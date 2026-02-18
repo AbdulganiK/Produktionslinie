@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.stations;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.Product;
 import org.betriebssysteme.model.status.Status;
@@ -106,10 +107,15 @@ public class ControlMachine extends Maschine{
             }
             if (productionPossible && !running){
                 startMachine();
-                System.out.println("ControlMachine " + identificationNumber + " started as all conditions are met");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled())
+                {
+                    System.out.println("ControlMachine " + identificationNumber + " started as all conditions are met");
+                }
             } else if (!productionPossible && running) {
                 stopMachine();
-                System.out.println("ControlMachine " + identificationNumber + " stopped due to insufficient storage conditions");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("ControlMachine " + identificationNumber + " stopped as conditions are not met");
+                }
             }
         }
         catch (InterruptedException e) {

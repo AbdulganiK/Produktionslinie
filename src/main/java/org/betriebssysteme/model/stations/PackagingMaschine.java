@@ -1,5 +1,6 @@
 package org.betriebssysteme.model.stations;
 
+import org.betriebssysteme.model.ProductionHeadquarters;
 import org.betriebssysteme.model.Recipe;
 import org.betriebssysteme.model.cargo.Cargo;
 import org.betriebssysteme.model.cargo.CargoTyp;
@@ -133,11 +134,15 @@ public class PackagingMaschine extends Maschine {
             }
             if (!cargoProductionIsPossible && running) {
                 stopMachine();
-                System.out.println("Packaging Machine " + identificationNumber + " stopped due to insufficient ingredients or full storage");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("Packaging Machine " + identificationNumber + " stopped due to insufficient ingredients or full storage");
+                }
             }
             if (cargoProductionIsPossible && !running) {
                 startMachine();
-                System.out.println("Packaging Machine " + identificationNumber + " started production");
+                if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+                    System.out.println("Packaging Machine " + identificationNumber + " started production");
+                }
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
