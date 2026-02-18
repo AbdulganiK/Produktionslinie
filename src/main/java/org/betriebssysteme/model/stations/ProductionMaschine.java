@@ -49,21 +49,21 @@ public class ProductionMaschine extends Maschine {
     protected void checkStorageStatus() {
         try {
             Status newStatus = StatusInfo.OPERATIONAL;
-            logger.info("Checking storage status of ProductionMaschine " + identificationNumber);
+            logger.info("Checking storage status of ProductionMaschine {}", identificationNumber);
             storageSemaphore.acquire();
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int storedQuantity = storage.getOrDefault(cargo, 0);
                 int ingredientQuantity = recipe.ingredients().get(cargo);
                 if (storedQuantity == 0) {
                     newStatus = StatusWarning.EMPTY;
-                    logger.info("Ingredient " + cargo + " is empty in ProductionMaschine " + identificationNumber);
+                    logger.info("Ingredient {} is empty in ProductionMaschine {}", cargo, identificationNumber);
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL){
                         sendCargoRequest(cargo, maxStorageCapacity);
                     }
                 } else if (storedQuantity <= maxStorageCapacity * 0.25 || storedQuantity < ingredientQuantity) {
                     if (newStatus != StatusWarning.EMPTY) {
                         newStatus = StatusCritical.LOW_CAPACITY;
-                        logger.info("Ingredient " + cargo + " is low in ProductionMaschine " + identificationNumber);
+                        logger.info("Ingredient {} is low in ProductionMaschine {}", cargo, identificationNumber);
                     }
                     if (cargo.getCargoTyp() == CargoTyp.MATERIAL) {
                         sendCargoRequest(cargo, maxStorageCapacity - storedQuantity);
@@ -72,7 +72,7 @@ public class ProductionMaschine extends Maschine {
                 else if (storedQuantity >= maxStorageCapacity) {
                     if (newStatus != StatusWarning.EMPTY && newStatus != StatusCritical.LOW_CAPACITY) {
                         newStatus = StatusWarning.FULL;
-                        logger.info("Ingredient " + cargo + " storage is FULL in ProductionMaschine " + identificationNumber);
+                        logger.info("Ingredient {} storage is FULL in ProductionMaschine {}", cargo, identificationNumber);
                     }
                 }
                 status = newStatus;
