@@ -37,8 +37,6 @@ public class Scenario {
     }
 
     public void runFirst() {
-        // Start the production line
-        // All stations and personnel are created and initialized here
         ProductionController.createProductionLine();
         Map<Integer, Station> stations = ProductionHeadquarters.getInstance().getStations();
         Map<Integer, Personnel> personnels = ProductionHeadquarters.getInstance().getPersonnel();
@@ -239,13 +237,9 @@ public class Scenario {
         machineData9.put("cellY", 8);
         machineData9.put("station", stations.get(41));
         Entity fourthRowProdmachine1 = FXGL.spawn(EntityNames.MACHINE, machineData9);
-
         fourthRowProdmachine1.setZIndex(100);
         fourthRowProdmachine1.getComponent(MachineComponent.class).setAnimation(MachineAnimationType.ON);
-
         EntityPlacer.placeMachineAfterBelt(fourthRowProdmachine1, productBelt.getLast());
-
-
     }
 
 

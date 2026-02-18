@@ -1,7 +1,6 @@
 package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.entity.component.Component;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -18,44 +17,89 @@ public class StorageComponent extends Component {
     private static final double BUILDING_WIDTH  = 400;
     private static final double BUILDING_HEIGHT = 90;
 
-    private static final double BASE_HEIGHT = 20;   // dunkler Sockel
+    private static final double BASE_HEIGHT = 20;
 
     @Override
     public void onAdded() {
-
-
         Group root = new Group();
 
-        //Asphalp
+        Rectangle pad = createPad();
+
+        Rectangle building = createBuilding();
+        Rectangle base = createBase(building);
+        Rectangle roof = createRoof(building);
+
+        ColumnParts columns = createColumns(building);
+        addPanelLines(root, building);
+
+        GateParts gate = createGate(building, pad);
+        DoorParts door = createSideDoor(building);
+
+        Rectangle pillar = createPillar(door.doorFrame);
+
+        root.getChildren().addAll(
+                pad,
+                building, base, roof,
+                columns.col1, columns.col2
+        );
+
+        root.getChildren().addAll(
+                gate.gateFrame, gate.gateLeft, gate.gateRight,
+                gate.gateZone, gate.zoneLeft, gate.zoneRight,
+                gate.gateSign
+        );
+
+        root.getChildren().addAll(
+                door.doorFrame, door.doorStep, door.doorLight, door.doorHandle,
+                pillar
+        );
+
+        entity.getViewComponent().addChild(root);
+        root.setOnMouseClicked(this::handleStorageClick);
+    }
+
+    public void handleStorageClick(MouseEvent e) {
+        EventHandler.handleMenuCLick(e, entity);
+    }
+
+
+    private Rectangle createPad() {
         Rectangle pad = new Rectangle(PAD_WIDTH, PAD_HEIGHT);
-        pad.setFill(Color.rgb(70, 70, 80));                // dunkler Asphalt
-        pad.setStroke(Color.rgb(120, 120, 130));           // Rand
+        pad.setFill(Color.rgb(70, 70, 80));
+        pad.setStroke(Color.rgb(120, 120, 130));
         pad.setStrokeWidth(2);
-
-        // leicht nach unten versetzen
         pad.setTranslateY(40);
+        return pad;
+    }
 
-        // Gebäude
+
+    private Rectangle createBuilding() {
         Rectangle building = new Rectangle(BUILDING_WIDTH, BUILDING_HEIGHT);
-        building.setFill(Color.rgb(205, 205, 210));        // helles Grau
+        building.setFill(Color.rgb(205, 205, 210));
         building.setStroke(Color.rgb(120, 120, 130));
         building.setStrokeWidth(2);
         building.setTranslateX((PAD_WIDTH - BUILDING_WIDTH) / 2);
         building.setTranslateY(0);
+        return building;
+    }
 
-        // dunkler Sockel
+    private Rectangle createBase(Rectangle building) {
         Rectangle base = new Rectangle(BUILDING_WIDTH, BASE_HEIGHT);
         base.setFill(Color.rgb(60, 70, 95));
         base.setTranslateX(building.getTranslateX());
         base.setTranslateY(building.getTranslateY() + BUILDING_HEIGHT - BASE_HEIGHT);
+        return base;
+    }
 
-        // Dachkante
+    private Rectangle createRoof(Rectangle building) {
         Rectangle roof = new Rectangle(BUILDING_WIDTH, 8);
         roof.setFill(Color.rgb(180, 180, 190));
         roof.setTranslateX(building.getTranslateX());
         roof.setTranslateY(building.getTranslateY() - 8);
+        return roof;
+    }
 
-        // vertikale Fugen / Säulen
+    private ColumnParts createColumns(Rectangle building) {
         Line col1 = new Line();
         col1.setStartX(building.getTranslateX() + BUILDING_WIDTH * 0.33);
         col1.setEndX(col1.getStartX());
@@ -72,7 +116,10 @@ public class StorageComponent extends Component {
         col2.setStroke(col1.getStroke());
         col2.setStrokeWidth(3);
 
-        // horizontale Paneel-Linien
+        return new ColumnParts(col1, col2);
+    }
+
+    private void addPanelLines(Group root, Rectangle building) {
         for (int i = 1; i <= 3; i++) {
             double y = building.getTranslateY() + i * (BUILDING_HEIGHT / 4.0);
             Line line = new Line(
@@ -83,8 +130,19 @@ public class StorageComponent extends Component {
             line.setStrokeWidth(1.2);
             root.getChildren().add(line);
         }
+    }
 
-        // Tor links
+    private static class ColumnParts {
+        final Line col1, col2;
+
+        ColumnParts(Line col1, Line col2) {
+            this.col1 = col1;
+            this.col2 = col2;
+        }
+    }
+
+
+    private GateParts createGate(Rectangle building, Rectangle pad) {
         double gateWidth = BUILDING_WIDTH * 0.35;
         double gateHeight = BUILDING_HEIGHT * 0.75;
 
@@ -95,7 +153,6 @@ public class StorageComponent extends Component {
         gateFrame.setTranslateX(building.getTranslateX() + 15);
         gateFrame.setTranslateY(building.getTranslateY() + BUILDING_HEIGHT - gateHeight - 5);
 
-        // gelbe Streifen links und rechts
         Rectangle gateLeft = new Rectangle(8, gateHeight);
         gateLeft.setFill(Color.rgb(230, 190, 60));
         gateLeft.setTranslateX(gateFrame.getTranslateX() - 8);
@@ -106,8 +163,8 @@ public class StorageComponent extends Component {
         gateRight.setTranslateX(gateFrame.getTranslateX() + gateWidth);
         gateRight.setTranslateY(gateFrame.getTranslateY());
 
-        // gelber Umriss vor dem Tor auf dem Boden
         double padYTop = pad.getTranslateY();
+
         Rectangle gateZone = new Rectangle(gateWidth * 0.9, 6);
         gateZone.setFill(Color.TRANSPARENT);
         gateZone.setStroke(Color.rgb(255, 220, 90));
@@ -115,7 +172,6 @@ public class StorageComponent extends Component {
         gateZone.setTranslateX(gateFrame.getTranslateX() + gateWidth * 0.05);
         gateZone.setTranslateY(padYTop + PAD_HEIGHT * 0.1);
 
-        // seitliche Linien der Zone
         Line zoneLeft = new Line(
                 gateZone.getTranslateX(),
                 gateZone.getTranslateY(),
@@ -134,7 +190,6 @@ public class StorageComponent extends Component {
         zoneRight.setStroke(gateZone.getStroke());
         zoneRight.setStrokeWidth(2);
 
-        // kleines Panel über dem Tor
         Rectangle gateSign = new Rectangle(gateWidth * 0.5, 14);
         gateSign.setArcWidth(6);
         gateSign.setArcHeight(6);
@@ -143,7 +198,27 @@ public class StorageComponent extends Component {
         gateSign.setTranslateX(gateFrame.getTranslateX() + gateWidth * 0.25);
         gateSign.setTranslateY(building.getTranslateY() - 4);
 
-        // Seitentür rechts
+        return new GateParts(gateFrame, gateLeft, gateRight, gateZone, zoneLeft, zoneRight, gateSign);
+    }
+
+    private static class GateParts {
+        final Rectangle gateFrame, gateLeft, gateRight, gateZone, gateSign;
+        final Line zoneLeft, zoneRight;
+
+        GateParts(Rectangle gateFrame, Rectangle gateLeft, Rectangle gateRight,
+                  Rectangle gateZone, Line zoneLeft, Line zoneRight, Rectangle gateSign) {
+            this.gateFrame = gateFrame;
+            this.gateLeft = gateLeft;
+            this.gateRight = gateRight;
+            this.gateZone = gateZone;
+            this.zoneLeft = zoneLeft;
+            this.zoneRight = zoneRight;
+            this.gateSign = gateSign;
+        }
+    }
+
+
+    private DoorParts createSideDoor(Rectangle building) {
         double doorWidth = 40;
         double doorHeight = 65;
 
@@ -154,13 +229,11 @@ public class StorageComponent extends Component {
         doorFrame.setTranslateX(building.getTranslateX() + BUILDING_WIDTH - doorWidth - 30);
         doorFrame.setTranslateY(building.getTranslateY() + BUILDING_HEIGHT - doorHeight - 5);
 
-        // Türschwelle
         Rectangle doorStep = new Rectangle(doorWidth + 10, 6);
         doorStep.setFill(Color.rgb(180, 180, 190));
         doorStep.setTranslateX(doorFrame.getTranslateX() - 5);
         doorStep.setTranslateY(doorFrame.getTranslateY() + doorHeight + 1);
 
-        // Türlicht oben
         Rectangle doorLight = new Rectangle(16, 10);
         doorLight.setArcWidth(4);
         doorLight.setArcHeight(4);
@@ -174,35 +247,29 @@ public class StorageComponent extends Component {
         doorHandle.setTranslateX(doorFrame.getTranslateX() + doorWidth - 12);
         doorHandle.setTranslateY(doorFrame.getTranslateY() + doorHeight / 2.0 - 5);
 
-        // gelbe Säule rechts
+        return new DoorParts(doorFrame, doorStep, doorLight, doorHandle);
+    }
+
+    private static class DoorParts {
+        final Rectangle doorFrame, doorStep, doorLight, doorHandle;
+
+        DoorParts(Rectangle doorFrame, Rectangle doorStep, Rectangle doorLight, Rectangle doorHandle) {
+            this.doorFrame = doorFrame;
+            this.doorStep = doorStep;
+            this.doorLight = doorLight;
+            this.doorHandle = doorHandle;
+        }
+    }
+
+
+    private Rectangle createPillar(Rectangle doorFrame) {
         Rectangle pillar = new Rectangle(10, 40);
         pillar.setArcWidth(6);
         pillar.setArcHeight(6);
         pillar.setFill(Color.rgb(250, 210, 70));
         pillar.setStroke(Color.rgb(180, 150, 50));
-        pillar.setTranslateX(doorFrame.getTranslateX() + doorWidth + 18);
-        pillar.setTranslateY(doorFrame.getTranslateY() + doorHeight - 20);
-
-        // Alles zur Root-Group hinzufügen
-        root.getChildren().addAll(
-                pad,
-                building, base, roof,
-                col1, col2,
-                gateFrame, gateLeft, gateRight,
-                gateZone, zoneLeft, zoneRight,
-                gateSign,
-                doorFrame, doorStep, doorLight, doorHandle, pillar
-        );
-
-        // Root-Gruppe an Entity hängen
-        entity.getViewComponent().addChild(root);
-
-
-
-        root.setOnMouseClicked(this::handleStorageClick);
-    }
-
-    public void handleStorageClick(MouseEvent e) {
-       EventHandler.handleMenuCLick(e, entity);
+        pillar.setTranslateX(doorFrame.getTranslateX() + doorFrame.getWidth() + 18);
+        pillar.setTranslateY(doorFrame.getTranslateY() + doorFrame.getHeight() - 20);
+        return pillar;
     }
 }

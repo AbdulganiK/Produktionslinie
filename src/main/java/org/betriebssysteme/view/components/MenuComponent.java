@@ -13,20 +13,14 @@ public class MenuComponent extends Component {
 
     private final Texture background;
     private boolean visibility;
-
     private static final int ROWS = 15;
-
     private Group menuRoot;
-    private Text[] nameLabels = new Text[ROWS];
-    private Text[] valueLabels = new Text[ROWS];
-    private double baseValueX;
-    private double additionalTranslateX;
-    private double additionalTranslateY;
-
-    private boolean visible;
+    private final Text[] nameLabels = new Text[ROWS];
+    private final Text[] valueLabels = new Text[ROWS];
+    private final double additionalTranslateX;
+    private final double additionalTranslateY;
     private int baseZIndex;
     private boolean baseZInitialized = false;
-    private int zIndexBeforeVisible;
 
 
     public void ensureBaseZIndex(int currentZ) {
@@ -75,8 +69,6 @@ public class MenuComponent extends Component {
         double startXNames = 200;  // linke Spalte
         double startXValues = w * 0.59;   // rechte Spalte
 
-        baseValueX = startXValues;
-
         Font font = Font.font("Consolas", 22);
 
         for (int i = 0; i < ROWS; i++) {
@@ -94,7 +86,7 @@ public class MenuComponent extends Component {
             valueText.setFill(Color.LIMEGREEN);
             valueText.setStrokeWidth(2);
             valueText.setFont(font);
-            valueText.setTranslateX(baseValueX);
+            valueText.setTranslateX(startXValues);
             valueText.setTranslateY(h);
 
             nameLabels[i] = nameText;

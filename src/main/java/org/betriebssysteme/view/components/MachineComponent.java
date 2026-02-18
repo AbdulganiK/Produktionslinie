@@ -13,29 +13,21 @@ import org.betriebssysteme.view.ProductionLineApp;
 
 public class MachineComponent extends Component {
 
-    private AnimatedTexture texture;
-
-    private AnimationChannel turningOffAnim;
-    private AnimationChannel turningOnAnim;
-
-    private AnimationChannel productionWhileTakingItemAnimPart1;
-    private AnimationChannel productionWhileTakingItemAnimPart2;
-
-    private AnimationChannel productionWithoutTakingItemAnim;
-    private AnimationChannel offAnim;
-
+    private final AnimatedTexture texture;
+    private final AnimationChannel turningOffAnim;
+    private final AnimationChannel turningOnAnim;
+    private final AnimationChannel productionWhileTakingItemAnimPart1;
+    private final AnimationChannel productionWhileTakingItemAnimPart2;
+    private final AnimationChannel productionWithoutTakingItemAnim;
     private Entity belt;
-
-
     private boolean doorOpen = false;
-
     public boolean isDoorOpen() {
         return doorOpen;
     }
 
     public MachineComponent() {
 
-        this.offAnim = new AnimationChannel(
+        AnimationChannel offAnim = new AnimationChannel(
                 FXGL.image("Turning_Off_Animation.png"),
                 7, 64, 64,
                 Duration.seconds(2),
@@ -110,52 +102,39 @@ public class MachineComponent extends Component {
     public void onAdded() {
         entity.getViewComponent().addChild(this.texture);
         this.texture.setOnMouseClicked(this::handleMachineClick);
-
         texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
     }
 
 
     private void loopProductionWhileTakingItems() {
         doorOpen = false;
-
         texture.setOnCycleFinished(() -> {
-
             doorOpen = true;
-
             texture.setOnCycleFinished(() -> {
                 doorOpen = false;
-
                 loopProductionWhileTakingItems();
             });
-
             texture.playAnimationChannel(productionWhileTakingItemAnimPart2);
         });
-
         texture.playAnimationChannel(productionWhileTakingItemAnimPart1);
     }
 
 
     public void setAnimation(MachineAnimationType animationType) {
-
         switch (animationType) {
             case ON:
                 texture.setOnCycleFinished(() -> {
-
                     texture.setOnCycleFinished(() -> {});
-
                     loopProductionWhileTakingItems();
                 });
                 texture.playAnimationChannel(turningOnAnim);
                 break;
-
             case OFF:
                 this.texture.playAnimationChannel(turningOffAnim);
                 break;
-
             case PRODUCING_WITHOUT_TAKING_ITEMS:
                 this.texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
                 break;
-
             case PRODUCING_AND_TAKING_ITEMS:
                 loopProductionWhileTakingItems();
                 break;

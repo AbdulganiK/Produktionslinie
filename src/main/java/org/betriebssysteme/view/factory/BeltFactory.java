@@ -14,12 +14,10 @@ public class BeltFactory {
     private static final double STEP_Y = -13;
 
     // Abstand vom letzten Belt (END) zur Maschine
-    // aus deinem Beispiel mit 10 Belts hergeleitet:
-    // Maschine (1000,1000), letzter Belt (973,1027) -> +27, -27
     private static final double INPUT_END_OFFSET_X = 27;
     private static final double INPUT_END_OFFSET_Y = -27;
 
-    // Abstand vom ersten Belt HINTER der Maschine (Start der Out-Linie)
+    // Abstand vom ersten Belt HINTER der Maschine
     private static final double OUTPUT_START_OFFSET_X = 27;   // musst du ggf. feinjustieren
     private static final double OUTPUT_START_OFFSET_Y = -5;
 

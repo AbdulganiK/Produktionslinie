@@ -13,16 +13,8 @@ public class NotWalkableComponent extends Component {
     private final int offsetX;
     private final int offsetY;
 
-    public NotWalkableComponent(AStarGrid grid) {
-        this(grid, 0, 0, 50, 0, 0);
-    }
-
     public NotWalkableComponent(AStarGrid grid, int rangeX, int rangeY, int offsetX, int offsetY) {
         this(grid, rangeX, rangeY, 50, offsetX, offsetY);
-    }
-
-    public NotWalkableComponent(AStarGrid grid, int rangeX, int rangeY, int cellSize) {
-        this(grid, rangeX, rangeY, cellSize, 0, 0);
     }
 
     // Hauptkonstruktor mit allen Parametern

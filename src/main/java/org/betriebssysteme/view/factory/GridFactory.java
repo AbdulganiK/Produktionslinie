@@ -30,8 +30,6 @@ public class GridFactory {
                 new Point2D(15, 19),
                 new Point2D(15, 20),
                 new Point2D(15, 21),
-
-
                 new Point2D(18, 12),
                 new Point2D(18, 13),
                 new Point2D(18, 14),
@@ -43,7 +41,6 @@ public class GridFactory {
                 new Point2D(18, 20),
                 new Point2D(18, 21),
                 new Point2D(18, 22),
-
                 new Point2D(19, 12),
                 new Point2D(19, 13),
                 new Point2D(19, 14),
@@ -55,22 +52,17 @@ public class GridFactory {
                 new Point2D(19, 20),
                 new Point2D(19, 21),
                 new Point2D(19, 22),
-
                 new Point2D(6, 16),
                 new Point2D(7, 16),
-
                 new Point2D(7, 17),
                 new Point2D(8, 17),
                 new Point2D(9, 17),
-
                 new Point2D(9, 18),
                 new Point2D(10, 18),
                 new Point2D(11, 18),
-
                 new Point2D(11, 19),
                 new Point2D(12, 19),
                 new Point2D(13, 19),
-
                 new Point2D(13, 20),
                 new Point2D(14, 20),
                 new Point2D(5, 16),
@@ -319,7 +311,6 @@ public class GridFactory {
                 new Point2D(41, 8),
                 new Point2D(39, 9),
                 new Point2D(37, 9),
-
         };
 
         for (Point2D cell : cells) {
