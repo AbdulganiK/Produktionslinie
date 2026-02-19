@@ -1,5 +1,6 @@
 package org.betriebssysteme.view;
 
+import com.almasb.fxgl.app.ApplicationMode;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.app.scene.FXGLMenu;
@@ -47,9 +48,8 @@ public class ProductionLineApp extends GameApplication {
         gameSettings.setDeveloperMenuEnabled(true);
         gameSettings.setWidth(1600);
         gameSettings.setHeight(900);
-
         gameSettings.setGameMenuEnabled(true);
-
+        gameSettings.setApplicationMode(ApplicationMode.RELEASE);
         gameSettings.setSceneFactory(new SceneFactory() {
             @Override
             public FXGLMenu newGameMenu() {
@@ -109,6 +109,7 @@ public class ProductionLineApp extends GameApplication {
     }
 
     public static void main(String[] args) {
+
         launch(args);
     }
 }
