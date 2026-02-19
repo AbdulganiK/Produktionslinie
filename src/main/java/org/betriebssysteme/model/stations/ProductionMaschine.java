@@ -10,9 +10,8 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 /**
- * The ProductionMaschine class represents a machine that produces products based on a given recipe.
- * It extends the Maschine class and implements the specific behavior for checking storage status,
- * determining if production is possible, producing the product, and delivering it to the next machine.
+ * The ProductionMaschine class represents a machine responsible for producing products in the production line.
+ * It extends the Maschine class and implements specific behavior for a production machine.
  */
 public class ProductionMaschine extends Maschine {
     private final Recipe recipe;
@@ -23,9 +22,9 @@ public class ProductionMaschine extends Maschine {
      * @param timeToSleep time taken to sleep between production cycles in milliseconds
      * @param maxStorageCapacity maximum storage capacity for ingredients in the machine
      * @param nextMaschine the next machine to which the produced cargo will be delivered
-     * @param recipe the recipe that defines the production process, including the required ingredients and the product cargo
+     * @param recipe the recipe that defines the ingredients for the product, the production time, and the type of product cargo
      * @param initialQuantityOfProduct the initial quantity of the product cargo in storage
-     * @param maschinePriority the priority of the machine for task assignment (lower number means higher priority)
+     * @param maschinePriority the priority of the machine for requests
      */
     public ProductionMaschine(int identificationNumber,
                               int timeToSleep,

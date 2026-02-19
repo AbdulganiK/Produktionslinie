@@ -18,12 +18,12 @@ public class JSONConfig {
     public static final String DEFAULT_CONFIG_RESOURCE = "assets/config/productionConfigs/ProductionConfigDefault.json";
     public static final String RECIPES_CONFIG_RESOURCE = "assets/config/recipesConfigs/RecipesConfigDefault.json";
 
-    // Cache für bereits geladene Configs (key = resource path)
+    // Cache for loaded configurations
     private static final Map<String, JsonNode> CACHE = new ConcurrentHashMap<>();
 
     /**
-     * Lädt oder lädt neu alle bekannten Ressourcen (DEFAULT + RECIPES).
-     * Wirft IOException bei IO-/Parsing-Fehlern.
+     * reload all default configurations (DefaultConfig und RecipesConfig).
+     * @throws IOException if any of the files cannot be loaded or parsed
      */
     public static synchronized void reloadAll() throws IOException {
         reload(DEFAULT_CONFIG_RESOURCE);
@@ -31,11 +31,9 @@ public class JSONConfig {
     }
 
     /**
-     * Lädt die angegebene Resource neu (favorisiert die Nutzerdaten im Benutzerordner).
-     * Das Ergebnis wird im Cache abgelegt.
-     *
-     * @param resourceName Pfad innerhalb der Ressourcen, z.B. assets/...
-     * @throws IOException bei Lesefehlern / Parsingfehlern
+     * The Method reloads the configuration from the user file if it exists, otherwise from the classpath resource.
+     * @param resourceName the name of the resource to reload
+     * @throws IOException if the file cannot be loaded or parsed
      */
     public static synchronized void reload(String resourceName) throws IOException {
         Path userFile = getUserConfigPath(resourceName);
@@ -56,11 +54,9 @@ public class JSONConfig {
     }
 
     /**
-     * Liefert die JsonNode zur Resource. Nutzt Cache und lädt bei Bedarf neu.
-     * Wirft RuntimeException bei Fehlern (bewahrt bisherigen API-Stil).
-     *
-     * @param resourceName Resource-Pfad
-     * @return JsonNode der geladenen Konfiguration
+     * Loads the configuration as JsonNode and returns it.
+     * @param resourceName the name of the resource to load
+     * @return the loaded configuration as JsonNode
      */
     public static JsonNode loadConfig(String resourceName) {
         JsonNode n = CACHE.get(resourceName);
@@ -74,10 +70,9 @@ public class JSONConfig {
     }
 
     /**
-     * Liefert den reinen Text der Config (Nutzerdatei bevorzugt, sonst Resource).
-     *
-     * @param resourceName Resource-Pfad
-     * @return Inhalt als String
+     * Loads the configuration as text and returns it.
+     * @param resourceName the name of the resource to load
+     * @return the loaded configuration as text
      */
     public static String loadConfigText(String resourceName) {
         try {
@@ -95,10 +90,11 @@ public class JSONConfig {
     }
 
     /**
-     * Pfad unterhalb des Benutzerordners, in dem Nutzerconfigs abgelegt werden.
-     *
-     * @param resourceName Resource-Pfad
-     * @return Path zu z.\,B. {user.home}/.betriebssysteme/{Dateiname}
+     * The method getUserConfigPath returns the path to the user configuration file for the given resource name.
+     * The user configuration file is located in the user's home directory under ".betriebssysteme"
+     * and has the same file name as the resource.
+     * @param resourceName the name of the resource for which to get the user configuration path
+     * @return the path to the user configuration file
      */
     public static Path getUserConfigPath(String resourceName) {
         String fileName = Path.of(resourceName).getFileName().toString();

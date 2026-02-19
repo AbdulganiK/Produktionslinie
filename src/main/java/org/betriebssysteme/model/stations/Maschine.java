@@ -16,13 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Maschine class represents a machine in the production line.
- * It is an abstract class that extends Thread and implements the Station interface.
- * Each Maschine has an identification number, a reference to the next Maschine in the production line,
- * processing time, sleep time, storage capacity, and a storage map to hold the current quantity of each cargo type.
- * The Maschine class also includes methods for running the production cycle,
- * checking storage status, producing products, storing products,
- * delivering products to the next machine, and handling cargo requests and notifications.
+ * The abstract class Maschine represents a machine in the production line.
+ * It extends the Thread class to run as a separate thread
+ * and implements the Station interface to set the rules for receiving and handing over cargo.
  */
 public abstract class Maschine extends Thread implements Station{
     protected int identificationNumber;
@@ -36,7 +32,7 @@ public abstract class Maschine extends Thread implements Station{
      * Semaphore to synchronize access to the storage map,
      * which holds the current quantity of each cargo type in the machine's storage.
      * The semaphore is initialized with 1 permit,
-     * which means that only one thread can access the storage at a time.
+     * so that only one thread can access the storage at a time.
      * When a thread wants to access the storage,
      * it must acquire the semaphore before accessing it and release it afterward.
      * This ensures that when multiple threads (machines) are trying to access the storage concurrently,
@@ -61,6 +57,17 @@ public abstract class Maschine extends Thread implements Station{
     Semaphore notificationSemaphore = new Semaphore(1);
     protected Queue<Cargo> cargosOnTransit = new LinkedList<>();
 
+    /**
+     * Constructor for the Maschine class.
+     * @param identificationNumber The identification number for the machine.
+     * @param timeToProcess The time in milliseconds that the machine takes to process a product.
+     * @param timeToSleep The time in milliseconds that the machine will sleep between production cycles.
+     * @param maxStorageCapacity The maximum storage capacity for the machine.
+     * @param nextMaschine The next machine in the production line.
+     * @param initialStorage A Map containing the initial quantity of each cargo type in storage when the machine is created.
+     * @param productCargo The type of product cargo that the machine produces.
+     * @param maschinePriority The priority level of the machine for requests
+     */
     public Maschine(int identificationNumber,
                     int timeToProcess,
                     int timeToSleep,
@@ -88,16 +95,10 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The runProductionCycle method represents a single production cycle for the machine.
-     * It performs the following steps:
-     * 1. Log the start of the production cycle.
-     * 2. Check the storage status by calling the checkStorageStatus method.
-     * 3. Check if cargo production is possible by calling the checkIfCargoProductionIsPossible method.
-     * 4. If the machine is running,
-     * it produces a product by calling the produceProduct method and then either stores the product
-     * or delivers it to the next machine by calling the storeProductOrDeliverToNextMachine method.
-     * 5. If the machine is not running,
-     * it sleeps for a specified time to release the CPU and improve performance when the machine is stopped.
+     * The runProductionCycle method is executing one cycle of the machine's production process.
+     * It checks the storage status and whether cargo production is possible based on the machine's logic.
+     * If the machine is running, it produces a product and either stores it or delivers it to the next machine.
+     * If the machine is not running, it sleeps for a specified time.
      */
     private void runProductionCycle() {
         logger.info("Starting production cycle");
@@ -120,51 +121,36 @@ public abstract class Maschine extends Thread implements Station{
 
     /**
      * The checkStorageStatus method is an abstract method that must be implemented by subclasses of the Maschine class.
-     * It is responsible for checking the storage status of the machine,
-     * such as the quantity of each cargo type in the storage
-     * and whether there is enough capacity to store more products or scrap.
+     * It is checking the current status of the machine's storage
+     * and updating the machine's status.
      */
     protected abstract void checkStorageStatus();
 
     /**
-     * The checkIfCargoProductionIsPossible method is an abstract method
-     * that must be implemented by subclasses of the Maschine class.
-     * It is responsible for checking if the conditions for producing cargo are met,
-     * such as whether the required ingredients are available in the storage
-     * and whether there is enough capacity to store the produced cargo.
+     * The checkIfCargoProductionIsPossible method is an abstract method that must be implemented by subclasses of the Maschine class.
+     * It is checking if the machine can produce its product and updating the running status of the machine.
      */
     protected abstract void checkIfCargoProductionIsPossible();
 
 
     /**
      * The produceProduct method is an abstract method that must be implemented by subclasses of the Maschine class.
-     * It is responsible for producing a product based on the machine's recipe and production logic.
-     * The method should return the produced cargo, which can then be stored or delivered to the next machine.
-     *
-     * @return The cargo representing the produced product.
+     * It is producing the product cargo according to the machine's logic.
+     * @return the produced cargo
      */
     protected abstract Cargo produceProduct();
 
     /**
-     * The storeProductOrDeliverToNextMachine method is an abstract method
-     * that must be implemented by subclasses of the Maschine class.
-     * It is responsible for either storing the produced product in the machine's storage
-     * or delivering it to the next machine in the production line.
-     * The implementation of this method will depend on the specific logic and requirements of the machine,
-     * such as whether it has a next machine to deliver to or if
-     * it needs to store the product due to certain conditions.
-     *
-     * @param cargo The cargo representing the produced product that needs to be stored or delivered.
+     * The storeProductOrDeliverToNextMachine method is an abstract method that must be implemented by subclasses of the Maschine class.
+     * It stores the produced product in the machine's storage or delivers it to the next machine in the production line according to the machine's logic.
      */
     protected abstract void storeProductOrDeliverToNextMachine(Cargo cargo);
 
     /**
-     * The sendCargoRequest method is responsible
-     * for sending a request for a specific cargo and quantity to the production headquarters.
-     * It checks if a request for the specified cargo has already been sent before to avoid duplicate requests.
-     * If a request has not been sent before, it creates a new Request object with the specified quantity,
-     * machine priority, cargo, and machine identification number,
-     * and adds it to the production headquarters' request queue.
+     * The sendCargoRequest method is responsible for sending a cargo request to the production headquarters
+     * when the machine needs a delivery of material cargo or an empting of product cargo to continue production.
+     * If a request for the same cargo type has already been sent and is still pending,
+     * it will not send another request for the same cargo type to avoid duplicate requests.
      * @param cargo The cargo for which the request is being sent.
      * @param quantity The quantity of the cargo being requested.
      */
@@ -183,15 +169,15 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The addCargoRequestNotification method is responsible for adding a notification to the machine's queue
-     * when a cargo request has been fulfilled and the cargo is being sent to the next machine.
-     * This method is called by the previous machine in the production line
-     * to notify the current machine that a cargo is on its way.
-     * The method uses semaphore to synchronize access to the cargosOnTransit queue,
-     * ensuring that multiple threads do not interfere with each other when adding notifications.
-     * @param cargo The cargo that is being sent to the next machine, which will be added to the notification queue.
+     * The addCargoTransitNotification method is
+     * to inform the maschine that a cargo is being sent from the previous machine to it.
+     * It adds the cargo to the cargosOnTransit queue to keep track of incoming cargos
+     * and uses semaphore to synchronize access to the queue,
+     * ensuring thread safety when multiple threads (machines) are adding notifications concurrently.
+     * (Only one thread can access the queue at a time.)
+     * @param cargo the cargo on transit
      */
-    public void addCargoRequestNotification(Cargo cargo){
+    public void addCargoTransitNotification(Cargo cargo){
         try {
             notificationSemaphore.acquire();
             cargosOnTransit.add(cargo);
@@ -203,28 +189,25 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The markRequestAsCompleted method is responsible
-     * for marking a cargo request as completed in the machine's requestedCargoTypes map.
-     * This method is called by the warehouse clerk
-     * after successfully delivering the requested cargo to the machine
-     * to reset the request status for that cargo type,
-     * allowing the machine to send new requests for that cargo type in the future if needed.
+     * The markRequestAsCompleted method marks a request for a specific cargo type as completed by updating the requestedCargoTypes map.
+     * So that the machine can send new requests for that cargo type in the future when needed.
      * @param cargo The cargo for which the request is being marked as completed.
      */
     public void markRequestAsCompleted(Cargo cargo){
-        System.out.println("Machine " + identificationNumber + " marked request as completed for cargo: " + cargo);
+        if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
+            System.out.println("Machine " + identificationNumber + " marked request as completed for cargo: " + cargo);
+        }
+        logger.info("Marked request as completed for cargo: {}", cargo);
         requestedCargoTypes.put(cargo, false);
     }
 
     /**
-     * The deliverToNextMachine method is responsible
-     * for delivering the produced cargo to the next machine in the production line.
-     * It checks
-     * if the next machine has remaining storage capacity for the cargo before attempting to deliver it.
-     * If the next machine's storage is full,
-     * it stops the current machine
-     * and retries after a short delay until the next machine has capacity to receive the cargo.
-     * @param cargo The cargo representing the produced product that needs to be delivered to the next machine.
+     * The deliverToNextMachine method is delivering the produced cargo to the next machine in the production line.
+     * If the next maschine can receive the cargo, it will notify the next machine of the incoming cargo and
+     * set a flag to indicate that a cargo handover to the next machine is in progress.
+     * If the next machine's storage is full and cannot receive the cargo,
+     * it will stop the machine and retry the delivery until it goes through.
+     * @param cargo the cargo to be delivered to the next machine
      */
     protected void deliverToNextMachine(Cargo cargo) {
         if (nextMaschine != null) {
@@ -240,8 +223,8 @@ public abstract class Maschine extends Thread implements Station{
                             logger.info("Next machine {} storage full, stopping machine {}", nextMaschine.getIdentificationNumber(), identificationNumber);
                             stopMachine();
                         }
-                        logger.info("Next machine storage full, retrying in 500ms");
-                        Thread.sleep(500);
+                        logger.info("Next machine storage full, retrying in {}ms", timeToSleep);
+                        Thread.sleep(timeToSleep);
                     }
                     else {
                         if (!running){
@@ -269,13 +252,10 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The storeProduct method is responsible for storing the produced cargo in the machine's storage.
+     * The storeProduct method is storing the produced product in the machine's storage.
      * It uses semaphore to synchronize access to the storage map,
-     * ensuring that multiple threads do not interfere with each other when updating the storage.
-     * The method checks if the cargo type already exists in the storage
-     * and if there is capacity to store more of that
-     * cargo type before updating the quantity in the storage.
-     * @param cargo The cargo representing the produced product that needs to be stored in the machine's storage.
+     * ensuring that only one thread can access the storage at a time to prevent data corruption.
+     * @param cargo the product to be delivered
      */
     protected void storeProduct(Cargo cargo) {
         try {
@@ -296,8 +276,6 @@ public abstract class Maschine extends Thread implements Station{
 
     /**
      * The stopMachine method is responsible for stopping the machine by setting the running flag to false.
-     * It also logs the action
-     * and prints a message to the console if console output is enabled in the production headquarters.
      */
     public void stopMachine() {
         running = false;
@@ -308,9 +286,7 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The startMachine method is responsible for starting the machine by setting the running flag to true.
-     * It also logs the action
-     * and prints a message to the console if console output is enabled in the production headquarters.
+     * The stopMachine method is responsible for stopping the machine by setting the running flag to false.
      */
     public void startMachine() {
         running = true;
@@ -331,11 +307,9 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The getCargoHandoverToNextMaschineInProgress method is responsible for checking
-     * if a cargo handover to the next machine is currently in progress.
-     * It returns true if a cargo handover is in progress and resets the flag to false,
-     * indicating that the handover has been acknowledged.
-     * @return true if a cargo handover to the next machine is in progress, false otherwise.
+     * The getCargoHandoverToNextMaschineInProgress method is a getter for the cargoHandoverToNextMaschineInProgress flag,
+     * which indicates whether a cargo handover to the next machine is currently in progress.
+     * On a call to this method, it returns the current value of the flag and then resets it to false.
      */
     public boolean getCargoHandoverToNextMaschineInProgress(){
         boolean cargoHandoverToNextMaschineInProgressCopy = cargoHandoverToNextMaschineInProgress;
@@ -346,17 +320,12 @@ public abstract class Maschine extends Thread implements Station{
     }
 
     /**
-     * The getRemainingStorageCapacity method is responsible
-     * for checking if the next machine has remaining storage capacity for a specific cargo type.
-     * It calculates the remaining capacity by acquiring the storage semaphore to safely access the storage map
-     * and then checking the current quantity of the specified cargo type.
-     * It also accounts for any cargos
-     * that are currently in transit to the next machine by acquiring the notification semaphore
-     * and checking the cargosOnTransit queue.
-     * The method returns true if there is remaining storage capacity for the specified cargo type,
-     * and false otherwise.
-     * @param cargo The cargo type for which to check the remaining storage capacity in the next machine.
-     * @return true if there is remaining storage capacity for the specified cargo type in the next machine, false otherwise.
+     * The getRemainingStorageCapacity method checks
+     * if there is remaining storage capacity for a specific cargo type in the machine's storage.
+     * The method uses semaphores to synchronize access to the storage map and the cargosOnTransit queue,
+     * ensuring thread safety when checking the storage capacity.
+     * @param cargo the cargo type for which to check the remaining storage capacity
+     * @return a boolean value whether there is remaining storage capacity or not
      */
     public boolean getRemainingStorageCapacity(Cargo cargo){
         int remainingCapacity;
@@ -388,32 +357,21 @@ public abstract class Maschine extends Thread implements Station{
 
 
     /**
-     * The notifyNextMaschineOfCargoSending method is responsible
-     * for notifying the next machine in the production line that a cargo is being sent to it.
-     * It adds a notification to the next machine's queue
-     * by calling the addCargoRequestNotification method on the next machine.
-     * This allows the next machine to be aware of incoming cargos and prepare to receive them,
-     * ensuring smooth coordination between machines in the production line.
-     * @param cargo The cargo that is being sent to the next machine, which will be included in the notification.
+     * The notifyNextMaschineOfCargoSending method is responsible for notifying the next machine in the production line that a cargo is being sent to it.
+     * @param cargo the cargo that is being sent to the next machine
      */
     protected void notifyNextMaschineOfCargoSending(Cargo cargo){
         if (nextMaschine != null) {
-            nextMaschine.addCargoRequestNotification(cargo);
+            nextMaschine.addCargoTransitNotification(cargo);
             logger.info("Notified next machine {} of cargo sending: {}", nextMaschine.getIdentificationNumber(), cargo);
         }
     }
 
     /**
-     * The notifyMachineCargoHandoverCompleted method is responsible
-     * for handling the notification that a cargo handover to the next machine has been completed.
-     * It removes the cargo from the cargosOnTransit queue
-     * and updates the machine's storage by calling the resiveCargo method to reflect
-     * that the cargo has been successfully received by the next machine.
-     * If there are still cargos in transit after processing the notification,
-     * it logs a warning indicating that there are still cargos in progress,
-     * which can help identify potential issues in the production line coordination.
-     * The method uses semaphores to synchronize access to the cargosOnTransit queue and the storage map,
-     * ensuring thread safety when updating the machine's state based on the cargo handover notifications.
+     * The notifyMachineCargoHandoverCompleted method is responsible for notifying the machine that a cargo handover from the previous machine has been completed.
+     * It called by the GUI when the cargo handover animation is completed to inform the machine that the cargo has arrived and can be processed.
+     * The method uses semaphores to synchronize access to the cargosOnTransit queue,
+     * ensuring thread safety when multiple threads (machines) are adding or removing cargos from the queue concurrently.
      */
     public void notifyMachineCargoHandoverCompleted(){
         Cargo cargo;

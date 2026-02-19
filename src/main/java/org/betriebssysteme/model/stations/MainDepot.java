@@ -15,6 +15,13 @@ import org.betriebssysteme.model.status.StatusWarning;
 import org.slf4j.Logger;
 
 public class MainDepot implements Station {
+    /**
+     * The cargoStorage map represents the storage of the main depot.
+     * The key is the Cargo type, and the value is the quantity of that cargo currently stored.
+     * It is protected by semaphore
+     * to ensure thread safety when multiple threads are accessing or modifying the storage concurrently.
+     * The semaphore allows only one thread to access the cargoStorage at a time, preventing data corruption.
+     */
     private final Map <Cargo, Integer> cargoStorage;
     private final Semaphore cargoStorageSemaphore;
     private final int identificationNumber;
@@ -23,6 +30,12 @@ public class MainDepot implements Station {
     private final Logger logger;
     private final int initialStorageCapacity;
 
+    /**
+     * Constructor for the MainDepot class.
+     * @param identificationNumber The identification number for the main depot.
+     * @param maxStorageCapacity The maximum storage capacity for the main depot.
+     * @param initialStorageCapacity The initial quantity of each material in storage when the main depot is created.
+     */
     public MainDepot (int identificationNumber, int maxStorageCapacity, int initialStorageCapacity) {
         this.cargoStorage = new HashMap<>();
         this.identificationNumber = identificationNumber;
@@ -35,12 +48,24 @@ public class MainDepot implements Station {
         createInitialStorage();
     }
 
+    /**
+     * This method initializes the cargo storage of the main depot with the initial quantity of each material.
+     */
     private void createInitialStorage() {
         for (Material material : Material.values()) {
             cargoStorage.put(material, initialStorageCapacity);
         }
     }
 
+    /**
+     * The method checkAndUpdateStatus checks the current quantities of cargo in storage
+     * and updates the status of the main depot.
+     * The status is updated based on the rules:
+     * - a material cargo = 0 --> EMPTY
+     * - a material cargo < 25% of the maximum storage capacity --> LOW_CAPACITY
+     * - a product cargo >= maximum storage capacity --> FULL
+     * - a product cargo > 75% of the maximum storage capacity --> LOW_CAPACITY
+     */
     private void checkAndUpdateStatus() {
         status = StatusInfo.OPERATIONAL;
         for (Cargo cargo : cargoStorage.keySet()) {
@@ -72,6 +97,15 @@ public class MainDepot implements Station {
         }
     }
 
+    /**
+     * This method allows the main depot to receive cargo.
+     * The method is synchronized
+     * using semaphore to ensure that only one thread can access the cargo storage at a time,
+     * preventing data corruption.
+     * @param cargo The cargo to be received.
+     * @param quantity The quantity of cargo to be received.
+     * @return the quantity of cargo that was stored in the main depot
+     */
     public int resiveCargo(Cargo cargo, int quantity) {
         try {
             cargoStorageSemaphore.acquire();
@@ -97,6 +131,15 @@ public class MainDepot implements Station {
         }
     }
 
+    /**
+     * This method allows the main depot to hand over cargo.
+     * The method is synchronized
+     * using semaphore to ensure that only one thread can access the cargo storage at a time,
+     * preventing data corruption.
+     * @param cargo The cargo to be handed over.
+     * @param quantity The quantity of cargo to be handed over.
+     * @return the quantity of cargo that was handed over by the main depot
+     */
     public int handOverCargo(Cargo cargo, int quantity) {
         try {
             cargoStorageSemaphore.acquire();

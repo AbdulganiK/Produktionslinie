@@ -9,24 +9,23 @@ import org.betriebssysteme.model.status.StatusInfo;
 import org.betriebssysteme.model.status.StatusWarning;
 
 /**
- * The ControlMachine class represents a machine that produces products and checks for defects.
- * It extends the Maschine class
- * and implements specific behavior for controlling production based on storage status and defect probability.
+ * The ControlMachine class represents a machine that controlled all handover products.
+ * It's implements specific behavior for controlling production based on storage status and defect probability.
  */
 public class ControlMachine extends Maschine{
     private final int probabilityOfDefectPercent;
 
     /**
      * Constructor for the ControlMachine class.
-     * @param identificationNumber The unique identification number for the machine.
+     * @param identificationNumber The identification number for the machine.
      * @param timeToSleep The time in milliseconds that the machine will sleep between production cycles.
      * @param maxStorageCapacity The maximum storage capacity for the machine.
      * @param initialQuantityOfProduct The initial quantity of the product in storage.
      * @param productCargo The type of product cargo that the machine produces.
      * @param nextMaschine The next machine in the production line to which the produced cargo will be delivered.
-     * @param productionTime The time in milliseconds that the machine takes to produce one unit of product.
+     * @param productionTime The time in milliseconds that the machine takes to check the product.
      * @param probabilityOfDefectPercent The probability (in percentage) that a produced product is defective.
-     * @param maschinePriority The priority level of the machine for processing requests and deliveries.
+     * @param maschinePriority The priority level of the machine for requests
      */
     public ControlMachine(int identificationNumber,
                           int timeToSleep,

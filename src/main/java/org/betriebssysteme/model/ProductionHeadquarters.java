@@ -7,23 +7,28 @@ import org.slf4j.Logger;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
+/**
+ * The ProductionHeadquarters class is responsible for managing the production line,
+ * including handling requests, managing stations and personnel.
+ * It uses a singleton pattern
+ * to ensure that there is only one instance of ProductionHeadquarters throughout the application.
+ */
 public class ProductionHeadquarters{
     /**
-     * The PriorityQueue requestQueue is used to manage the requests in the productionline.
-     * Each request has a priority level, and the queue ensures that higher priority requests are processed before lower priority ones.
-     * The Comparator is used to sort the requests based on their priority in descending order
-     * (higher priority first).
-     * It is synchronized
-     * using a Semaphore to ensure thread safety when multiple personnel and stations access the queue concurrently.
-     * The Semaphore allows only one thread to access the requestQueue at a time,
-     * preventing multiple threads from modifying the queue simultaneously
-     * and causing data corruption or inconsistencies.
+     * The requestQueue is a priority queue that holds the requests for the production line.
+     * The requests are ordered based on their priority, with higher priority requests being processed first.
+     * It is protected by semaphore
+     * to ensure thread safety when multiple threads are accessing or modifying the queue concurrently.
+     * The semaphore allows only one thread to access the requestQueue at a time,
+     * preventing data corruption and ensuring that requests are added and polled thread-safe.
      */
     private final PriorityQueue<Request> requestQueue;
     private final Semaphore requestQueueSemaphore = new Semaphore(1);
-    // The stations HashMap stores the stations in the production line, with the station's identification number as the key and the Station object as the value.
+    // The stations HashMap stores the stations in the production line, with the station's identification number
+    // as the key and the Station object as the value.
     private final HashMap stations;
-    // The personnel HashMap stores the personnel in the production line, with the personnel's identification number as the key and the Personnel object as the value.
+    // The personnel HashMap stores the personnel in the production line, with the personnel's identification number
+    // as the key and the Personnel object as the value.
     private final HashMap personnel;
     private static Logger logger;
     // Singleton instance of ProductionHeadquarters
@@ -134,10 +139,8 @@ public class ProductionHeadquarters{
 
     //============================================================================
     /**
-     * The deliteAllData method is used to clear all stations, personnel, and requests from the Production Headquarters.
-     * It clears the stations and personnel HashMaps and also clears the request queue while ensuring thread safety using the semaphore.
-     * This method can be useful for resetting the state of the Production Headquarters or for loading new configurations without restarting the application.
-     * @throws RuntimeException if the thread is interrupted while acquiring the semaphore to clear the request queue.
+     * This method deletes all stations and personnel from the production headquarters.
+     * It clears the stations and personnel HashMaps, and also clears the request queue while acquiring the semaphore to ensure thread safety.
      */
     public void deleteAllData() {
         stations.clear();
