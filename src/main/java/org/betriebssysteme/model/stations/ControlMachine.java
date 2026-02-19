@@ -10,7 +10,7 @@ import org.betriebssysteme.model.status.StatusWarning;
 
 /**
  * The ControlMachine class represents a machine that controlled all handover products.
- * It's implements specific behavior for controlling production based on storage status and defect probability.
+ * It is implements specific behavior for controlling production based on storage status and defect probability.
  */
 public class ControlMachine extends Maschine{
     private final int probabilityOfDefectPercent;

@@ -121,7 +121,7 @@ public class ProductionMaschine extends Maschine {
     @Override
     protected Cargo produceProduct() {
         try {
-            logger.info("Produce product of " + identificationNumber);
+            logger.info("The production machine {} is producing product {}", identificationNumber, productCargo);
             storageSemaphore.acquire();
             for (Cargo cargo : recipe.ingredients().keySet()) {
                 int ingredientQuantity = recipe.ingredients().get(cargo);
@@ -131,7 +131,7 @@ public class ProductionMaschine extends Maschine {
                 }
                 else
                 {
-                    throw new IllegalArgumentException("Ingredient not found in storage");
+                    throw new IllegalArgumentException("Ingredient " + cargo + " is missing in storage of ProductionMaschine " + identificationNumber);
                 }
             }
         } catch (Exception e) {

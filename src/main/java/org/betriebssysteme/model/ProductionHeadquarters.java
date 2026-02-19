@@ -26,10 +26,10 @@ public class ProductionHeadquarters{
     private final Semaphore requestQueueSemaphore = new Semaphore(1);
     // The stations HashMap stores the stations in the production line, with the station's identification number
     // as the key and the Station object as the value.
-    private final HashMap stations;
+    private final HashMap<Integer,Station> stations;
     // The personnel HashMap stores the personnel in the production line, with the personnel's identification number
     // as the key and the Personnel object as the value.
-    private final HashMap personnel;
+    private final HashMap<Integer,Personnel> personnel;
     private static Logger logger;
     // Singleton instance of ProductionHeadquarters
     private static ProductionHeadquarters singletonInstance;
@@ -42,8 +42,8 @@ public class ProductionHeadquarters{
      */
     private ProductionHeadquarters (){
         requestQueue = new PriorityQueue<>(Comparator.comparingInt(Request::priority).reversed());
-        this.stations = new HashMap();
-        this.personnel = new HashMap();
+        this.stations = new HashMap<>();
+        this.personnel = new HashMap<>();
         this.identificationNumber = 0;
         logger = org.slf4j.LoggerFactory.getLogger("ProductionHeadquarters");
     }
@@ -64,10 +64,9 @@ public class ProductionHeadquarters{
      * Start all personnel threads
      */
     public void startAllPersonnel(){
-        for (Object personObj : personnel.values()) {
-            Personnel person = (Personnel) personObj;
-            person.start();
-            logger.info("Started personnel with ID: {}", person.getIdentificationNumber());
+        for (Personnel personObj : personnel.values()) {
+            personObj.start();
+            logger.info("Started personnel with ID: {}", personObj.getIdentificationNumber());
         }
     }
 
@@ -75,10 +74,9 @@ public class ProductionHeadquarters{
      * Start all station threads
      */
     public void startAllStations(){
-        for (Object stationObj : stations.values()) {
-            Station station = (Station) stationObj;
-            station.start();
-            logger.info("Started station with ID: " + station.getIdentificationNumber());
+        for (Station stationObj : stations.values()) {
+            stationObj.start();
+            logger.info("Started station with ID: {}", stationObj.getIdentificationNumber());
         }
     }
 
@@ -108,11 +106,11 @@ public class ProductionHeadquarters{
 
     //============================================================================
     // Getters and Setters
-    public Map getStations(){
+    public HashMap<Integer,Station> getStations(){
         return stations;
     }
 
-    public Map getPersonnel(){
+    public HashMap<Integer,Personnel> getPersonnel(){
         return personnel;
     }
 

@@ -5,9 +5,11 @@
 2. [Übersicht der GUI](#übersicht-der-gui)
 3. [Kamera- und Zoom-Steuerung](#kamera--und-zoom-steuerung)
 4. [Interaktion mit Objekten](#interaktion-mit-objekten)
-5. [Configurations-Menü](#konfigurations-menue)
+5. [Configurations-Menü](#configurations-menü)
 6. [Statusanzeigen](#statusanzeigen)
-7. [Tipps und Tricks](#tipps-und-tricks)
+7. [Tastenkombinationen & Mausbelegung - Übersicht](#tastenkombinationen--mausbelegung---übersicht)
+8. [Fehlerbehebung](#fehlerbehebung)
+9. [Weitere Informationen](#weitere-informationen)
 
 ---
 
@@ -40,20 +42,6 @@ Die grafische Benutzeroberfläche zeigt die gesamte Produktionslinie:
 - **Personal**:
   - Lageristen (Warehouse Clerks): Transportieren Materialien
   - Lieferanten (Suppliers): Bringen und holen Waren
-
-### Visuelle Feedback-Elemente
-- **Statuslampen**: Zeigen den Betriebszustand der Maschinen
-  - Erste Lampe: Zeigt an, ob die Maschine läuft
-    - grün: läuft (running)
-    - dunkel: gestoppt (stopped)
-  - Zweite Lampe: Zeigt den Status (betriebsbereit, geringe Kapazität, Leer, ...)
-    - grün: betriebsbereit (operational)
-    - gelb: geringe Kapazität (low capacity)
-    - rot: leer (empty)
-- **Animationen**: 
-  - Maschinen zeigen Produktions- und Türöffnungsanimationen
-  - Personal zeigt Lauf- und Bewegung's-Animationen
-
 ---
 
 ## Kamera- und Zoom-Steuerung
@@ -129,19 +117,13 @@ Zeigt:
 ## Configurations-Menü
 
 ### Menü öffnen
-Drücken Sie **ESC** oder nutzen Sie die entsprechende Menü-Option, um das Configurations-Menü zu öffnen.
+Drücken Sie **ESC** um das Configurations-Menü zu öffnen.
 
 ### Verfügbare Konfigurationen
-Das Menü bietet zwei Hauptkonfigurationen:
+Das Menü bietet zwei Hauptkonfigurationen, die über ein Dropdown-Menü (oben links) ausgewählt werden können:
 1. **Production Config**: Einstellungen für Maschinen, Personal und Produktionsparameter
 2. **Recipes Config**: Rezepte für Produktionsschritte und Materialzusammensetzung
 
-### Funktionen im Configurations-Menü
-
-#### Config auswählen
-- Dropdown-Menü oben links zur Auswahl der Konfiguration
-- Wechsel zwischen Production und Recipes Config
-- Aktuelle Quelle wird im Label "Aktiv:"angezeigt
 
 #### Buttons und ihre Funktionen
 
@@ -167,6 +149,10 @@ Das Menü bietet zwei Hauptkonfigurationen:
 **Resume**:
 - Schließt das Configurations-Menü
 - Setzt die Simulation fort
+
+**Debug off/on**:
+- Schaltet die Debug-Ausgabe in der Konsole ein oder aus
+- Aktueller Status wird im Button-Label angezeigt (Debug off / Debug on)
 
 #### JSON-Konfiguration bearbeiten
 Der zentrale Textbereich zeigt die aktuelle Konfiguration im JSON-Format:
@@ -225,27 +211,15 @@ Jede Maschine zeigt zwei farbige Statuslampen:
     - gelb: geringe Kapazität (low capacity)
     - rot: leer (empty)
 
-### Animations-Status
-
-**Maschinen**:
-- *Türen geschlossen*: Standard-Produktionsanimation
-- *Türen öffnen/schließen*: Materialaufnahme oder -ausgabe
-- *Produktionsanimation*: Maschine verarbeitet Material
-
-**Personal**:
-- *Laufen/Fahren*: Animationen in vier Richtungen (vorne, hinten, links, rechts)
-
----
-
 ## Tastenkombinationen & Mausbelegung - Übersicht
 
-| Aktion | Steuerung |
-|--------|-----------|
-| Zoom hinein | Mausrad nach oben |
-| Zoom heraus | Mausrad nach unten |
-| Kamera verschieben | Mittlere/Rechte Maustaste + Ziehen |
-| Info-Menü öffnen/schließen | Linksklick auf Objekt |
-| Configurations-Menü | ESC-Taste |
+| Aktion                     | Steuerung                          |
+|----------------------------|------------------------------------|
+| Zoom hinein                | Mausrad nach oben                  |
+| Zoom heraus                | Mausrad nach unten                 |
+| Kamera verschieben         | Mittlere/Rechte Maustaste + Ziehen |
+| Info-Menü öffnen/schließen | Linksklick auf Objekt              |
+| Configurations-Menü        | ESC-Taste                          |
 
 ---
 
@@ -275,10 +249,9 @@ Das Programm erstellt Log-Dateien im Verzeichnis `logs/`:
 - Bei Problemen prüfen Sie diese Datei für Hinweise
 
 ### Konfigurationsdateien
-- Standard-Konfigurationen für die produktionConfig liegten im Ressourcenverzeichnis: "assets/config/productionConfigs/ProductionConfigDefault.json"
-- Standard-Konfigurationen für die recipesConfig liegen im Ressourcenverzeichnis: "assets/config/recipesConfigs/RecipesConfigDefault.json"
+- Standard-Konfigurationen für die produktionConfig liegen im Ressourcenverzeichnis: "../assets/config/productionConfigs/ProductionConfigDefault.json"
+- Standard-Konfigurationen für die recipesConfig liegen im Ressourcenverzeichnis: "../assets/config/recipesConfigs/RecipesConfigDefault.json"
 - Benutzer-Konfigurationen: Werden im Benutzerverzeichnis gespeichert
-- JSON-Format wird für alle Konfigurationen verwendet
 
 ---
 
