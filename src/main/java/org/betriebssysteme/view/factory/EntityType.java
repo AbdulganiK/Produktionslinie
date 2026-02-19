@@ -5,7 +5,6 @@ public enum EntityType {
     STORAGE,
     SUPPLIER,
     WAREHOUSE_CLERK,
-    HEADQUARTER,
     BELT,
     ITEM,
     CENTRAL

@@ -9,9 +9,8 @@ import org.betriebssysteme.model.status.StatusTyp;
 
 public class StatusComponent extends Component {
 
-    private double offSetX = 0;
-    private double offSetY = 0;
-    private Rectangle rectangle;
+    private final double offSetX;
+    private final double offSetY;
     private Circle firstLight;
     private Circle thirdLight;
 
@@ -32,7 +31,7 @@ public class StatusComponent extends Component {
         double panelHeight = 30;
 
 
-        rectangle = new Rectangle(panelWidth, panelHeight);
+        Rectangle rectangle = new Rectangle(panelWidth, panelHeight);
         rectangle.setArcWidth(4);
         rectangle.setArcHeight(4);
         rectangle.setFill(Color.rgb(25, 25, 30, 0.95));

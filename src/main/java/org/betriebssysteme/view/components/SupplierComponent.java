@@ -10,8 +10,6 @@ import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.utility.EventHandler;
 import org.betriebssysteme.utility.Utility;
 
-import java.util.Arrays;
-
 public class SupplierComponent extends Component {
 
     private static final int STORAGE_X = 16;

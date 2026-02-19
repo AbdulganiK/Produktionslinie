@@ -41,11 +41,10 @@ public class BeltFactory {
         for (int i = 0; i < length; i++) {
             if (beltDirection == BeltDirection.VERTICAL) {
                 x += STEP_X;
-                y += STEP_Y;
             } else {
                 x += STEP_X * -1;
-                y += STEP_Y;
             }
+            y += STEP_Y;
 
             Entity middle = FXGL.spawn(EntityNames.BELT, x, y);
             middle.setZIndex(z--);
@@ -59,11 +58,10 @@ public class BeltFactory {
 
         if (beltDirection == BeltDirection.VERTICAL) {
             x += STEP_X;
-            y += STEP_Y;
         } else {
             x += STEP_X * -1;
-            y += STEP_Y;
         }
+        y += STEP_Y;
 
         Entity end = FXGL.spawn(EntityNames.BELT, x, y);
         end.setZIndex(z);

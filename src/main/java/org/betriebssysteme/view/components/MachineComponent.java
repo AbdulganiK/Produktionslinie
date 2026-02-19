@@ -122,22 +122,18 @@ public class MachineComponent extends Component {
 
     public void setAnimation(MachineAnimationType animationType) {
         switch (animationType) {
-            case ON:
+            case ON -> {
                 texture.setOnCycleFinished(() -> {
-                    texture.setOnCycleFinished(() -> {});
+                    texture.setOnCycleFinished(() -> {
+                    });
                     loopProductionWhileTakingItems();
                 });
                 texture.playAnimationChannel(turningOnAnim);
-                break;
-            case OFF:
-                this.texture.playAnimationChannel(turningOffAnim);
-                break;
-            case PRODUCING_WITHOUT_TAKING_ITEMS:
-                this.texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
-                break;
-            case PRODUCING_AND_TAKING_ITEMS:
-                loopProductionWhileTakingItems();
-                break;
+            }
+            case OFF -> this.texture.playAnimationChannel(turningOffAnim);
+            case PRODUCING_WITHOUT_TAKING_ITEMS ->
+                    this.texture.loopAnimationChannel(this.productionWithoutTakingItemAnim);
+            case PRODUCING_AND_TAKING_ITEMS -> loopProductionWhileTakingItems();
         }
     }
 }

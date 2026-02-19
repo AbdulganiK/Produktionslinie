@@ -2,13 +2,11 @@ package org.betriebssysteme.view.components;
 
 import com.almasb.fxgl.entity.component.Component;
 import javafx.scene.Group;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import org.betriebssysteme.utility.EventHandler;
 
 public class CentralPlatformComponent extends Component {
 
@@ -131,16 +129,8 @@ public class CentralPlatformComponent extends Component {
         return new DoorParts(door, doorStep, doorLight, doorLabel, doorHandle);
     }
 
-    private static class DoorParts {
-        final Rectangle door, doorStep, doorLight, doorLabel, doorHandle;
-
-        DoorParts(Rectangle door, Rectangle doorStep, Rectangle doorLight, Rectangle doorLabel, Rectangle doorHandle) {
-            this.door = door;
-            this.doorStep = doorStep;
-            this.doorLight = doorLight;
-            this.doorLabel = doorLabel;
-            this.doorHandle = doorHandle;
-        }
+    private record DoorParts(Rectangle door, Rectangle doorStep, Rectangle doorLight, Rectangle doorLabel,
+                             Rectangle doorHandle) {
     }
 
 
@@ -179,15 +169,7 @@ public class CentralPlatformComponent extends Component {
         return new RailParts(leftPost, rightPost, midPost, frontRail);
     }
 
-    private static class RailParts {
-        final Line leftPost, rightPost, midPost, frontRail;
-
-        RailParts(Line leftPost, Line rightPost, Line midPost, Line frontRail) {
-            this.leftPost = leftPost;
-            this.rightPost = rightPost;
-            this.midPost = midPost;
-            this.frontRail = frontRail;
-        }
+    private record RailParts(Line leftPost, Line rightPost, Line midPost, Line frontRail) {
     }
 
 
