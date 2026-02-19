@@ -29,6 +29,7 @@ public class ProductionLineApp extends GameApplication {
     private final Zoom zoom = new Zoom();
     private final Camera camera = new Camera();
     private final EntityProductionLineFactory entityFactory = new EntityProductionLineFactory();
+    private Scenario scenario;
     private AStarGrid grid;
 
 
@@ -81,7 +82,7 @@ public class ProductionLineApp extends GameApplication {
         grid = GridFactory.build();
 
         // Laden des Scenario
-        Scenario scenario = new Scenario(entityFactory);
+        scenario = new Scenario(entityFactory);
         scenario.runFirst();
         Rectangle rect = new Rectangle(50, 50, Color.BLACK);
         rect.setStroke(Color.BLACK);

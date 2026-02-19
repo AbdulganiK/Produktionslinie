@@ -93,6 +93,7 @@ public class ConfigGameMenu extends FXGLMenu {
                 btnDebugToggle.setText("Debug OFF");
                 disableDebug();
             }
+            ProductionHeadquarters.getInstance().setConsoleOutputEnabled(debugVisible);
         });
 
         btnApply.setOnAction(e -> {
@@ -302,7 +303,4 @@ public class ConfigGameMenu extends FXGLMenu {
         return debugVisible;
     }
 
-    public void setDebugVisible(boolean debugVisible) {
-        this.debugVisible = debugVisible;
-    }
 }
