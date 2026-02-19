@@ -132,6 +132,13 @@ public class ProductionHeadquarters{
     }
 
     public void setConsoleOutputEnabled(boolean consoleOutputEnabled) {
+        if (consoleOutputEnabled) {
+            logger.info("Console output enabled for Production Headquarters");
+            System.out.println("Console output enabled for Production Headquarters");
+        } else {
+            logger.info("Console output disabled for Production Headquarters");
+            System.out.println("Console output disabled for Production Headquarters");
+        }
         this.consoleOutputEnabled = consoleOutputEnabled;
     }
 
