@@ -7,22 +7,15 @@ import com.almasb.fxgl.entity.SpawnData;
 import com.almasb.fxgl.entity.Spawns;
 import com.almasb.fxgl.entity.components.CollidableComponent;
 import com.almasb.fxgl.pathfinding.CellMoveComponent;
-import com.almasb.fxgl.pathfinding.astar.AStarGrid;
 import com.almasb.fxgl.pathfinding.astar.AStarMoveComponent;
 import com.almasb.fxgl.physics.BoundingShape;
 import com.almasb.fxgl.physics.HitBox;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import org.betriebssysteme.model.ProductionHeadquarters;
-import org.betriebssysteme.model.personnel.Personnel;
 import org.betriebssysteme.model.personnel.Supplier;
 import org.betriebssysteme.model.personnel.WarehouseClerk;
 import org.betriebssysteme.model.stations.Station;
 import org.betriebssysteme.view.ProductionLineApp;
 import org.betriebssysteme.view.components.*;
-
-import static com.almasb.fxgl.dsl.FXGLForKtKt.texture;
 
 public class EntityProductionLineFactory implements EntityFactory {
 
@@ -64,7 +57,6 @@ public class EntityProductionLineFactory implements EntityFactory {
 
     @Spawns(EntityNames.BELT)
     public Entity newBelt(SpawnData data) {
-        ProductionLineApp app = (ProductionLineApp) FXGL.getApp();
         HitBox beltHitBox = new HitBox(
                 "BELT",
                 new Point2D(0, 0),

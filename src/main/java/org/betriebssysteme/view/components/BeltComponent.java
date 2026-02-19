@@ -25,13 +25,12 @@ public class BeltComponent extends Component {
             this.startBeltAnim = new AnimationChannel(FXGL.image("belt-start-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.midBeltAnim = new AnimationChannel(FXGL.image("belt-mid-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.endBeltAnim = new AnimationChannel(FXGL.image("belt-end-vertical.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
-            this.texture = new AnimatedTexture(this.startBeltAnim);
         } else {
             this.startBeltAnim = new AnimationChannel(FXGL.image("belt-start-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.midBeltAnim = new AnimationChannel(FXGL.image("belt-mid-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
             this.endBeltAnim = new AnimationChannel(FXGL.image("belt-end-horizontal.png"), 4, 64, 64, Duration.seconds(0.5), 0, 3);
-            this.texture = new AnimatedTexture(this.startBeltAnim);
         }
+        this.texture = new AnimatedTexture(this.startBeltAnim);
     }
 
 

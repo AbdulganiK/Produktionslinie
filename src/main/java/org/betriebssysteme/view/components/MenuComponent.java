@@ -123,20 +123,6 @@ public class MenuComponent extends Component {
         return this.visibility;
     }
 
-    public void setPropertyName(int row, String name) {
-        if (row < 0 || row >= ROWS) return;
-        nameLabels[row].setText(name);
-    }
-
-    public void setPropertyValue(int row, String value) {
-        if (row < 0 || row >= ROWS) return;
-        valueLabels[row].setText(value);
-    }
-
-    public void setProperty(int row, String name, String value) {
-        setPropertyName(row, name);
-        setPropertyValue(row, value);
-    }
 
     public void setNameLabels(String[] labels) {
         int max = Math.min(labels.length, nameLabels.length);

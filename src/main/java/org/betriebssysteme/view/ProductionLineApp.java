@@ -26,10 +26,9 @@ import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class ProductionLineApp extends GameApplication {
 
-    private Zoom zoom = new Zoom();
-    private Camera camera = new Camera();
-    private EntityProductionLineFactory entityFactory = new EntityProductionLineFactory();
-    private Entity clerk;
+    private final Zoom zoom = new Zoom();
+    private final Camera camera = new Camera();
+    private final EntityProductionLineFactory entityFactory = new EntityProductionLineFactory();
     private AStarGrid grid;
 
 

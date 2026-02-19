@@ -6,10 +6,6 @@ import javafx.scene.input.ScrollEvent;
 
 public class Zoom {
 
-    private double zoom = 1.0;          // aktueller Zoom
-    private double minZoom = 0.5;
-    private double maxZoom = 3.0;
-
     public void initZoomToMouse() {
         Viewport vp = FXGL.getGameScene().getViewport();
 
@@ -27,7 +23,7 @@ public class Zoom {
             }
 
             // clampen
-            newZoom = clamp(newZoom, minZoom, maxZoom);
+            newZoom = clamp(newZoom);
             if (newZoom == oldZoom) {
                 return;
             }
@@ -59,8 +55,8 @@ public class Zoom {
     }
 
 
-    private double clamp(double value, double min, double max) {
-        return Math.max(min, Math.min(max, value));
+    private double clamp(double value) {
+        return Math.max(0.5, Math.min(3.0, value));
     }
 
     public void initResetZoom() {

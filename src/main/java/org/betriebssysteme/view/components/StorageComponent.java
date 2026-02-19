@@ -132,13 +132,7 @@ public class StorageComponent extends Component {
         }
     }
 
-    private static class ColumnParts {
-        final Line col1, col2;
-
-        ColumnParts(Line col1, Line col2) {
-            this.col1 = col1;
-            this.col2 = col2;
-        }
+    private record ColumnParts(Line col1, Line col2) {
     }
 
 
@@ -201,20 +195,8 @@ public class StorageComponent extends Component {
         return new GateParts(gateFrame, gateLeft, gateRight, gateZone, zoneLeft, zoneRight, gateSign);
     }
 
-    private static class GateParts {
-        final Rectangle gateFrame, gateLeft, gateRight, gateZone, gateSign;
-        final Line zoneLeft, zoneRight;
-
-        GateParts(Rectangle gateFrame, Rectangle gateLeft, Rectangle gateRight,
-                  Rectangle gateZone, Line zoneLeft, Line zoneRight, Rectangle gateSign) {
-            this.gateFrame = gateFrame;
-            this.gateLeft = gateLeft;
-            this.gateRight = gateRight;
-            this.gateZone = gateZone;
-            this.zoneLeft = zoneLeft;
-            this.zoneRight = zoneRight;
-            this.gateSign = gateSign;
-        }
+    private record GateParts(Rectangle gateFrame, Rectangle gateLeft, Rectangle gateRight, Rectangle gateZone,
+                             Line zoneLeft, Line zoneRight, Rectangle gateSign) {
     }
 
 
@@ -250,15 +232,7 @@ public class StorageComponent extends Component {
         return new DoorParts(doorFrame, doorStep, doorLight, doorHandle);
     }
 
-    private static class DoorParts {
-        final Rectangle doorFrame, doorStep, doorLight, doorHandle;
-
-        DoorParts(Rectangle doorFrame, Rectangle doorStep, Rectangle doorLight, Rectangle doorHandle) {
-            this.doorFrame = doorFrame;
-            this.doorStep = doorStep;
-            this.doorLight = doorLight;
-            this.doorHandle = doorHandle;
-        }
+    private record DoorParts(Rectangle doorFrame, Rectangle doorStep, Rectangle doorLight, Rectangle doorHandle) {
     }
 
 

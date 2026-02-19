@@ -8,7 +8,6 @@ import javafx.geometry.Point2D;
 public class ItemMoveComponent extends Component {
 
     private Point2D direction = Point2D.ZERO;
-    private double speed = 40;
     private boolean blocked = false;
 
     private final java.util.List<Entity> belts = new java.util.ArrayList<>();
@@ -52,6 +51,7 @@ public class ItemMoveComponent extends Component {
     @Override
     public void onUpdate(double tpf) {
         if (!direction.equals(Point2D.ZERO) && !blocked) {
+            double speed = 40;
             entity.translate(direction.multiply(speed * tpf));
         }
     }
