@@ -9,11 +9,8 @@ import org.betriebssysteme.model.status.StatusTyp;
 
 public class StatusComponent extends Component {
 
-
-
     private double offSetX = 0;
     private double offSetY = 0;
-
     private Rectangle rectangle;
     private Circle firstLight;
     private Circle thirdLight;
@@ -65,7 +62,6 @@ public class StatusComponent extends Component {
 
         entity.getViewComponent().addChild(panel);
     }
-
 
     public void setColorFirstLamp(boolean isRunning) {
         if (isRunning) {

@@ -26,10 +26,10 @@ public class WarehouseClerkComponent extends Component {
 
         move.atDestinationProperty().addListener((obs, oldV, atDest) -> {
             if (!atDest) return;
-
+            // Signal zu Backend das Ziel erreicht ist
             if (!readySentForThisGoal) {
                 readySentForThisGoal = true;
-                warehouseClerk.setReady(); // <-- genau hier!
+                warehouseClerk.setReady();
             }
         });
     }
@@ -53,7 +53,7 @@ public class WarehouseClerkComponent extends Component {
 
         AStarMoveComponent<?> move = entity.getComponent(AStarMoveComponent.class);
 
-        // HQ?
+        // HQ
         if (destinationId == ProductionHeadquarters.getInstance().getIdentificationNumber()) {
             List<Entity> hqEntities = entity.getWorld().getEntitiesByComponent(CentralPlatformComponent.class);
             if (hqEntities.isEmpty()) {

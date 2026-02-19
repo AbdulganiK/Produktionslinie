@@ -63,7 +63,6 @@ public class ProductionLineApp extends GameApplication {
         getPhysicsWorld().setGravity(0, 0);
         // Collision Handling
         EntityCollisionHandler.addCollisionBetweenMachineAndEntity(getPhysicsWorld());
-        // EntityCollisionHandler.addCollisionBetweenItems(getPhysicsWorld());
         EntityCollisionHandler.addCollisionBetweenItemAndBelt(getPhysicsWorld());
     }
 
@@ -88,9 +87,6 @@ public class ProductionLineApp extends GameApplication {
         Rectangle rect = new Rectangle(50, 50, Color.BLACK);
         rect.setStroke(Color.BLACK);
         rect.setStrokeType(StrokeType.INSIDE);
-
-
-
 
     }
 
