@@ -70,7 +70,6 @@ public class ProductionLineApp extends GameApplication {
 
     @Override
     protected void initGame() {
-
         // Karte setzen
         setLevelFromMap("map.tmx");
 

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="isometric" renderorder="right-down" width="120" height="100" tilewidth="32" tileheight="16" infinite="0" nextlayerid="16" nextobjectid="1">
  <tileset firstgid="1" name="ground_tile" tilewidth="32" tileheight="32" tilecount="160" columns="16">
-  <image source="../textures/ground_tile.png" width="512" height="320"/>
+  <image source="textures/ground_tile.png" width="512" height="320"/>
  </tileset>
  <tileset firstgid="161" name="Copings_Stone" tilewidth="32" tileheight="32" tilecount="36" columns="6">
-  <image source="../textures/Copings_Stone.png" width="192" height="192"/>
+  <image source="textures/Copings_Stone.png" width="192" height="192"/>
  </tileset>
  <layer id="1" name="Kachelebene 1" width="120" height="100">
   <data encoding="csv">
