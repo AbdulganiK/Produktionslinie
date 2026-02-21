@@ -1,0 +1,12 @@
+
+Framebreite : 64 px
+Framehöhe : 64 px
+
+Spritesheetbreite : 448 px
+Spritesheethöhe : 64 px
+
+Diese größen gelten für:
+- Production_While_Taking_Items_Animation.png
+- Production_Without_Taking_Items_Animation.png
+- Turning_Off_Animation.png
+- Turning_On_Animation.png
