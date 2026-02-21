@@ -392,13 +392,7 @@ public abstract class Maschine extends Thread implements Station{
         finally {
             notificationSemaphore.release();
         }
-        int warningQuantity = resiveCargo(cargo, 1);
-        if (warningQuantity > 0){
-            logger.warn("Machine {} received notification of cargo handover completed for cargo: {} but still has {} cargo in progress.", identificationNumber, cargo, warningQuantity);
-            if (ProductionHeadquarters.getInstance().isConsoleOutputEnabled()) {
-                System.out.println("Machine " + identificationNumber + " received notification of cargo handover completed for cargo: " + cargo + " but still has " + warningQuantity + " cargo in progress.");
-            }
-        }
+        resiveCargo(cargo, 1);
     }
 
     // ============================================================================
