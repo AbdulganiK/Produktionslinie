@@ -1,0 +1,54 @@
+{
+  "recipes": {
+    "driveHousingRecipe": {
+      "productionTime": 7000,
+      "components": {
+        "GLUE": 1,
+        "PLASTIC": 2
+      }
+    },
+    "controlHousingRecipe": {
+      "productionTime": 6000,
+      "components": {
+        "GLUE": 1,
+        "PLASTIC": 2
+      }
+    },
+    "drivePcbRecipe": {
+      "productionTime": 8000,
+      "components": {
+        "PCBS": 2,
+        "MOTORS": 2
+      }
+    },
+    "controlPcbRecipe": {
+      "productionTime": 7500,
+      "components": {
+        "PCBS": 2,
+        "DISPLAYS": 1
+      }
+    },
+    "driveUnitRecipe": {
+      "productionTime": 10000,
+      "components": {
+        "DRIVE_CASE": 1,
+        "DRIVE_PCB": 1
+      }
+    },
+    "controlUnitRecipe": {
+      "productionTime": 9500,
+      "components": {
+        "CONTROL_CASE": 1,
+        "CONTROL_PCB": 1
+      }
+    },
+    "shippingPackageRecipe": {
+      "productionTime": 12000,
+      "components": {
+        "CONTROL_UNIT": 1,
+        "DRIVE_UNIT": 1,
+        "WRAPPING": 12
+      }
+    }
+  }
+}
